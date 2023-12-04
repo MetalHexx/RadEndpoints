@@ -1,4 +1,4 @@
-﻿namespace MinimalApi.Http
+﻿namespace MinimalApi.Http.Endpoints
 {
     public class ApiResponse
     {
