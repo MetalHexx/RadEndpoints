@@ -13,9 +13,7 @@ namespace MinimalApi.Features.Examples.CreateExample
             Post("/examples")
                 .Produces<CreateExampleResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status409Conflict)
-                .WithTags(ExamplesConstants.ExamplesTag)
-                .WithDescription("Create a new example.")
-                .WithOpenApi();
+                .AddSwagger(tag: Constants.ExamplesTag, desc: "Create a new example.");
         }
 
         public override async Task<IResult> Handle(CreateExampleRequest r, CancellationToken ct)

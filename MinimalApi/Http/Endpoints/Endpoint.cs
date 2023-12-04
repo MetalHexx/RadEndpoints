@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using MinimalApi.Domain.Examples;
 using MinimalApi.Features.Examples.CreateExample;
 
 namespace MinimalApi.Http.Endpoints
@@ -42,9 +43,11 @@ namespace MinimalApi.Http.Endpoints
         public RouteHandlerBuilder Get(string route) => RouteBuilder!
             .MapGet(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct))
             .AddEndpointFilter<ValidationFilter<TRequest>>();
+
         public RouteHandlerBuilder Post(string route) => RouteBuilder!
             .MapPost(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct))
             .AddEndpointFilter<ValidationFilter<TRequest>>();
+
         public RouteHandlerBuilder Put(string route) => RouteBuilder!
             .MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct))
             .AddEndpointFilter<ValidationFilter<TRequest>>();

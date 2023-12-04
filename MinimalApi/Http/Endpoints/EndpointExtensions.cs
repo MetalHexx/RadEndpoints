@@ -32,6 +32,11 @@ namespace MinimalApi.Http.Endpoints
             }
         }
 
+        public static RouteHandlerBuilder AddSwagger(this RouteHandlerBuilder routeBuilder, string tag, string desc) => routeBuilder
+            .WithTags(tag)
+            .WithDescription(desc)
+            .WithOpenApi();
+
         private static IEnumerable<Type> GetEndpointTypes() => Assembly
             .GetExecutingAssembly()
             .GetTypes()

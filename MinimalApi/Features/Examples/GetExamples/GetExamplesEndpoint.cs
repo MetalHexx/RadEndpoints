@@ -11,9 +11,7 @@ namespace MinimalApi.Features.Examples.GetExamples
         {
             Get("/examples")
                 .Produces<GetExamplesResponse>(StatusCodes.Status200OK)
-                .WithTags(ExamplesConstants.ExamplesTag)
-                .WithDescription("Get all examples.")
-                .WithOpenApi();
+                .AddSwagger(tag: Constants.ExamplesTag, desc: "Create a new example.");
         }
 
         public override async Task<IResult> Handle(CancellationToken c)
