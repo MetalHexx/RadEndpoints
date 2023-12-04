@@ -1,4 +1,5 @@
-﻿using MinimalApi.Features.Examples.Common.Services;
+﻿using MinimalApi.Features.Examples.Common;
+using MinimalApi.Features.Examples.Common.Services;
 using MinimalApi.Http;
 
 namespace MinimalApi.Features.Examples.GetExamples
@@ -10,9 +11,11 @@ namespace MinimalApi.Features.Examples.GetExamples
 
         public override void Configure()
         {
-            RouteBuilder
-                .MapGet("/examples", async (CancellationToken ct) => await Handle(ct))
-                .Produces<GetExamplesResponse>(StatusCodes.Status200OK);
+            Get("/examples")
+                .Produces<GetExamplesResponse>(StatusCodes.Status200OK)
+                .WithTags(ExamplesConstants.ExamplesTag)
+                .WithDescription("Get all examples.")
+                .WithOpenApi();
         }
 
         public override async Task<IResult> Handle(CancellationToken c)
