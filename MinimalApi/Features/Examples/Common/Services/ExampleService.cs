@@ -7,7 +7,7 @@ namespace MinimalApi.Features.Examples.Common.Services
         Task DeleteExample(int id);
         Task<Example?> GetExample(int id);
         Task<IEnumerable<Example>> GetExamples();
-        Task InsertExample(Example example);
+        Task<Example?> InsertExample(Example example);
         Task<Example?> UpdateExample(Example example);
     }
 
@@ -23,40 +23,51 @@ namespace MinimalApi.Features.Examples.Common.Services
             _examples.Add(4, new Example("Emma", "Williams", 4));
             _examples.Add(5, new Example("Michael", "Brown", 5));
         }
-        public Task<IEnumerable<Example>> GetExamples()
+        public async Task<IEnumerable<Example>> GetExamples()
         {
-            return Task.FromResult(_examples.Values.AsEnumerable());
+            await Task.Delay(1);
+            return _examples.Values.AsEnumerable();
         }
-        public Task<Example?> GetExample(int id)
+        public async Task<Example?> GetExample(int id)
         {
-            _examples.TryGetValue(id, out var example);
-            return Task.FromResult(example);
+            await Task.Delay(1);
+            _examples.TryGetValue(id, out var example);            
+            return example;
         }
 
-        public Task InsertExample(Example example)
+        public async Task<Example?> InsertExample(Example example)
         {
+            await Task.Delay(1);
             var id = _examples.Keys.Max() + 1;
-            _examples.Add(id, example);
-            return Task.CompletedTask;
+            var successs = _examples.TryAdd(id, example);
+
+            if (!successs)
+            {
+                return null;
+            }
+            return example;
         }
 
-        public Task<Example?> UpdateExample(Example example)
+        public async Task<Example?> UpdateExample(Example example)
         {
+            await Task.Delay(1);
+
             if (_examples.ContainsKey(example.Id))
             {
                 _examples[example.Id] = example;
-                return Task.FromResult(example with { });
+                return example with { };
             }
-            return Task.FromResult((Example?)null);
+            return null;
         }
 
-        public Task DeleteExample(int id)
+        public async Task DeleteExample(int id)
         {
+            await Task.Delay(1);
+
             if (_examples.ContainsKey(id))
             {
                 _examples.Remove(id);
             }
-            return Task.CompletedTask;
         }
     }
 }
