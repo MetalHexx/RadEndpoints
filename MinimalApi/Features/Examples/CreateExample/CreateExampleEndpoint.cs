@@ -11,11 +11,8 @@ namespace MinimalApi.Features.Examples.CreateExample
         public override void Configure()
         {
             Post("/examples")
-
-                .AddEndpointFilter<ValidationFilter<CreateExampleRequest>>()
                 .Produces<CreateExampleResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status409Conflict)
-
                 .WithTags(ExamplesConstants.ExamplesTag)
                 .WithDescription("Create a new example.")
                 .WithOpenApi();
