@@ -1,6 +1,4 @@
-﻿using MinimalApi.Features.Examples.Common.Models;
-
-namespace MinimalApi.Features.Examples.Common.Services
+﻿namespace MinimalApi.Domain.Examples
 {
     public interface IExampleService
     {
@@ -31,7 +29,7 @@ namespace MinimalApi.Features.Examples.Common.Services
         public async Task<Example?> GetExample(int id)
         {
             await Task.Delay(1);
-            _examples.TryGetValue(id, out var example);            
+            _examples.TryGetValue(id, out var example);
             return example;
         }
 
@@ -41,16 +39,16 @@ namespace MinimalApi.Features.Examples.Common.Services
 
             var id = _examples.Keys.Max() + 1;
 
-            var isDuplicateName = _examples.Any(record => 
-                record.Value.FirstName == example.FirstName 
+            var isDuplicateName = _examples.Any(record =>
+                record.Value.FirstName == example.FirstName
                 && record.Value.LastName == example.LastName);
 
-            if(isDuplicateName)
+            if (isDuplicateName)
             {
                 return null;
             }
 
-           _examples.Add(id, example);
+            _examples.Add(id, example);
 
             return example;
         }

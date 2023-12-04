@@ -1,8 +1,7 @@
-﻿using FluentValidation;
-using MinimalApi.Features.Examples.Common.Models;
-
-namespace MinimalApi.Features.Examples.Common
+﻿namespace MinimalApi.Domain.Examples
 {
+    public record Example(string FirstName, string LastName, int Id = 0);
+
     internal class ExampleValidator : AbstractValidator<Example>
     {
         public ExampleValidator()

@@ -1,4 +1,4 @@
-﻿namespace MinimalApi.Features.Examples.Common
+﻿namespace MinimalApi.Domain.Examples
 {
     public static class ExamplesConstants
     {
