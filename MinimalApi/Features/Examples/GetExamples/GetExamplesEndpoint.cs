@@ -1,5 +1,4 @@
-﻿using MinimalApi.Features.Examples.Common;
-using MinimalApi.Features.Examples.Common.Services;
+﻿using MinimalApi.Domain.Examples;
 
 namespace MinimalApi.Features.Examples.GetExamples
 {
@@ -25,7 +24,7 @@ namespace MinimalApi.Features.Examples.GetExamples
             Response.Example = await _service.GetExamples();
             Response.Message = "Successfully retrieved examples.";
 
-            return TypedResults.Ok(Response);
+            return Ok(Response);
         }
     }
 }

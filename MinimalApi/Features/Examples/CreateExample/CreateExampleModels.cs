@@ -1,5 +1,4 @@
-﻿using MinimalApi.Features.Examples.Common.Models;
-using MinimalApi.Features.Examples.Common;
+﻿using MinimalApi.Domain.Examples;
 
 namespace MinimalApi.Features.Examples.CreateExample
 {
@@ -23,7 +22,7 @@ namespace MinimalApi.Features.Examples.CreateExample
         }
     }
 
-    public class CreateExampleResponse : ApiResponse
+    public class CreateExampleResponse : EndpointResponse
     {
         public Example? Example { get; set; } = null!;
     }

@@ -1,5 +1,4 @@
-using FluentValidation;
-using MinimalApi.Features.Examples.Common.Services;
+using MinimalApi.Domain.Examples;
 
 var builder = WebApplication.CreateBuilder(args);
 

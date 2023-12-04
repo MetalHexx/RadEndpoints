@@ -1,5 +1,4 @@
-﻿using MinimalApi.Features.Examples.Common;
-using MinimalApi.Features.Examples.Common.Services;
+﻿using MinimalApi.Domain.Examples;
 
 namespace MinimalApi.Features.Examples.CreateExample
 {
@@ -29,13 +28,9 @@ namespace MinimalApi.Features.Examples.CreateExample
 
             if(Response.Example is null)
             {
-                return TypedResults.Problem
-                (
-                    title: "An example with the same first and last name already exists",
-                    statusCode: StatusCodes.Status409Conflict
-                );                                                       
+                return Conflict("An example with the same first and last name already exists");
             }
-            return TypedResults.Ok(Response);
+            return Ok(Response);
         }
     }
 }
