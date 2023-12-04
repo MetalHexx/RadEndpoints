@@ -38,13 +38,20 @@ namespace MinimalApi.Features.Examples.Common.Services
         public async Task<Example?> InsertExample(Example example)
         {
             await Task.Delay(1);
-            var id = _examples.Keys.Max() + 1;
-            var successs = _examples.TryAdd(id, example);
 
-            if (!successs)
+            var id = _examples.Keys.Max() + 1;
+
+            var isDuplicateName = _examples.Any(record => 
+                record.Value.FirstName == example.FirstName 
+                && record.Value.LastName == example.LastName);
+
+            if(isDuplicateName)
             {
                 return null;
             }
+
+           _examples.Add(id, example);
+
             return example;
         }
 
