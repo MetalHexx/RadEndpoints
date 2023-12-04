@@ -1,6 +1,5 @@
 ﻿using MinimalApi.Features.Examples.Common;
 using MinimalApi.Features.Examples.Common.Services;
-using MinimalApi.Http;
 
 namespace MinimalApi.Features.Examples.GetExamples
 {

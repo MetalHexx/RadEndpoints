@@ -1,5 +1,4 @@
 ﻿using MinimalApi.Features.Examples.Common.Models;
-using MinimalApi.Http;
 
 namespace MinimalApi.Features.Examples.GetExamples
 {
