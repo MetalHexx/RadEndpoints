@@ -2,23 +2,24 @@
 
 namespace MinimalApi.Features.Examples.SearchExamples
 {
-    public class SearchExamplesEndpoint : EndpointWithQuery<SearchExamplesResponse>
+    public class SearchExamplesEndpoint : Endpoint<SearchExamplesRequest, SearchExamplesResponse>
     {
         private readonly IExampleService _service;
         public SearchExamplesEndpoint(IExampleService service) => _service = service;
+
         public override void Configure()
         {
-            RouteBuilder.MapGet("/examples/search", async (string? firstName, string? lastName, CancellationToken ct) => await Handle(firstName, lastName, ct))
+            Get("/examples/search")
                 .Produces<SearchExamplesResponse>(StatusCodes.Status200OK)
                 .AddSwagger(tag: Constants.ExamplesTag, desc: "Search for examples");
         }
 
-        public async Task<IResult> Handle(string? firstName, string? lastName, CancellationToken ct)
+        public async override Task<IResult> Handle(SearchExamplesRequest r, CancellationToken ct)
         {
-            Response.Examples = await _service.FindExamples(firstName, lastName);
+            Response.Examples = await _service.FindExamples(r.FirstName, r.LastName);
             Response.Message = "Examples found successfully";
 
-            if(!Response.Examples.Any())
+            if (!Response.Examples.Any())
             {
                 return NotFound("No examples found");
             }
