@@ -5,6 +5,7 @@
         Task DeleteExample(int id);
         Task<Example?> GetExample(int id);
         Task<IEnumerable<Example>> GetExamples();
+        Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
         Task<Example?> InsertExample(Example example);
         Task<Example?> UpdateExample(Example example);
     }
@@ -73,6 +74,24 @@
             {
                 _examples.Remove(id);
             }
+        }
+
+        public async Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName)
+        {
+            await Task.Delay(1);
+
+            var results = _examples.Select(kvp => kvp.Value);
+
+            if (firstName != null)
+            {
+                results = results.Where(e => e.FirstName == firstName);
+            }
+
+            if (lastName != null)
+            {
+                results = results.Where(e => e.LastName == lastName);
+            }
+            return results;
         }
     }
 }
