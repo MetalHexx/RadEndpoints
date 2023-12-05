@@ -104,4 +104,11 @@ namespace MinimalApi.Http.Endpoints
         public RouteHandlerBuilder Delete(string route) => RouteBuilder!.MapDelete(route, async (CancellationToken ct) => await Handle(ct));
         public static Ok<TResponse> Ok(TResponse response) => TypedResults.Ok(response);
     }
+
+    public abstract class EndpointWithQuery<TResponse> : Endpoint where TResponse : EndpointResponse, new()
+    {
+        public TResponse Response { get; set; } = new();
+
+        public static Ok<TResponse> Ok(TResponse response) => TypedResults.Ok(response);
+    }
 }
