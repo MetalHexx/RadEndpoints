@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MinimalApi.Features.Examples.CreateExample;
+using MinimalApi.Http.Filters;
+using System.Reflection;
 
 namespace MinimalApi.Http.Endpoints
 {
@@ -23,12 +26,14 @@ namespace MinimalApi.Http.Endpoints
 
             foreach (var endpointType in endpointTypes)
             {
-                var endpointInstance = (Endpoint)app.Services.GetRequiredService(endpointType);
+                var endpoint = (Endpoint)app.Services.GetRequiredService(endpointType);
 
-                endpointInstance.SetLogger(logger);
-                endpointInstance!.SetContext(httpContextAccessor);
-                endpointInstance.SetBuilder(app);
-                endpointInstance.Configure();
+                if (IsRequestValidatorRegistered(app.Services, endpoint)) endpoint.EnableValidation();
+
+                endpoint.SetLogger(logger);
+                endpoint.SetContext(httpContextAccessor);
+                endpoint.SetBuilder(app);
+                endpoint.Configure();
             }
         }
 
@@ -36,6 +41,47 @@ namespace MinimalApi.Http.Endpoints
             .WithTags(tag)
             .WithDescription(desc)
             .WithOpenApi();
+
+        private static Type? GetRequestType(Endpoint endpointInstance)
+        {
+            var currentType = endpointInstance.GetType();
+
+            while (currentType != null && currentType != typeof(object))
+            {
+                if (currentType.IsGenericType &&
+                    currentType.GetGenericTypeDefinition() == typeof(Endpoint<,>))
+                {
+                    var requestType = currentType.GetGenericArguments()[0];
+                    return requestType;
+                }
+
+                currentType = currentType.BaseType;
+            }
+
+            return null;
+        }
+
+        private static bool IsRequestValidatorRegistered(this IServiceProvider serviceProvider, Endpoint endpoint)
+        {
+            var requestType = GetRequestType(endpoint);
+
+            if (requestType is null) return false;
+
+            var validatorType = typeof(IValidator<>).MakeGenericType(requestType);
+
+            var services = serviceProvider.GetServices(validatorType);            
+
+            foreach (var service in services)
+            {
+                if (service is null) continue;
+
+                if (validatorType.IsAssignableFrom(service.GetType()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         private static IEnumerable<Type> GetEndpointTypes() => Assembly
             .GetExecutingAssembly()

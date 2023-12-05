@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using MinimalApi.Domain.Examples;
-using MinimalApi.Features.Examples.CreateExample;
 
 namespace MinimalApi.Http.Endpoints
 {
@@ -11,6 +9,7 @@ namespace MinimalApi.Http.Endpoints
         protected IEndpointRouteBuilder RouteBuilder { get; private set; } = null!;
         protected HttpContext HttpContext => _httpContextAccessor.HttpContext!;
         private IHttpContextAccessor _httpContextAccessor = null!;
+        protected bool HasValidator;
 
         protected static Ok Ok() => TypedResults.Ok();
         protected static ProblemHttpResult ServerError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status500InternalServerError);
@@ -20,6 +19,10 @@ namespace MinimalApi.Http.Endpoints
 
         public abstract void Configure();
 
+        public void EnableValidation()
+        {
+            HasValidator = true;
+        }
         public void SetLogger(ILogger logger)
         {
             if (Logger is not null) throw new InvalidOperationException("Logger already set.");
@@ -40,25 +43,53 @@ namespace MinimalApi.Http.Endpoints
     {
         public TResponse Response { get; set; } = new();
         public abstract Task<IResult> Handle(TRequest r, CancellationToken ct);
-        public RouteHandlerBuilder Get(string route) => RouteBuilder!
-            .MapGet(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct))
-            .AddEndpointFilter<ValidationFilter<TRequest>>();
+        public RouteHandlerBuilder Get(string route)
+        {
+            var builder = RouteBuilder!
+                .MapGet(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
 
-        public RouteHandlerBuilder Post(string route) => RouteBuilder!
-            .MapPost(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct))
-            .AddEndpointFilter<ValidationFilter<TRequest>>();
+            return TryAddEndpointFilter(builder);
+        }
 
-        public RouteHandlerBuilder Put(string route) => RouteBuilder!
-            .MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct))
-            .AddEndpointFilter<ValidationFilter<TRequest>>();
-        public RouteHandlerBuilder Patch(string route) => RouteBuilder!
-            .MapPatch(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct))
-            .AddEndpointFilter<ValidationFilter<TRequest>>();
-        public RouteHandlerBuilder Delete(string route) => RouteBuilder!
-            .MapDelete(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct))
-            .AddEndpointFilter<ValidationFilter<TRequest>>();
+        public RouteHandlerBuilder Post(string route)
+        {
+            var builder = RouteBuilder!
+                .MapPost(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
+
+            return TryAddEndpointFilter(builder);
+        }
+
+        public RouteHandlerBuilder Put(string route)
+        {
+            var builder = RouteBuilder!
+                .MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
+
+            return TryAddEndpointFilter(builder);
+        }
+
+        public RouteHandlerBuilder Patch(string route)
+        {
+            var builder = RouteBuilder!
+                .MapPatch(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
+
+            return TryAddEndpointFilter(builder);
+        }
+
+        public RouteHandlerBuilder Delete(string route)
+        {
+            var builder = RouteBuilder!
+                .MapDelete(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
+
+            return TryAddEndpointFilter(builder);
+        }
 
         public static Ok<TResponse> Ok(TResponse response) => TypedResults.Ok(response);
+
+        private RouteHandlerBuilder TryAddEndpointFilter(RouteHandlerBuilder builder)
+        {
+            if (HasValidator) builder.AddEndpointFilter<ValidationFilter<TRequest>>();
+            return builder;
+        }
     }
 
     public abstract class EndpointWithoutRequest<TResponse> : Endpoint where TResponse : EndpointResponse, new()
