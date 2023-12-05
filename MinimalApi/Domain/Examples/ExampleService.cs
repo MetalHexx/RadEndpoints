@@ -48,10 +48,11 @@
             {
                 return null;
             }
+            var newExample = example with { Id = id };
 
-            _examples.Add(id, example);
+            _examples.Add(id, newExample);
 
-            return example;
+            return newExample;
         }
 
         public async Task<Example?> UpdateExample(Example example)
@@ -61,7 +62,7 @@
             if (_examples.ContainsKey(example.Id))
             {
                 _examples[example.Id] = example;
-                return example with { };
+                return example;
             }
             return null;
         }
