@@ -20,6 +20,7 @@ namespace MinimalApi.Http.Endpoints
         public static void MapEndpoints(this WebApplication app)
         {
             var httpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
+            var env = app.Services.GetRequiredService<IWebHostEnvironment>();
             var logger = app.Services.GetRequiredService<ILogger<Endpoint>>();
 
             var endpointTypes = GetEndpointTypes();
@@ -33,6 +34,7 @@ namespace MinimalApi.Http.Endpoints
                 endpoint.SetLogger(logger);
                 endpoint.SetContext(httpContextAccessor);
                 endpoint.SetBuilder(app);
+                endpoint.SetEnvironment(env);
                 endpoint.Configure();
             }
         }

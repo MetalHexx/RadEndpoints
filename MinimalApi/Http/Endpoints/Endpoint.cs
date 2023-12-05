@@ -6,9 +6,10 @@ namespace MinimalApi.Http.Endpoints
     {
         protected ILogger Logger { get; private set; } = null!;
         protected IEndpointRouteBuilder RouteBuilder { get; private set; } = null!;
-        protected HttpContext HttpContext => _httpContextAccessor.HttpContext!;        
-        protected bool HasValidator;
+        protected HttpContext HttpContext => _httpContextAccessor.HttpContext!;
         private IHttpContextAccessor _httpContextAccessor = null!;
+        protected IWebHostEnvironment Env { get; private set; } = null!;
+        protected bool HasValidator;
 
         protected static Ok Ok() => TypedResults.Ok();
         protected static Created Created(string uri) => TypedResults.Created(uri);
@@ -38,7 +39,13 @@ namespace MinimalApi.Http.Endpoints
         {
             if (_httpContextAccessor is not null) throw new InvalidOperationException("Context accessor already set.");
             _httpContextAccessor = contextAccessor;
-        }        
+        }
+
+        public void SetEnvironment(IWebHostEnvironment env)
+        {
+            if (Env is not null) throw new InvalidOperationException("Host environment already set.");
+            Env = env;
+        }
     }
     public abstract class Endpoint<TRequest, TResponse> : Endpoint 
         where TResponse : EndpointResponse, new() 
