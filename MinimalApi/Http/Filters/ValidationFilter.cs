@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace MinimalApi.Http.Filters
+﻿namespace MinimalApi.Http.Filters
 {
     internal class ValidationFilter<TRequest> : IEndpointFilter where TRequest : class
     {
