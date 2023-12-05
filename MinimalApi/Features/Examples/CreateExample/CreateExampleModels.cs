@@ -24,6 +24,6 @@ namespace MinimalApi.Features.Examples.CreateExample
 
     public class CreateExampleResponse : EndpointResponse
     {
-        public Example? Example { get; set; } = null!;
+        public Example Example { get; set; } = null!;
     }
 }
