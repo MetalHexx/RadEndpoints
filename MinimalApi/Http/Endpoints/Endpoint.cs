@@ -2,16 +2,16 @@
 
 namespace MinimalApi.Http.Endpoints
 {
-
     public abstract class Endpoint
     {
         protected ILogger Logger { get; private set; } = null!;
         protected IEndpointRouteBuilder RouteBuilder { get; private set; } = null!;
-        protected HttpContext HttpContext => _httpContextAccessor.HttpContext!;
-        private IHttpContextAccessor _httpContextAccessor = null!;
+        protected HttpContext HttpContext => _httpContextAccessor.HttpContext!;        
         protected bool HasValidator;
+        private IHttpContextAccessor _httpContextAccessor = null!;
 
         protected static Ok Ok() => TypedResults.Ok();
+        protected static Created Created(string uri) => TypedResults.Created(uri);
         protected static ProblemHttpResult ServerError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status500InternalServerError);
         protected static ProblemHttpResult ValidationError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status400BadRequest);
         protected static ProblemHttpResult Conflict(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status409Conflict);
@@ -40,10 +40,17 @@ namespace MinimalApi.Http.Endpoints
             _httpContextAccessor = contextAccessor;
         }        
     }
-    public abstract class Endpoint<TRequest, TResponse> : Endpoint where TResponse : EndpointResponse, new() where TRequest : class, new()
+    public abstract class Endpoint<TRequest, TResponse> : Endpoint 
+        where TResponse : EndpointResponse, new() 
+        where TRequest : class
     {
         public TResponse Response { get; set; } = new();
+
         public abstract Task<IResult> Handle(TRequest r, CancellationToken ct);
+
+        public static Ok<TResponse> Ok(TResponse response) => TypedResults.Ok(response);
+        protected static Created<TResponse> Created(string uri, TResponse response) => TypedResults.Created(uri, response);
+
         public RouteHandlerBuilder Get(string route)
         {
             var builder = RouteBuilder!
@@ -83,9 +90,6 @@ namespace MinimalApi.Http.Endpoints
 
             return TryAddEndpointFilter(builder);
         }
-
-        public static Ok<TResponse> Ok(TResponse response) => TypedResults.Ok(response);
-
         private RouteHandlerBuilder TryAddEndpointFilter(RouteHandlerBuilder builder)
         {
             if (HasValidator) builder.AddEndpointFilter<ValidationFilter<TRequest>>();
@@ -97,11 +101,14 @@ namespace MinimalApi.Http.Endpoints
     {
         public TResponse Response { get; set; } = new();
         public abstract Task<IResult> Handle(CancellationToken ct);
+
+        public static Ok<TResponse> Ok(TResponse response) => TypedResults.Ok(response);
+        protected static Created<TResponse> Created(string uri, TResponse response) => TypedResults.Created(uri, response);
+
         public RouteHandlerBuilder Get(string route) => RouteBuilder!.MapGet(route, async (CancellationToken ct) => await Handle(ct));
         public RouteHandlerBuilder Post(string route) => RouteBuilder!.MapPost(route, async (CancellationToken ct) => await Handle(ct));
         public RouteHandlerBuilder Put(string route) => RouteBuilder!.MapPut(route, async (CancellationToken ct) => await Handle(ct));
         public RouteHandlerBuilder Patch(string route) => RouteBuilder!.MapPatch(route, async (CancellationToken ct) => await Handle(ct));
-        public RouteHandlerBuilder Delete(string route) => RouteBuilder!.MapDelete(route, async (CancellationToken ct) => await Handle(ct));
-        public static Ok<TResponse> Ok(TResponse response) => TypedResults.Ok(response);
+        public RouteHandlerBuilder Delete(string route) => RouteBuilder!.MapDelete(route, async (CancellationToken ct) => await Handle(ct));        
     }
 }
