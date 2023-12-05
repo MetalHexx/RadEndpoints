@@ -8,7 +8,6 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>(lifetime: ServiceL
 builder.Services.AddEndpoints();
 builder.Services.AddHttpContextAccessor();
 
-
 builder.Services.AddSingleton<IExampleService, ExampleService>();
 
 var app = builder.Build();
@@ -18,7 +17,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.MapEndpoints();
-
 app.Run();
