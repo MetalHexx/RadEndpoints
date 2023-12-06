@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.CreateExample
 {
-    public class CreateExampleEndpoint : Endpoint<CreateExampleRequest, CreateExampleResponse>
+    public class CreateExampleEndpoint : Endpoint<CreateExampleRequest, CreateExampleResponse, CreateExampleMapper>
     {
         private readonly IExampleService _service;
 
@@ -18,14 +18,17 @@ namespace MinimalApi.Features.Examples.CreateExample
 
         public override async Task<IResult> Handle(CreateExampleRequest r, CancellationToken ct)
         {
-            Response.Example = (await _service.InsertExample(r.Example))!;
-            Response.Message = "Example created successfully";
+            var entity = Map.ToEntity(r);
+            var savedEntity = await _service.InsertExample(entity);
 
-            if(Response.Example is null)
+            if (savedEntity is null)
             {
                 return Conflict("An example with the same first and last name already exists");
             }
-            return Created($"/examples/{Response.Example.Id}", Response);
+            Response = Map.FromEntity(savedEntity!);
+            Response.Message = "Example created successfully";
+            
+            return Created($"/examples/{Response.Id}", Response);
         }
     }
 }

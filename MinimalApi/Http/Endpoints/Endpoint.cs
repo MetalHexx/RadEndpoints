@@ -104,6 +104,18 @@ namespace MinimalApi.Http.Endpoints
         }
     }
 
+    public abstract class Endpoint<TRequest, TResponse, TMapper> : Endpoint<TRequest, TResponse>
+        where TResponse : EndpointResponse, new()
+        where TRequest : class
+        where TMapper : IMapper
+    {
+        protected TMapper Map { get; private set; } = default!;
+        public void SetMapper(TMapper mapper)
+        {
+            Map = mapper;
+        }
+    }
+
     public abstract class EndpointWithoutRequest<TResponse> : Endpoint where TResponse : EndpointResponse, new()
     {
         public TResponse Response { get; set; } = new();

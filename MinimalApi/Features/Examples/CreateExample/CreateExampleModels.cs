@@ -4,26 +4,26 @@ namespace MinimalApi.Features.Examples.CreateExample
 {
     public class CreateExampleRequest
     {
-        public Example Example { get; set; } = null!;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
     }
 
-    public class CreateExampleValidator : AbstractValidator<CreateExampleRequest>
+    public class CreateExampleValidator : AbstractValidator<CreateExampleRequest> 
     {
         public CreateExampleValidator()
         {
-            RuleFor(x => x.Example).SetValidator(new ExampleValidator());
+            RuleFor(x => x!.FirstName).NotEmpty()
+                .WithMessage("Cannot be empty");
 
-            RuleFor(x => x.Example).NotNull()
-                .WithMessage("Example cannot be null");
-
-            RuleFor(x => x.Example!.Id).LessThanOrEqualTo(0)
-                .WithMessage("New examples cannot have an id")
-                .When(x => x.Example is not null);
+            RuleFor(x => x!.LastName).NotEmpty()
+                .WithMessage("Cannot be empty");
         }
     }
-
+    
     public class CreateExampleResponse : EndpointResponse
     {
-        public Example Example { get; set; } = null!;
+        public int Id { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
     }
 }

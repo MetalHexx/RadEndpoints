@@ -30,6 +30,7 @@ namespace MinimalApi.Http.Endpoints
                 var endpoint = (Endpoint)app.Services.GetRequiredService(endpointType);
 
                 if (IsRequestValidatorRegistered(app.Services, endpoint)) endpoint.EnableValidation();
+                AddMapper(endpointType, endpoint);
 
                 endpoint.SetLogger(logger);
                 endpoint.SetContext(httpContextAccessor);
@@ -37,6 +38,32 @@ namespace MinimalApi.Http.Endpoints
                 endpoint.SetEnvironment(env);
                 endpoint.Configure();
             }
+        }
+
+        private static void AddMapper(Type endpointType, Endpoint endpoint)
+        {
+            if(endpointType.BaseType is null) return;
+
+            if (IsSubclassOfRawGeneric(typeof(Endpoint<,,>), endpointType))
+            {
+                var mapperType = endpointType.BaseType.GetGenericArguments()[2];
+                var mapper = Activator.CreateInstance(mapperType);
+                endpoint.GetType().GetMethod("SetMapper")?.Invoke(endpoint, [mapper]);
+            }
+        }
+
+        private static bool IsSubclassOfRawGeneric(Type generic, Type toCheck)
+        {
+            while (toCheck != null && toCheck != typeof(object))
+            {
+                var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+                if (generic == cur)
+                {
+                    return true;
+                }
+                toCheck = toCheck.BaseType;
+            }
+            return false;
         }
 
         public static RouteHandlerBuilder AddSwagger(this RouteHandlerBuilder routeBuilder, string tag, string desc) => routeBuilder
