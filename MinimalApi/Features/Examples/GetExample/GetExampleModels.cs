@@ -17,6 +17,8 @@ namespace MinimalApi.Features.Examples.GetExample
 
     public class GetExampleResponse : EndpointResponse
     {
-        public Example Example { get; set; } = null!;
+        public int Id { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
     }
 }

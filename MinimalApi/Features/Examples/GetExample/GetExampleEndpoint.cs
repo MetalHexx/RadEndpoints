@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.GetExample
 {
-    public class GetExampleEndpoint : Endpoint<GetExampleRequest, GetExampleResponse>
+    public class GetExampleEndpoint : Endpoint<GetExampleRequest, GetExampleResponse, GetExampleMapper>
     {
         private readonly IExampleService _service;
         public GetExampleEndpoint(IExampleService exampleService) => _service = exampleService;
@@ -16,13 +16,16 @@ namespace MinimalApi.Features.Examples.GetExample
 
         public async override Task<IResult> Handle(GetExampleRequest r, CancellationToken ct)
         {
-            Response.Example = (await _service.GetExample(r.Id))!;
-            Response.Message = "Example retrieved successfully";
+            var exampleEntity = await _service.GetExample(r.Id);
 
-            if(Response.Example is null)
+            if(exampleEntity is null)
             {
                 return NotFound("Example not found");
             }
+
+            Response = Map.FromEntity(exampleEntity);
+            Response.Message = "Example retrieved successfully";
+
             return Ok(Response);
         }
     }
