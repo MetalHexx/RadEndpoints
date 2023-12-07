@@ -1,4 +1,6 @@
-﻿namespace MinimalApi.Features.Examples.CreateExample
+﻿using MinimalApi.Features.Examples._common.Dtos;
+
+namespace MinimalApi.Features.Examples.CreateExample
 {
     public class CreateExampleRequest
     {
@@ -18,10 +20,5 @@
         }
     }
     
-    public class CreateExampleResponse : EndpointResponse
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-    }
+    public class CreateExampleResponse : EndpointResponse<ExampleDto> { }    
 }

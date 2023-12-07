@@ -28,7 +28,7 @@ namespace MinimalApi.Features.Examples.CreateExample
             Response = Map.FromEntity(savedEntity!);
             Response.Message = "Example created successfully";
             
-            return Created($"/examples/{Response.Id}", Response);
+            return Created($"/examples/{savedEntity.Id}", Response);
         }
     }
 }
