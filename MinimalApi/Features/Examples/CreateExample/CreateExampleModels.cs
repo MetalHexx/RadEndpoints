@@ -8,9 +8,9 @@ namespace MinimalApi.Features.Examples.CreateExample
     {
         public CreateExampleValidator()
         {
-            RuleFor(x => x).NotNull();
-            RuleFor(x => x.Id).LessThanOrEqualTo(0);
-            RuleFor(x => x).SetValidator(new ExampleValidator());
+            RuleFor(e => e).NotNull();
+            RuleFor(e => e.Id).LessThanOrEqualTo(0);
+            RuleFor(e => e).SetValidator(new ExampleValidator());
         }
     }
     public class CreateExampleResponse : EndpointResponse<ExampleDto> { }    

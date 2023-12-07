@@ -5,9 +5,9 @@ namespace MinimalApi.Features.Examples.SearchExamples
 {
     public class SearchExamplesMapper : Mapper<SearchExamplesResponse, IEnumerable<Example>>
     {
-        public override SearchExamplesResponse FromEntity(IEnumerable<Example> entity) => new()
+        public override SearchExamplesResponse FromEntity(IEnumerable<Example> e) => new()
         {
-            Data = entity.Select(e => new ExampleDto
+            Data = e.Select(e => new ExampleDto
             {
                 Id = e.Id,
                 FirstName = e.FirstName,

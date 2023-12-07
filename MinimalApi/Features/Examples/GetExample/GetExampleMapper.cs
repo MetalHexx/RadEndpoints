@@ -4,15 +4,15 @@ namespace MinimalApi.Features.Examples.GetExample
 {
     public class GetExampleMapper : Mapper<GetExampleRequest, GetExampleResponse, Example>
     {
-        public override GetExampleResponse FromEntity(Example entity) => new()
+        public override GetExampleResponse FromEntity(Example e) => new()
         {
             Data = new()
             {
-                Id = entity.Id,
-                FirstName = entity.FirstName,
-                LastName = entity.LastName
+                Id = e.Id,
+                FirstName = e.FirstName,
+                LastName = e.LastName
             }
         };
-        public override Example ToEntity(GetExampleRequest request) => throw new NotImplementedException();
+        public override Example ToEntity(GetExampleRequest r) => throw new NotImplementedException();
     }
 }
