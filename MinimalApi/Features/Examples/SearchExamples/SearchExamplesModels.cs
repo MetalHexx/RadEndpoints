@@ -1,4 +1,4 @@
-﻿using MinimalApi.Domain.Examples;
+﻿using MinimalApi.Features.Examples._common.Dtos;
 
 namespace MinimalApi.Features.Examples.SearchExamples
 {
@@ -24,8 +24,5 @@ namespace MinimalApi.Features.Examples.SearchExamples
         }
     }
 
-    public class SearchExamplesResponse : EndpointResponse
-    {
-        public IEnumerable<Example> Examples { get; set; } = null!;
-    }
+    public class SearchExamplesResponse : EndpointResponse<IEnumerable<ExampleDto>> { }
 }

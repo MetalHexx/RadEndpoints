@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.SearchExamples
 {
-    public class SearchExamplesEndpoint : Endpoint<SearchExamplesRequest, SearchExamplesResponse>
+    public class SearchExamplesEndpoint : Endpoint<SearchExamplesRequest, SearchExamplesResponse, SearchExamplesMapper>
     {
         private readonly IExampleService _service;
         public SearchExamplesEndpoint(IExampleService service) => _service = service;
@@ -16,13 +16,13 @@ namespace MinimalApi.Features.Examples.SearchExamples
 
         public async override Task<IResult> Handle(SearchExamplesRequest r, CancellationToken ct)
         {
-            Response.Examples = await _service.FindExamples(r.FirstName, r.LastName);
-            Response.Message = "Examples found successfully";
-
-            if (!Response.Examples.Any())
-            {
-                return NotFound("No examples found");
-            }
+            var examples = await _service.FindExamples(r.FirstName, r.LastName);
+            
+            Response = Map.FromEntity(examples);
+            Response.Message = examples.Any()
+                ? "Examples found successfully"
+                : "No examples found";
+            
             return Ok(Response);
         }
     }
