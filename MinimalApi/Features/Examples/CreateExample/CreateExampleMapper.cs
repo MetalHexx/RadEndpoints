@@ -1,5 +1,4 @@
 ﻿using MinimalApi.Domain.Examples;
-using static CreateExampleValidator;
 
 namespace MinimalApi.Features.Examples.CreateExample
 {
