@@ -1,4 +1,4 @@
-﻿namespace MinimalApi.Features.Examples._common.Dtos
+﻿namespace MinimalApi.Features.Examples._common
 {
     public class ExampleDto
     {

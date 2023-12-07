@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.UpdateExample
 {
-    public class UpdateExampleEndpoint : Endpoint<UpdateExampleRequest, UpdateExampleResponse>
+    public class UpdateExampleEndpoint : Endpoint<UpdateExampleRequest, UpdateExampleResponse, UpdateExampleMapper>
     {
         private readonly IExampleService _service;
         public UpdateExampleEndpoint(IExampleService service) => _service = service;
@@ -17,13 +17,15 @@ namespace MinimalApi.Features.Examples.UpdateExample
 
         public async override Task<IResult> Handle(UpdateExampleRequest r, CancellationToken ct)
         {
-            Response.Example = (await _service.UpdateExample(r.Example))!;
-            Response.Message = "Example updated successfully";
+            var example = await _service.UpdateExample(Map.ToEntity(r));
 
-            if(Response.Example is null)
+            if (example is null)
             {
                 return NotFound("Could not find and example with the id provided");
             }
+            Response = Map.FromEntity(example);
+            Response.Message = "Example updated successfully";
+            
             return Ok(Response);
         }
     }

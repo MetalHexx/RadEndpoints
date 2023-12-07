@@ -1,5 +1,5 @@
 ﻿using MinimalApi.Domain.Examples;
-using MinimalApi.Features.Examples._common.Dtos;
+using MinimalApi.Features.Examples._common;
 
 namespace MinimalApi.Features.Examples.GetExamples
 {

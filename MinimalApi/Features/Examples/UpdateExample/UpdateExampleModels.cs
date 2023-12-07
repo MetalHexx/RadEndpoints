@@ -1,23 +1,17 @@
-﻿using MinimalApi.Domain.Examples;
+﻿using MinimalApi.Features.Examples._common;
 
 namespace MinimalApi.Features.Examples.UpdateExample
 {
-    public class UpdateExampleRequest
-    {
-        public Example Example { get; set; } = null!;
-    }
+    public class UpdateExampleRequest : ExampleDto { }
 
     public class UpdateExampleValidator : AbstractValidator<UpdateExampleRequest>
     {
         public UpdateExampleValidator()
         {
-            RuleFor(x => x.Example).NotNull();
-            RuleFor(x => x.Example.Id).GreaterThan(0);
-            RuleFor(x => x.Example).SetValidator(new ExampleValidator());
+            RuleFor(x => x).NotNull();
+            RuleFor(x => x.Id).GreaterThan(0);
+            RuleFor(x => x).SetValidator(new ExampleValidator());
         }
     }
-    public class UpdateExampleResponse : EndpointResponse
-    {
-        public Example Example { get; set; } = null!;
-    }
+    public class UpdateExampleResponse : EndpointResponse<ExampleDto> { }
 }
