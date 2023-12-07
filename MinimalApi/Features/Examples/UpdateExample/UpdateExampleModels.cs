@@ -8,9 +8,10 @@ namespace MinimalApi.Features.Examples.UpdateExample
     {
         public UpdateExampleValidator()
         {
-            RuleFor(x => x).NotNull();
-            RuleFor(x => x.Id).GreaterThan(0);
-            RuleFor(x => x).SetValidator(new ExampleValidator());
+            RuleFor(e => e).NotNull();
+            RuleFor(e => e.Id).GreaterThan(0);
+            RuleFor(e => e.FirstName).NotEmpty();
+            RuleFor(e => e.LastName).NotEmpty();
         }
     }
     public class UpdateExampleResponse : EndpointResponse<ExampleDto> { }

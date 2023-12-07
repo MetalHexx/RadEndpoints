@@ -12,12 +12,12 @@ namespace MinimalApi.Features.Examples.SearchExamples
     {
         public SearchExamplesRequestValidator()
         {
-            RuleFor(r => r.FirstName)
+            RuleFor(e => e.FirstName)
                 .NotEmpty()
                 .When(r => string.IsNullOrEmpty(r.LastName))
                 .WithMessage("At least one of the properties (FirstName or LastName) is required.");
 
-            RuleFor(r => r.LastName)
+            RuleFor(e => e.LastName)
                 .NotEmpty()
                 .When(r => string.IsNullOrEmpty(r.FirstName))
                 .WithMessage("At least one of the properties (FirstName or LastName) is required.");

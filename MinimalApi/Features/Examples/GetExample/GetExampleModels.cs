@@ -11,7 +11,7 @@ namespace MinimalApi.Features.Examples.GetExample
     {
         public GetExampleRequestValidator()
         {
-            RuleFor(r => r.Id).GreaterThan(0);
+            RuleFor(e => e.Id).GreaterThan(0);
         }
     }
 

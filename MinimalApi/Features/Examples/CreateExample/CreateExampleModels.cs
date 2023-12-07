@@ -2,15 +2,19 @@
 
 namespace MinimalApi.Features.Examples.CreateExample
 {
-    public class CreateExampleRequest : ExampleDto { }
+    public class CreateExampleRequest 
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+    }
 
     public class CreateExampleValidator : AbstractValidator<CreateExampleRequest> 
     {
         public CreateExampleValidator()
         {
             RuleFor(e => e).NotNull();
-            RuleFor(e => e.Id).LessThanOrEqualTo(0);
-            RuleFor(e => e).SetValidator(new ExampleValidator());
+            RuleFor(e => e.FirstName).NotEmpty();
+            RuleFor(e => e.LastName).NotEmpty();
         }
     }
     public class CreateExampleResponse : EndpointResponse<ExampleDto> { }    
