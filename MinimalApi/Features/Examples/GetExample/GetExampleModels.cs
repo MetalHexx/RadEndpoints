@@ -1,4 +1,4 @@
-﻿using MinimalApi.Domain.Examples;
+﻿using MinimalApi.Features.Examples._common.Dtos;
 
 namespace MinimalApi.Features.Examples.GetExample
 {
@@ -15,10 +15,5 @@ namespace MinimalApi.Features.Examples.GetExample
         }
     }
 
-    public class GetExampleResponse : EndpointResponse
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-    }
+    public class GetExampleResponse : EndpointResponse<ExampleDto> { }
 }
