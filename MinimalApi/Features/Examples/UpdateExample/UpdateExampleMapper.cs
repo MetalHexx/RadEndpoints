@@ -1,5 +1,4 @@
 ﻿using MinimalApi.Domain.Examples;
-using MinimalApi.Features.Examples.CreateExample;
 
 namespace MinimalApi.Features.Examples.UpdateExample
 {
