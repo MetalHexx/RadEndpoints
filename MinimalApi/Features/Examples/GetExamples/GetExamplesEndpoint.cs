@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.GetExamples
 {
-    public class GetExamplesEndpoint : EndpointWithoutRequest<GetExamplesResponse>
+    public class GetExamplesEndpoint : EndpointWithoutRequest<GetExamplesResponse, GetExamplesMapper>
     {
         private readonly IExampleService _service;
         public GetExamplesEndpoint(IExampleService service) => _service = service;
@@ -16,11 +16,9 @@ namespace MinimalApi.Features.Examples.GetExamples
 
         public override async Task<IResult> Handle(CancellationToken c)
         {
-            Logger.Log(LogLevel.Information, "This is a test log message.");
-
-            Response.Host = HttpContext?.Request.Host.ToString() ?? "";
-            Response.Example = await _service.GetExamples();
-            Response.Message = "Successfully retrieved examples.";
+            Logger.Log(LogLevel.Information, "This is an example log message.");
+            var examples = await _service.GetExamples();
+            Response = Map.FromEntity(examples);
 
             return Ok(Response);
         }

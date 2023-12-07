@@ -1,10 +1,10 @@
 ﻿using MinimalApi.Domain.Examples;
+using MinimalApi.Features.Examples._common.Dtos;
 
 namespace MinimalApi.Features.Examples.GetExamples
 {
     public class GetExamplesResponse : EndpointResponse
     {
-        public string Host { get; set; } = string.Empty;
-        public IEnumerable<Example> Example { get; set; } = new List<Example>();
+        public IEnumerable<ExampleDto> Examples { get; set; } = new List<ExampleDto>();
     }
 }

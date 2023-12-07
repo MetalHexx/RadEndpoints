@@ -42,13 +42,21 @@ namespace MinimalApi.Http.Endpoints
 
         private static void AddMapper(Type endpointType, Endpoint endpoint)
         {
-            if(endpointType.BaseType is null) return;
+            if (endpointType.BaseType is null) return;
 
-            if (IsSubclassOfRawGeneric(typeof(Endpoint<,,>), endpointType))
+            if (!IsSubclassOfRawGeneric(typeof(Endpoint<,,>), endpointType) && !IsSubclassOfRawGeneric(typeof(EndpointWithoutRequest<,>), endpointType)) return;
+            
+            var genericArguments = endpointType.BaseType.GetGenericArguments();
+
+            foreach (var arg in genericArguments)
             {
-                var mapperType = endpointType.BaseType.GetGenericArguments()[2];
-                var mapper = Activator.CreateInstance(mapperType);
-                endpoint.GetType().GetMethod("SetMapper")?.Invoke(endpoint, [mapper]);
+                if (typeof(IMapper).IsAssignableFrom(arg))
+                {
+                    var mapper = Activator.CreateInstance(arg);
+                    var setMapperMethod = endpoint.GetType().GetMethod("SetMapper", new[] { arg });
+                    setMapperMethod?.Invoke(endpoint, new[] { mapper });
+                    break;
+                }
             }
         }
 

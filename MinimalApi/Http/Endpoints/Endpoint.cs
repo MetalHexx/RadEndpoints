@@ -130,4 +130,17 @@ namespace MinimalApi.Http.Endpoints
         public RouteHandlerBuilder Patch(string route) => RouteBuilder!.MapPatch(route, async (CancellationToken ct) => await Handle(ct));
         public RouteHandlerBuilder Delete(string route) => RouteBuilder!.MapDelete(route, async (CancellationToken ct) => await Handle(ct));        
     }
+
+    public abstract class EndpointWithoutRequest<TResponse, TMapper> : EndpointWithoutRequest<TResponse>
+        where TResponse : EndpointResponse, new()
+        where TMapper : IMapper
+    {
+        protected TMapper Map { get; private set; } = default!;
+        public void SetMapper(TMapper mapper)
+        {
+            Map = mapper;
+        }
+    }
+
+
 }
