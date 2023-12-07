@@ -1,6 +1,4 @@
-﻿using MinimalApi.Domain.Examples;
-
-namespace MinimalApi.Features.Examples.CreateExample
+﻿namespace MinimalApi.Features.Examples.CreateExample
 {
     public class CreateExampleRequest
     {
