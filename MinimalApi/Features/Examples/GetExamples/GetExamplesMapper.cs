@@ -7,7 +7,7 @@ namespace MinimalApi.Features.Examples.GetExamples
     {
         public override GetExamplesResponse FromEntity(IEnumerable<Example> entity) => new()
         {
-            Examples = entity.Select(e => new ExampleDto
+            Data = entity.Select(e => new ExampleDto
             {
                 Id = e.Id,
                 FirstName = e.FirstName,
