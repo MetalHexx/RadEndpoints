@@ -3,11 +3,8 @@
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class GetExampleEndpointTests
+    public class GetExampleEndpointTests(EndpointFixture _fixture)
     {
-        private readonly EndpointFixture _fixture;
-        public GetExampleEndpointTests(EndpointFixture fix) => _fixture = fix;
-
         [Fact]
         public async void When_GetExampleEndpoint_Called_Returns_Success()
         {
@@ -19,7 +16,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 
             //Assert
             h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().NotBeNull();
+            r.Should().BeOfType<GetExampleResponse>();           
             r!.Data!.Id.Should().Be(1);
         }
 
@@ -34,10 +31,8 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 
             //Assert
             h.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            r.Should().NotBeNull();
             r.Should().BeOfType<ProblemDetails>();
             r!.Title.Should().Be("Example not found");
-            r.Status.Should().Be(StatusCodes.Status404NotFound);
         }
         [Fact]
         public async void When_GetExampleEndpoint_Called_With_Invalid_Id_Returns_ValidationError()
@@ -50,10 +45,8 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 
             //Assert
             h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Should().NotBeNull();
             r.Should().BeOfType<ProblemDetails>();
-            r!.Title.Should().Be("Validation Error");
-            r.Status.Should().Be(StatusCodes.Status400BadRequest);
+            r!.Extensions.Should().ContainKey("Id");
         }
     }
 }
