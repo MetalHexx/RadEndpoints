@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace MinimalApi.Http.Endpoints
 {
-    public static class EndpointExtensions
+    public static class RadEndpointExtensions
     {
         public static void AddEndpoints(this IServiceCollection services)
         {
