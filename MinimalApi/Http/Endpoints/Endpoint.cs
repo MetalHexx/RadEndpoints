@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using System.Collections.Concurrent;
 
 namespace MinimalApi.Http.Endpoints
 {
     public abstract class Endpoint
-    {
+    {   
         protected ILogger Logger { get; private set; } = null!;
         protected IEndpointRouteBuilder RouteBuilder { get; private set; } = null!;
         protected HttpContext HttpContext => _httpContextAccessor.HttpContext!;
@@ -20,6 +21,13 @@ namespace MinimalApi.Http.Endpoints
         protected static ProblemHttpResult Forbidden(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status403Forbidden);
 
         public abstract void Configure();
+
+        private static readonly ConcurrentDictionary<Type, string> _routeCache = new();
+        public void SetRoute(string route) => _routeCache.TryAdd(GetType(), route);
+
+        public static string GetRoute<TEndpoint>() => _routeCache.TryGetValue(typeof(TEndpoint), out var route)
+            ? route
+            : throw new InvalidOperationException($"Route not found for endpoint {typeof(TEndpoint).Name}.");
 
         public void EnableValidation()
         {
@@ -60,41 +68,36 @@ namespace MinimalApi.Http.Endpoints
 
         public RouteHandlerBuilder Get(string route)
         {
-            var builder = RouteBuilder!
-                .MapGet(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
-
+            SetRoute(route);
+            var builder = RouteBuilder!.MapGet(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));            
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Post(string route)
         {
-            var builder = RouteBuilder!
-                .MapPost(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
-
+            SetRoute(route);
+            var builder = RouteBuilder!.MapPost(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));            
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Put(string route)
         {
-            var builder = RouteBuilder!
-                .MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
-
+            SetRoute(route);
+            var builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));            
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Patch(string route)
         {
-            var builder = RouteBuilder!
-                .MapPatch(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
-
+            var builder = RouteBuilder!.MapPatch(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
+            SetRoute(route);
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Delete(string route)
         {
-            var builder = RouteBuilder!
-                .MapDelete(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
-
+            var builder = RouteBuilder!.MapDelete(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
+            SetRoute(route);
             return TryAddEndpointFilter(builder);
         }
         private RouteHandlerBuilder TryAddEndpointFilter(RouteHandlerBuilder builder)
@@ -124,11 +127,31 @@ namespace MinimalApi.Http.Endpoints
         public static Ok<TResponse> Ok(TResponse response) => TypedResults.Ok(response);
         protected static Created<TResponse> Created(string uri, TResponse response) => TypedResults.Created(uri, response);
 
-        public RouteHandlerBuilder Get(string route) => RouteBuilder!.MapGet(route, async (CancellationToken ct) => await Handle(ct));
-        public RouteHandlerBuilder Post(string route) => RouteBuilder!.MapPost(route, async (CancellationToken ct) => await Handle(ct));
-        public RouteHandlerBuilder Put(string route) => RouteBuilder!.MapPut(route, async (CancellationToken ct) => await Handle(ct));
-        public RouteHandlerBuilder Patch(string route) => RouteBuilder!.MapPatch(route, async (CancellationToken ct) => await Handle(ct));
-        public RouteHandlerBuilder Delete(string route) => RouteBuilder!.MapDelete(route, async (CancellationToken ct) => await Handle(ct));        
+        public RouteHandlerBuilder Get(string route)
+        {
+            SetRoute(route);
+            return RouteBuilder!.MapGet(route, async (CancellationToken ct) => await Handle(ct));
+        }
+        public RouteHandlerBuilder Post(string route)
+        {
+            SetRoute(route);
+            return RouteBuilder!.MapPost(route, async (CancellationToken ct) => await Handle(ct));
+        }
+        public RouteHandlerBuilder Put(string route)
+        {
+            SetRoute(route);
+            return RouteBuilder!.MapPut(route, async (CancellationToken ct) => await Handle(ct));
+        }
+        public RouteHandlerBuilder Patch(string route)
+        {
+            SetRoute(route);
+            return RouteBuilder!.MapPatch(route, async (CancellationToken ct) => await Handle(ct));
+        }
+        public RouteHandlerBuilder Delete(string route)
+        {
+            SetRoute(route);
+            return RouteBuilder!.MapDelete(route, async (CancellationToken ct) => await Handle(ct));
+        }
     }
 
     public abstract class EndpointWithoutRequest<TResponse, TMapper> : EndpointWithoutRequest<TResponse>
