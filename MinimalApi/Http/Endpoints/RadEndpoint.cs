@@ -112,7 +112,7 @@ namespace MinimalApi.Http.Endpoints
     public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>
         where TResponse : RadResponse, new()
         where TRequest : class
-        where TMapper : IMapper
+        where TMapper : IRadMapper
     {
         protected TMapper Map { get; private set; } = default!;
         public void SetMapper(TMapper mapper)
@@ -158,7 +158,7 @@ namespace MinimalApi.Http.Endpoints
 
     public abstract class RadEndpointWithoutRequest<TResponse, TMapper> : RadEndpointWithoutRequest<TResponse>
         where TResponse : RadResponse, new()
-        where TMapper : IMapper
+        where TMapper : IRadMapper
     {
         protected TMapper Map { get; private set; } = default!;
         public void SetMapper(TMapper mapper)

@@ -1,13 +1,13 @@
 ﻿namespace MinimalApi.Http.Endpoints
 {
-    public interface IMapper { };
-    public abstract class RadMapper<TRequest, TResponse, TEntity>: IMapper where TResponse: RadResponse
+    public interface IRadMapper { };
+    public abstract class RadMapper<TRequest, TResponse, TEntity>: IRadMapper where TResponse: RadResponse
     {
         public abstract TEntity ToEntity(TRequest r);
         public abstract TResponse FromEntity(TEntity e);
     }
 
-    public abstract class Mapper<TResponse, TEntity>: IMapper where TResponse: RadResponse
+    public abstract class Mapper<TResponse, TEntity>: IRadMapper where TResponse: RadResponse
     {
         public abstract TResponse FromEntity(TEntity e);
     }

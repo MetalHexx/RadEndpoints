@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.CustomExamples.CustomPut
 {
-    public interface ICustomPutMapper : IMapper
+    public interface ICustomPutMapper : IRadMapper
     {
         CustomPutResponse FromEntity(Example entity);
         Example ToEntity(CustomPutRequest request, int id);

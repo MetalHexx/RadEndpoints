@@ -50,7 +50,7 @@ namespace MinimalApi.Http.Endpoints
 
             foreach (var arg in genericArguments)
             {
-                if (typeof(IMapper).IsAssignableFrom(arg))
+                if (typeof(IRadMapper).IsAssignableFrom(arg))
                 {
                     var mapper = Activator.CreateInstance(arg);
                     var setMapperMethod = endpoint.GetType().GetMethod("SetMapper", new[] { arg });
