@@ -1,6 +1,6 @@
 ﻿namespace MinimalApi.Features.Examples.DeleteExample
 {
-    public class DeleteExampleResponse : EndpointResponse { }
+    public class DeleteExampleResponse : RadResponse { }
 
     public class DeleteExampleRequest
     {

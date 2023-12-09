@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.DeleteExample
 {
-    public class DeleteExampleEndpoint : Endpoint<DeleteExampleRequest, DeleteExampleResponse>
+    public class DeleteExampleEndpoint : RadEndpoint<DeleteExampleRequest, DeleteExampleResponse>
     {
         private readonly IExampleService _service;
 

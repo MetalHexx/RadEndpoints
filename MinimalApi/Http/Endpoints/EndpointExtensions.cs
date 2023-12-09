@@ -21,13 +21,13 @@ namespace MinimalApi.Http.Endpoints
         {
             var httpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
             var env = app.Services.GetRequiredService<IWebHostEnvironment>();
-            var logger = app.Services.GetRequiredService<ILogger<Endpoint>>();
+            var logger = app.Services.GetRequiredService<ILogger<RadEndpoint>>();
 
             var endpointTypes = GetEndpointTypes();
 
             foreach (var endpointType in endpointTypes)
             {
-                var endpoint = (Endpoint)app.Services.GetRequiredService(endpointType);
+                var endpoint = (RadEndpoint)app.Services.GetRequiredService(endpointType);
 
                 if (IsRequestValidatorRegistered(app.Services, endpoint)) endpoint.EnableValidation();
                 AddMapper(endpointType, endpoint);
@@ -40,11 +40,11 @@ namespace MinimalApi.Http.Endpoints
             }
         }
 
-        private static void AddMapper(Type endpointType, Endpoint endpoint)
+        private static void AddMapper(Type endpointType, RadEndpoint endpoint)
         {
             if (endpointType.BaseType is null) return;
 
-            if (!IsSubclassOfRawGeneric(typeof(Endpoint<,,>), endpointType) && !IsSubclassOfRawGeneric(typeof(EndpointWithoutRequest<,>), endpointType)) return;
+            if (!IsSubclassOfRawGeneric(typeof(RadEndpoint<,,>), endpointType) && !IsSubclassOfRawGeneric(typeof(RadEndpointWithoutRequest<,>), endpointType)) return;
             
             var genericArguments = endpointType.BaseType.GetGenericArguments();
 
@@ -79,14 +79,14 @@ namespace MinimalApi.Http.Endpoints
             .WithDescription(desc)
             .WithOpenApi();
 
-        private static Type? GetRequestType(Endpoint endpointInstance)
+        private static Type? GetRequestType(RadEndpoint endpointInstance)
         {
             var currentType = endpointInstance.GetType();
 
             while (currentType != null && currentType != typeof(object))
             {
                 if (currentType.IsGenericType &&
-                    currentType.GetGenericTypeDefinition() == typeof(Endpoint<,>))
+                    currentType.GetGenericTypeDefinition() == typeof(RadEndpoint<,>))
                 {
                     var requestType = currentType.GetGenericArguments()[0];
                     return requestType;
@@ -98,7 +98,7 @@ namespace MinimalApi.Http.Endpoints
             return null;
         }
 
-        private static bool IsRequestValidatorRegistered(this IServiceProvider serviceProvider, Endpoint endpoint)
+        private static bool IsRequestValidatorRegistered(this IServiceProvider serviceProvider, RadEndpoint endpoint)
         {
             var requestType = GetRequestType(endpoint);
 
@@ -123,6 +123,6 @@ namespace MinimalApi.Http.Endpoints
         private static IEnumerable<Type> GetEndpointTypes() => Assembly
             .GetExecutingAssembly()
             .GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(Endpoint)));
+            .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(RadEndpoint)));
     }
 }

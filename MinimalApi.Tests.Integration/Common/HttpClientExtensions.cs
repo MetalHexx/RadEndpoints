@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Identity.Data;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using Endpoint = MinimalApi.Http.Endpoints.Endpoint;
+using RadEndpoint = MinimalApi.Http.Endpoints.RadEndpoint;
 
 namespace MinimalApi.Tests.Integration.Common
 {
     public static class HttpClientExtensions
     {
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> GetAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
-            where TEndpoint : Endpoint
+            where TEndpoint : RadEndpoint
         {
             var route = RouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
             var httpResponse = await client.GetAsync(route);
@@ -18,16 +18,16 @@ namespace MinimalApi.Tests.Integration.Common
         }
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> GetAsync<TEndpoint, TResponse>(this HttpClient client)
-            where TEndpoint : Endpoint
+            where TEndpoint : RadEndpoint
         {
-            var route = Endpoint.GetRoute<TEndpoint>();
+            var route = RadEndpoint.GetRoute<TEndpoint>();
             var httpResponse = await client.GetAsync(route);
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
         }
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> DeleteAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
-            where TEndpoint : Endpoint
+            where TEndpoint : RadEndpoint
         {
             var route = RouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
             var httpResponse = await client.DeleteAsync(route);
@@ -36,17 +36,17 @@ namespace MinimalApi.Tests.Integration.Common
         }
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PostAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
-            where TEndpoint : Endpoint
+            where TEndpoint : RadEndpoint
         {
-            var route = Endpoint.GetRoute<TEndpoint>();
+            var route = RadEndpoint.GetRoute<TEndpoint>();
             var httpResponse = await client.PostAsJsonAsync(route, request);            
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
         }
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PutAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
-            where TEndpoint : Endpoint
+            where TEndpoint : RadEndpoint
         {
-            var route = Endpoint.GetRoute<TEndpoint>();
+            var route = RadEndpoint.GetRoute<TEndpoint>();
             var httpResponse = await client.PutAsJsonAsync(route, request);
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());

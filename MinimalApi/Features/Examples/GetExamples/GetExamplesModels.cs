@@ -2,5 +2,5 @@
 
 namespace MinimalApi.Features.Examples.GetExamples
 {
-    public class GetExamplesResponse : EndpointResponse<IEnumerable<ExampleDto>> { }
+    public class GetExamplesResponse : RadResponse<IEnumerable<ExampleDto>> { }
 }

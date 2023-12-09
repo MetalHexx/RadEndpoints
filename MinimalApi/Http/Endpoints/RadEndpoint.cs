@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 namespace MinimalApi.Http.Endpoints
 {
-    public abstract class Endpoint
+    public abstract class RadEndpoint
     {   
         protected ILogger Logger { get; private set; } = null!;
         protected IEndpointRouteBuilder RouteBuilder { get; private set; } = null!;
@@ -55,8 +55,8 @@ namespace MinimalApi.Http.Endpoints
             Env = env;
         }
     }
-    public abstract class Endpoint<TRequest, TResponse> : Endpoint 
-        where TResponse : EndpointResponse, new() 
+    public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint 
+        where TResponse : RadResponse, new() 
         where TRequest : class
     {
         public TResponse Response { get; set; } = new();
@@ -107,8 +107,8 @@ namespace MinimalApi.Http.Endpoints
         }
     }
 
-    public abstract class Endpoint<TRequest, TResponse, TMapper> : Endpoint<TRequest, TResponse>
-        where TResponse : EndpointResponse, new()
+    public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>
+        where TResponse : RadResponse, new()
         where TRequest : class
         where TMapper : IMapper
     {
@@ -119,7 +119,7 @@ namespace MinimalApi.Http.Endpoints
         }
     }
 
-    public abstract class EndpointWithoutRequest<TResponse> : Endpoint where TResponse : EndpointResponse, new()
+    public abstract class RadEndpointWithoutRequest<TResponse> : RadEndpoint where TResponse : RadResponse, new()
     {
         public TResponse Response { get; set; } = new();
         public abstract Task<IResult> Handle(CancellationToken ct);
@@ -154,8 +154,8 @@ namespace MinimalApi.Http.Endpoints
         }
     }
 
-    public abstract class EndpointWithoutRequest<TResponse, TMapper> : EndpointWithoutRequest<TResponse>
-        where TResponse : EndpointResponse, new()
+    public abstract class RadEndpointWithoutRequest<TResponse, TMapper> : RadEndpointWithoutRequest<TResponse>
+        where TResponse : RadResponse, new()
         where TMapper : IMapper
     {
         protected TMapper Map { get; private set; } = default!;
@@ -164,6 +164,4 @@ namespace MinimalApi.Http.Endpoints
             Map = mapper;
         }
     }
-
-
 }

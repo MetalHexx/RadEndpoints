@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.GetExample
 {
-    public class GetExampleEndpoint : Endpoint<GetExampleRequest, GetExampleResponse, GetExampleMapper>
+    public class GetExampleEndpoint : RadEndpoint<GetExampleRequest, GetExampleResponse, GetExampleMapper>
     {
         private readonly IExampleService _service;
         public GetExampleEndpoint(IExampleService exampleService) => _service = exampleService;

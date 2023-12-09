@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.SearchExamples
 {
-    public class SearchExamplesEndpoint : Endpoint<SearchExamplesRequest, SearchExamplesResponse, SearchExamplesMapper>
+    public class SearchExamplesEndpoint : RadEndpoint<SearchExamplesRequest, SearchExamplesResponse, SearchExamplesMapper>
     {
         private readonly IExampleService _service;
         public SearchExamplesEndpoint(IExampleService service) => _service = service;

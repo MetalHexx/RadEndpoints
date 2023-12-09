@@ -24,5 +24,5 @@ namespace MinimalApi.Features.Examples.SearchExamples
         }
     }
 
-    public class SearchExamplesResponse : EndpointResponse<IEnumerable<ExampleDto>> { }
+    public class SearchExamplesResponse : RadResponse<IEnumerable<ExampleDto>> { }
 }

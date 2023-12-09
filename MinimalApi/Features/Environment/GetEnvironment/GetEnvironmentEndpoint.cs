@@ -1,6 +1,6 @@
 ﻿namespace MinimalApi.Features.Environment.GetEnvironment
 {
-    public class GetEnvironmentEndpoint : EndpointWithoutRequest<GetEnvironmentResponse>
+    public class GetEnvironmentEndpoint : RadEndpointWithoutRequest<GetEnvironmentResponse>
     {
         public override void Configure()
         {

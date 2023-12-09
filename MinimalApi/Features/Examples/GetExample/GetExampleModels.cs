@@ -15,5 +15,5 @@ namespace MinimalApi.Features.Examples.GetExample
         }
     }
 
-    public class GetExampleResponse : EndpointResponse<ExampleDto> { }
+    public class GetExampleResponse : RadResponse<ExampleDto> { }
 }

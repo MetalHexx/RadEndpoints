@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.UpdateExample
 {
-    public class UpdateExampleEndpoint : Endpoint<UpdateExampleRequest, UpdateExampleResponse, UpdateExampleMapper>
+    public class UpdateExampleEndpoint : RadEndpoint<UpdateExampleRequest, UpdateExampleResponse, UpdateExampleMapper>
     {
         private readonly IExampleService _service;
         public UpdateExampleEndpoint(IExampleService service) => _service = service;

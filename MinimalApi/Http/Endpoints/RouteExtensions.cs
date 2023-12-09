@@ -1,16 +1,16 @@
 ﻿using System.Collections.Concurrent;
 using System.Net;
 using System.Reflection;
-using Endpoint = MinimalApi.Http.Endpoints.Endpoint;
+using RadEndpoint = MinimalApi.Http.Endpoints.RadEndpoint;
 
 namespace MinimalApi.Tests.Integration.Common
 {
     public static class RouteExtensions
     {
         public static string GetAndMapRoute<TEndpoint, TRequest>(TRequest request)
-            where TEndpoint : Endpoint
+            where TEndpoint : RadEndpoint
         {
-            var route = Endpoint.GetRoute<TEndpoint>();
+            var route = RadEndpoint.GetRoute<TEndpoint>();
             route = route.MapRoute(request!);
             return route;
         }

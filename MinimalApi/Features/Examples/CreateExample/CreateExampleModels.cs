@@ -17,5 +17,5 @@ namespace MinimalApi.Features.Examples.CreateExample
             RuleFor(e => e.LastName).NotEmpty();
         }
     }
-    public class CreateExampleResponse : EndpointResponse<ExampleDto> { }    
+    public class CreateExampleResponse : RadResponse<ExampleDto> { }    
 }
