@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.UpdateExample
 {
-    public class UpdateExampleMapper : Mapper<UpdateExampleRequest, UpdateExampleResponse, Example>
+    public class UpdateExampleMapper : RadMapper<UpdateExampleRequest, UpdateExampleResponse, Example>
     {
         public override UpdateExampleResponse FromEntity(Example entity) => new()
         {

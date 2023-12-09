@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.GetExample
 {
-    public class GetExampleMapper : Mapper<GetExampleRequest, GetExampleResponse, Example>
+    public class GetExampleMapper : RadMapper<GetExampleRequest, GetExampleResponse, Example>
     {
         public override GetExampleResponse FromEntity(Example e) => new()
         {

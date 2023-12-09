@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.CreateExample
 {
-    public class CreateExampleMapper : Mapper<CreateExampleRequest, CreateExampleResponse, Example>
+    public class CreateExampleMapper : RadMapper<CreateExampleRequest, CreateExampleResponse, Example>
     {
         public override CreateExampleResponse FromEntity(Example e) => new()
         {
