@@ -13,7 +13,9 @@ namespace MinimalApi.Http.Endpoints
         protected bool HasValidator;
 
         protected static Ok Ok() => TypedResults.Ok();
+        protected static Ok<TResponse> Ok<TResponse>(TResponse responseData) => TypedResults.Ok(responseData);        
         protected static Created Created(string uri) => TypedResults.Created(uri);
+        protected static Created<TResponse> Created<TResponse>(string uri, TResponse response) => TypedResults.Created(uri, response);
         protected static ProblemHttpResult ServerError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status500InternalServerError);
         protected static ProblemHttpResult ValidationError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status400BadRequest);
         protected static ProblemHttpResult Conflict(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status409Conflict);
