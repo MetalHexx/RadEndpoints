@@ -1,4 +1,5 @@
 using MinimalApi.Domain.Examples;
+using MinimalApi.Features.CustomExamples.CustomPut;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddEndpoints();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IExampleService, ExampleService>();
+builder.Services.AddSingleton<ICustomPutMapper, CustomPutMapper>();
 
 var app = builder.Build();
 
