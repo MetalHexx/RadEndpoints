@@ -9,7 +9,7 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
             RouteBuilder
                 .MapPut("/custom-examples/{id}", (int id, CustomPutRequest r, CancellationToken ct) => Handle(r, id, ct))
                 .Produces<CustomPutResponse>(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status404NotFound)
+                .ProducesProblem(StatusCodes.Status404NotFound)
                 .AddSwagger(tag: "Custom Examples", desc: "Update an example.");
         }
 

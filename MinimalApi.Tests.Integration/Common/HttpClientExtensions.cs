@@ -42,7 +42,6 @@ namespace MinimalApi.Tests.Integration.Common
         }
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PutAsync<TRequest, TResponse>(this HttpClient client, string route, TRequest request)
-            where TResponse : RadResponse
         {
             var httpResponse = await client.PutAsJsonAsync(route, request);
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
