@@ -9,7 +9,7 @@ namespace MinimalApi.Features.Examples.DeleteExample
         public DeleteExampleEndpoint(IExampleService service) => _service = service;
         public override void Configure()
         {
-            Delete("/examples")
+            Delete("/examples/{id}")
                 .Produces<DeleteExampleResponse>(StatusCodes.Status200OK)
                 .AddSwagger(tag: Constants.ExamplesTag, desc: "Delete an example.");
         }
