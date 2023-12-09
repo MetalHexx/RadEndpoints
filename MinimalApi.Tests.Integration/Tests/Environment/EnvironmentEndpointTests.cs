@@ -1,28 +1,22 @@
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using MinimalApi.Features.Examples.GetExample;
-using MinimalApi.Tests.Integration.Common;
-using System.Net;
+using MinimalApi.Features.Environment.GetEnvironment;
 
 namespace MinimalApi.Tests.Integration.Tests.Environment
 {
-    public class EnvironmentEndpointTests : EndpointFixture
+    [Collection("Endpoint")]
+    public class EnvironmentEndpointTests
     {
-        public EnvironmentEndpointTests(WebApplicationFactory<Program> f) : base(f) { }
+        private readonly EndpointFixture _fixture;
+        public EnvironmentEndpointTests(EndpointFixture fix) => _fixture = fix;
 
         [Fact]
-        public async void When_EnvironmentEndpointCalled_Returns_Success()
+        public async Task When_EnvironmentEndpointCalled_Returns_Success()
         {
-            // Act            
-            var (h, r) = await Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new()
-            {
-                Id = 1
-            });
+            //Act            
+            var (h, r) = await _fixture.Client.GetAsync<GetEnvironmentEndpoint, GetEnvironmentResponse>();
 
-            // Assert
+            //Assert
             h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().NotBeNull();
-            r!.Data!.Id.Should().Be(1);
+            r.Should().NotBeNull();            
         }
     }
 }
