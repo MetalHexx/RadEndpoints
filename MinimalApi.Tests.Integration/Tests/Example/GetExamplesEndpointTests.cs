@@ -3,11 +3,8 @@
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class GetExamplesEndpointTests
+    public class GetExamplesEndpointTests(EndpointFixture _fixture)
     {
-        private readonly EndpointFixture _fixture;
-        public GetExamplesEndpointTests(EndpointFixture fix) => _fixture = fix;
-
         [Fact]
         public async Task When_GetExamplesCalled_Returns_Success()
         {
@@ -16,7 +13,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 
             //Arrange
             h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().NotBeNull();
+            r.Should().BeOfType<GetExamplesResponse>();
             r!.Data.Should().NotBeEmpty();
         }
     }

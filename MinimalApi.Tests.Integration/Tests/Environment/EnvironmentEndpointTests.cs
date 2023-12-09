@@ -3,11 +3,8 @@ using MinimalApi.Features.Environment.GetEnvironment;
 namespace MinimalApi.Tests.Integration.Tests.Environment
 {
     [Collection("Endpoint")]
-    public class EnvironmentEndpointTests
+    public class EnvironmentEndpointTests(EndpointFixture _fixture)
     {
-        private readonly EndpointFixture _fixture;
-        public EnvironmentEndpointTests(EndpointFixture fix) => _fixture = fix;
-
         [Fact]
         public async Task When_EnvironmentEndpointCalled_Returns_Success()
         {
@@ -16,7 +13,10 @@ namespace MinimalApi.Tests.Integration.Tests.Environment
 
             //Assert
             h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().NotBeNull();            
+            r.Should().BeOfType<GetEnvironmentResponse>();
+            r!.Should().NotBeNull();
+            r!.ApplicationName.Should().NotBeEmpty();
+            r!.EnvironmentName.Should().NotBeEmpty();
         }
     }
 }

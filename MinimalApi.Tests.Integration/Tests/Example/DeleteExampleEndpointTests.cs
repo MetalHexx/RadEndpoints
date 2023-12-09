@@ -1,17 +1,12 @@
-﻿using AutoFixture;
-using MinimalApi.Features.Examples.CreateExample;
+﻿using MinimalApi.Features.Examples.CreateExample;
 using MinimalApi.Features.Examples.DeleteExample;
 using MinimalApi.Features.Examples.GetExample;
-using MinimalApi.Tests.Integration.Common;
 
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class DeleteExampleEndpointTests
+    public class DeleteExampleEndpointTests(EndpointFixture _fixture)
     {
-        private readonly EndpointFixture _fixture;
-        public DeleteExampleEndpointTests(EndpointFixture f) => _fixture = f;
-
         /// <summary>
         /// Complex functional use case test that creates an example, then deletes it and verifies it was deleted.
         /// </summary>
@@ -32,7 +27,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 
             //Assert
             deleteHttpRequest.StatusCode.Should().Be(HttpStatusCode.OK);
-            deleteResponse.Should().NotBeNull();
+            deleteResponse.Should().BeOfType<DeleteExampleResponse>();
             deleteResponse!.Message.Should().Be("Example deleted successfully");
             getHttpResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
