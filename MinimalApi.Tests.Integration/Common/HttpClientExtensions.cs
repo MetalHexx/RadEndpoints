@@ -13,5 +13,15 @@ namespace MinimalApi.Tests.Integration.Common
 
             return (httpResponse, endpointResponse);
         }
+
+        public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> GetAsync<TEndpoint, TResponse>(this HttpClient client)
+            where TEndpoint : Endpoint
+        {
+            var route = Endpoint.GetRoute<TEndpoint>();
+            var httpResponse = await client.GetAsync(route);
+            var endpointResponse = await httpResponse.Content.ReadFromJsonAsync<TResponse>();
+
+            return (httpResponse, endpointResponse);
+        }
     }
 }
