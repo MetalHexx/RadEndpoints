@@ -28,7 +28,7 @@
             {
                 var problem = TypedResults.Problem
                 (
-                    title: "There were errors in the request body",
+                    title: "Validation Error",
                     statusCode: StatusCodes.Status400BadRequest
                 );
                 validationResult.Errors.ForEach(error =>
