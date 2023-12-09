@@ -11,6 +11,7 @@ namespace MinimalApi.Features.Examples.GetExample
             Get("/examples/{id}")
                 .Produces<GetExampleResponse>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound)
+                .Produces(StatusCodes.Status400BadRequest)
                 .AddSwagger(tag: Constants.ExamplesTag, desc: "Get an example by id");                
         }
 
@@ -22,7 +23,6 @@ namespace MinimalApi.Features.Examples.GetExample
             {
                 return NotFound("Example not found");
             }
-
             Response = Map.FromEntity(exampleEntity);
             Response.Message = "Example retrieved successfully";
 
