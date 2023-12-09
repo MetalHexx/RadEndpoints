@@ -3,13 +3,13 @@
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class GetExamplesEndpointTests(EndpointFixture Fixture)
+    public class GetExamplesEndpointTests(EndpointFixture f)
     {
         [Fact]
         public async Task When_GetExamplesCalled_Returns_Success()
         {
             //Act
-            var (h, r) = await Fixture.Client.GetAsync<GetExamplesEndpoint, GetExamplesResponse>();
+            var (h, r) = await f.Client.GetAsync<GetExamplesEndpoint, GetExamplesResponse>();
 
             //Arrange
             h.StatusCode.Should().Be(HttpStatusCode.OK);

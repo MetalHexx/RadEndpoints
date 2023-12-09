@@ -2,11 +2,8 @@
 
 namespace MinimalApi.Features.Examples.UpdateExample
 {
-    public class UpdateExampleEndpoint : RadEndpoint<UpdateExampleRequest, UpdateExampleResponse, UpdateExampleMapper>
+    public class UpdateExampleEndpoint(IExampleService s) : RadEndpoint<UpdateExampleRequest, UpdateExampleResponse, UpdateExampleMapper>
     {
-        private readonly IExampleService _service;
-        public UpdateExampleEndpoint(IExampleService service) => _service = service;
-
         public override void Configure()
         {
             Put("/examples")
@@ -17,7 +14,7 @@ namespace MinimalApi.Features.Examples.UpdateExample
 
         public async override Task<IResult> Handle(UpdateExampleRequest r, CancellationToken ct)
         {
-            var example = await _service.UpdateExample(Map.ToEntity(r));
+            var example = await s.UpdateExample(Map.ToEntity(r));
 
             if (example is null)
             {

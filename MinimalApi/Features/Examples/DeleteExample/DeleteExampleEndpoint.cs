@@ -2,11 +2,8 @@
 
 namespace MinimalApi.Features.Examples.DeleteExample
 {
-    public class DeleteExampleEndpoint : RadEndpoint<DeleteExampleRequest, DeleteExampleResponse>
+    public class DeleteExampleEndpoint(IExampleService s) : RadEndpoint<DeleteExampleRequest, DeleteExampleResponse>
     {
-        private readonly IExampleService _service;
-
-        public DeleteExampleEndpoint(IExampleService service) => _service = service;
         public override void Configure()
         {
             Delete("/examples/{id}")
@@ -16,7 +13,7 @@ namespace MinimalApi.Features.Examples.DeleteExample
 
         public async override Task<IResult> Handle(DeleteExampleRequest r, CancellationToken ct)
         {
-            await _service.DeleteExample(r.Id);
+            await s.DeleteExample(r.Id);
             Response.Message = "Example deleted successfully";
 
             return Ok(Response);

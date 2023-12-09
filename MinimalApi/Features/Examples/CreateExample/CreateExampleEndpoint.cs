@@ -2,12 +2,8 @@
 
 namespace MinimalApi.Features.Examples.CreateExample
 {
-    public class CreateExampleEndpoint : RadEndpoint<CreateExampleRequest, CreateExampleResponse, CreateExampleMapper>
+    public class CreateExampleEndpoint(IExampleService s) : RadEndpoint<CreateExampleRequest, CreateExampleResponse, CreateExampleMapper>
     {
-        private readonly IExampleService _service;
-
-        public CreateExampleEndpoint(IExampleService service) => _service = service;
-
         public override void Configure()
         {
             Post("/examples")
@@ -19,7 +15,7 @@ namespace MinimalApi.Features.Examples.CreateExample
         public override async Task<IResult> Handle(CreateExampleRequest r, CancellationToken ct)
         {
             var entity = Map.ToEntity(r);
-            var savedEntity = await _service.InsertExample(entity);
+            var savedEntity = await s.InsertExample(entity);
 
             if (savedEntity is null)
             {

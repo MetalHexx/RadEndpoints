@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.CustomExamples.CustomPut
 {
-    public class CustomPutEndpoint(IExampleService Service, ICustomPutMapper Map) : RadEndpoint
+    public class CustomPutEndpoint(IExampleService s, ICustomPutMapper m) : RadEndpoint
     {
         public override void Configure()
         {
@@ -15,13 +15,13 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
 
         public async Task<IResult> Handle(CustomPutRequest r, int id, CancellationToken ct)
         {   
-            var example = await Service.UpdateExample(Map.ToEntity(r, id));            
+            var example = await s.UpdateExample(m.ToEntity(r, id));            
 
             if (example is null)
             {
                 return NotFound("Could not find and example with the id provided");
             }
-            var response = Map.FromEntity(example);
+            var response = m.FromEntity(example);
             response.Message = "Example updated successfully";
 
             return Ok(response);

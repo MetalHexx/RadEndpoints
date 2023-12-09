@@ -2,11 +2,8 @@
 
 namespace MinimalApi.Features.Examples.SearchExamples
 {
-    public class SearchExamplesEndpoint : RadEndpoint<SearchExamplesRequest, SearchExamplesResponse, SearchExamplesMapper>
+    public class SearchExamplesEndpoint(IExampleService s) : RadEndpoint<SearchExamplesRequest, SearchExamplesResponse, SearchExamplesMapper>
     {
-        private readonly IExampleService _service;
-        public SearchExamplesEndpoint(IExampleService service) => _service = service;
-
         public override void Configure()
         {
             Get("/examples/search")
@@ -16,7 +13,7 @@ namespace MinimalApi.Features.Examples.SearchExamples
 
         public async override Task<IResult> Handle(SearchExamplesRequest r, CancellationToken ct)
         {
-            var examples = await _service.FindExamples(r.FirstName, r.LastName);
+            var examples = await s.FindExamples(r.FirstName, r.LastName);
             
             Response = Map.FromEntity(examples);
             Response.Message = examples.Any()
