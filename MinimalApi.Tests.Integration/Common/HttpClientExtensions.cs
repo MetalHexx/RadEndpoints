@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
-using System.Runtime.CompilerServices;
+﻿using MinimalApi.Http.Endpoints;
 using System.Text.Json;
 using RadEndpoint = MinimalApi.Http.Endpoints.RadEndpoint;
 
@@ -40,6 +38,13 @@ namespace MinimalApi.Tests.Integration.Common
         {
             var route = RadEndpoint.GetRoute<TEndpoint>();
             var httpResponse = await client.PostAsJsonAsync(route, request);            
+            return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
+        }
+
+        public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PutAsync<TRequest, TResponse>(this HttpClient client, string route, TRequest request)
+            where TResponse : RadResponse
+        {
+            var httpResponse = await client.PutAsJsonAsync(route, request);
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
         }
 
