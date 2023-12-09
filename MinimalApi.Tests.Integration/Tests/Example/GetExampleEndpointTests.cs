@@ -3,13 +3,13 @@
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class GetExampleEndpointTests(EndpointFixture _fixture)
+    public class GetExampleEndpointTests(EndpointFixture Fixture)
     {
         [Fact]
         public async void When_GetExampleEndpoint_Called_Returns_Success()
         {
             //Act            
-            var (h, r) = await _fixture.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new()
+            var (h, r) = await Fixture.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new()
             {
                 Id = 1
             });
@@ -24,7 +24,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         public async void When_GetExampleEndpoint_Called_With_Invalid_Id_Returns_NotFound()
         {
             //Act            
-            var (h, r) = await _fixture.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ProblemDetails>(new()
+            var (h, r) = await Fixture.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ProblemDetails>(new()
             {
                 Id = 999
             });
@@ -38,7 +38,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         public async void When_GetExampleEndpoint_Called_With_Invalid_Id_Returns_ValidationError()
         {
             //Act            
-            var (h, r) = await _fixture.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ProblemDetails>(new()
+            var (h, r) = await Fixture.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ProblemDetails>(new()
             {
                 Id = 0
             });

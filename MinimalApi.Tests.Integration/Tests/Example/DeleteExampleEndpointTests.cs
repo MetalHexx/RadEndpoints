@@ -5,7 +5,7 @@ using MinimalApi.Features.Examples.GetExample;
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class DeleteExampleEndpointTests(EndpointFixture _fixture)
+    public class DeleteExampleEndpointTests(EndpointFixture Fixture)
     {
         /// <summary>
         /// Complex functional use case test that creates an example, then deletes it and verifies it was deleted.
@@ -14,13 +14,13 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         public async Task Given_ExampleExists_When_Deleted_ReturnsSuccess()
         {
             //Arrange 
-            var createRequest = _fixture.DataGenerator.Create<CreateExampleRequest>();
-            var (_, createResponse) = await _fixture.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, CreateExampleResponse>(createRequest);
+            var createRequest = Fixture.DataGenerator.Create<CreateExampleRequest>();
+            var (_, createResponse) = await Fixture.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, CreateExampleResponse>(createRequest);
             var deleteRequest = new DeleteExampleRequest { Id = createResponse!.Data!.Id };
 
             //Act
-            var (deleteHttpRequest, deleteResponse) = await _fixture.Client.DeleteAsync<DeleteExampleEndpoint, DeleteExampleRequest, DeleteExampleResponse>(deleteRequest);
-            var (getHttpResponse, _) = await _fixture.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new() 
+            var (deleteHttpRequest, deleteResponse) = await Fixture.Client.DeleteAsync<DeleteExampleEndpoint, DeleteExampleRequest, DeleteExampleResponse>(deleteRequest);
+            var (getHttpResponse, _) = await Fixture.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new() 
             { 
                 Id = createResponse.Data.Id 
             });
