@@ -7,8 +7,8 @@ namespace MinimalApi.Features.Examples.CreateExample
         public override void Configure()
         {
             Post("/examples")
-                .Produces<CreateExampleResponse>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status201Created)
+                .Produces<CreateExampleResponse>(StatusCodes.Status201Created)
+                .ProducesProblem(StatusCodes.Status409Conflict)
                 .AddSwagger(tag: Constants.ExamplesTag, desc: "Create a new example.");
         }
 
