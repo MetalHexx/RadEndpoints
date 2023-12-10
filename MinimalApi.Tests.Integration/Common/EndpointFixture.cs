@@ -1,6 +1,4 @@
-﻿using AutoFixture;
-
-namespace MinimalApi.Tests.Integration.Common
+﻿namespace MinimalApi.Tests.Integration.Common
 {
     public class EndpointFixture : IDisposable
     {
