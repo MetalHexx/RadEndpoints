@@ -21,6 +21,7 @@
             _examples.Add(3, new Example("David", "Johnson", 3));
             _examples.Add(4, new Example("Emma", "Williams", 4));
             _examples.Add(5, new Example("Michael", "Brown", 5));
+            _examples.Add(6, new Example("Luke", "Skywalker", 6));
         }
         public async Task<IEnumerable<Example>> GetExamples()
         {
