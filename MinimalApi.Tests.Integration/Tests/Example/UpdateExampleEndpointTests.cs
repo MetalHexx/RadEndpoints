@@ -4,7 +4,6 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
     public class UpdateExampleEndpointTests(EndpointFixture f)
-
     {
         [Fact]
         public async Task Given_ExampleExists_ReturnsSuccess()
