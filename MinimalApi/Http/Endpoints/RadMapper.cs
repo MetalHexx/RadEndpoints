@@ -7,7 +7,7 @@
         public abstract TResponse FromEntity(TEntity e);
     }
 
-    public abstract class Mapper<TResponse, TEntity>: IRadMapper where TResponse: RadResponse
+    public abstract class RadMapper<TResponse, TEntity>: IRadMapper where TResponse: RadResponse
     {
         public abstract TResponse FromEntity(TEntity e);
     }

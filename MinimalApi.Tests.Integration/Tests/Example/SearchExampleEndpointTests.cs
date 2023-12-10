@@ -25,7 +25,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Assert
             h.StatusCode.Should().Be(HttpStatusCode.OK);
             r.Should().BeOfType<SearchExamplesResponse>();
-            r!.Data!.First().FirstName.Should().Be("Luke");
+            r!.Data.Should().Contain(e => e.FirstName == "Luke" && e.LastName == "Skywalker");
             r.Data!.First().LastName.Should().Be("Skywalker");
         }
 

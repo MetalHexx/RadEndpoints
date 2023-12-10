@@ -8,42 +8,42 @@
         Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
         Task<Example?> InsertExample(Example example);
         Task<Example?> UpdateExample(Example example);
+        Task<IEnumerable<Example>> FindExampleChild(int parentId, string? firstName, string? lastName);
     }
 
     public class ExampleService : IExampleService
     {
-        private Dictionary<int, Example> _examples = new();
+        private List<Example> _examples = new();
 
         public ExampleService()
         {
-            _examples.Add(1, new Example("James", "Smith", 1));
-            _examples.Add(2, new Example("Maria", "Garcia", 2));
-            _examples.Add(3, new Example("David", "Johnson", 3));
-            _examples.Add(4, new Example("Emma", "Williams", 4));
-            _examples.Add(5, new Example("Michael", "Brown", 5));
-            _examples.Add(6, new Example("Luke", "Skywalker", 6));
+            _examples.Add(new Example("James", "Smith", Id: 1));
+            _examples.Add(new Example("Maria", "Garcia", Id: 2, ParentId: 1));
+            _examples.Add(new Example("David", "Johnson", Id: 3, ParentId: 2));
+            _examples.Add(new Example("Anakin", "Skywalker", Id: 4, ParentId: 2));
+            _examples.Add(new Example("Michael", "Brown", Id: 5, ParentId: 3));
+            _examples.Add(new Example("Luke", "Skywalker", Id: 6, ParentId: 4));
         }
         public async Task<IEnumerable<Example>> GetExamples()
         {
             await Task.Delay(1);
-            return _examples.Values.AsEnumerable();
+            return _examples;
         }
         public async Task<Example?> GetExample(int id)
         {
-            await Task.Delay(1);
-            _examples.TryGetValue(id, out var example);
-            return example;
+            await Task.Delay(1);            
+            return _examples.FirstOrDefault(e => e.Id == id);
         }
 
         public async Task<Example?> InsertExample(Example example)
         {
             await Task.Delay(1);
 
-            var id = _examples.Keys.Max() + 1;
+            var id = _examples.Max(e => e.Id) + 1;
 
             var isDuplicateName = _examples.Any(record =>
-                record.Value.FirstName == example.FirstName
-                && record.Value.LastName == example.LastName);
+                record.FirstName == example.FirstName
+                && record.LastName == example.LastName);
 
             if (isDuplicateName)
             {
@@ -51,7 +51,7 @@
             }
             var newExample = example with { Id = id };
 
-            _examples.Add(id, newExample);
+            _examples.Add(newExample);
 
             return newExample;
         }
@@ -60,9 +60,12 @@
         {
             await Task.Delay(1);
 
-            if (_examples.ContainsKey(example.Id))
+            var existingExample = _examples.FirstOrDefault(e => e.Id == example.Id);
+
+            if (existingExample is not null)
             {
-                _examples[example.Id] = example;
+                var index = _examples.IndexOf(existingExample);
+                _examples[index] = example;
                 return example;
             }
             return null;
@@ -72,9 +75,12 @@
         {
             await Task.Delay(1);
 
-            if (_examples.ContainsKey(id))
+            var exampleToDelete = _examples.FirstOrDefault(e => e.Id == id);
+
+            if (exampleToDelete is not null)
             {
-                _examples.Remove(id);
+                var index = _examples.IndexOf(exampleToDelete);
+                _examples.RemoveAt(index);
             }
         }
 
@@ -82,8 +88,30 @@
         {
             await Task.Delay(1);
 
-            var results = _examples.Select(kvp => kvp.Value);
+            var results = _examples.AsEnumerable();
 
+            if (firstName != null)
+            {
+                results = results.Where(e => e.FirstName == firstName);
+            }
+
+            if (lastName != null)
+            {
+                results = results.Where(e => e.LastName == lastName);
+            }
+            return results;
+        }
+
+        public async Task<IEnumerable<Example>> FindExampleChild(int parentId, string? firstName, string? lastName)
+        {
+            await Task.Delay(1);
+
+            var results = _examples.Where(e => e.ParentId == parentId);
+
+            if(results is null)
+            {
+                return null;
+            }
             if (firstName != null)
             {
                 results = results.Where(e => e.FirstName == firstName);

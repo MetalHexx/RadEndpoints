@@ -1,11 +1,11 @@
 ﻿using MinimalApi.Domain.Examples;
 using MinimalApi.Features.Examples._common;
 
-namespace MinimalApi.Features.Examples.SearchExamples
+namespace MinimalApi.Features.Examples.GetExampleChild
 {
-    public class SearchExamplesMapper : RadMapper<SearchExamplesResponse, IEnumerable<Example>>
+    public class SearchExampleChildMapper : RadMapper<SearchExampleChildResponse, IEnumerable<Example>>
     {
-        public override SearchExamplesResponse FromEntity(IEnumerable<Example> e) => new()
+        public override SearchExampleChildResponse FromEntity(IEnumerable<Example> e) => new()
         {
             Data = e.Select(e => new ExampleDto
             {

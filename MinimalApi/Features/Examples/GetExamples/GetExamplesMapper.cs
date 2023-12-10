@@ -3,7 +3,7 @@ using MinimalApi.Features.Examples._common;
 
 namespace MinimalApi.Features.Examples.GetExamples
 {
-    public class GetExamplesMapper : Mapper<GetExamplesResponse, IEnumerable<Example>>
+    public class GetExamplesMapper : RadMapper<GetExamplesResponse, IEnumerable<Example>>
     {
         public override GetExamplesResponse FromEntity(IEnumerable<Example> e) => new()
         {
