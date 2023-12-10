@@ -24,7 +24,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         }
 
         [Fact]
-        public async Task Given_ExamplExists_When_CreateCalled_Returns_Conflict()
+        public async Task Given_ExampleExists_When_CreateCalled_Returns_Conflict()
         {
             //Arrange
             var createRequest = f.DataGenerator.Create<CreateExampleRequest>();

@@ -18,7 +18,7 @@ namespace MinimalApi.Features.Examples.UpdateExample
 
             if (example is null)
             {
-                return NotFound("Could not find and example with the id provided");
+                return NotFound("Example not found");
             }
             Response = Map.FromEntity(example);
             Response.Message = "Example updated successfully";
