@@ -1,5 +1,4 @@
-﻿using MinimalApi.Http.Endpoints;
-using System.Text.Json;
+﻿using System.Text.Json;
 using RadEndpoint = MinimalApi.Http.Endpoints.RadEndpoint;
 
 namespace MinimalApi.Tests.Integration.Common
