@@ -65,7 +65,7 @@ namespace MinimalApi.Tests.Integration.Common
             catch (JsonException ex)
             {
                 var stringResponse = await response.Content.ReadAsStringAsync();
-                throw new EndpointResponseSerializationException(stringResponse, response, ex);
+                throw new EndpointResponseException(stringResponse, response, ex);
             }
         } 
     }
