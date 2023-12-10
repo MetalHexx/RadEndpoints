@@ -2,6 +2,11 @@
 
 namespace MinimalApi.Features.CustomExamples.CustomPut
 {
+    /// <summary>
+    /// This endpoint is an example of how one can use all the features of MinimalApi endpoint mapping 
+    /// to create a custom endpoint with none of the restrictions of the more convenient generic 
+    /// RadEndpoint types
+    /// </summary>
     public class CustomPutEndpoint(IExampleService s, ICustomPutMapper m) : RadEndpoint
     {
         public override void Configure()
