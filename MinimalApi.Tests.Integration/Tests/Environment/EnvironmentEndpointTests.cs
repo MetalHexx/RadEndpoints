@@ -6,7 +6,7 @@ namespace MinimalApi.Tests.Integration.Tests.Environment
     public class EnvironmentEndpointTests(EndpointFixture f)
     {
         [Fact]
-        public async Task When_EnvironmentEndpointCalled_Returns_Success()
+        public async Task When_Called_ReturnsSuccess()
         {
             //Act            
             var (h, r) = await f.Client.GetAsync<GetEnvironmentEndpoint, GetEnvironmentResponse>();

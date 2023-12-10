@@ -10,7 +10,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         [InlineData("Luke", "Skywalker")]
         [InlineData("", "Skywalker")]
         [InlineData("Luke", "")]
-        public async Task Given_ExampleExists_WhenCalled_ReturnsSuccess(string firstName, string lastName) 
+        public async Task Given_ExampleExists_ReturnsSuccess(string firstName, string lastName) 
         {
             //Arrange
             var request = new SearchExamplesRequest
@@ -30,7 +30,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         }
 
         [Fact]
-        public async Task When_SearchEmpty_ReturnsValidationProblem()
+        public async Task When_SearchEmpty_ReturnsProblem()
         {
             //Arrange
             var request = new SearchExamplesRequest

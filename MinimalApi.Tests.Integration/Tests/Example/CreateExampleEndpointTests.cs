@@ -6,7 +6,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
     public class CreateExampleEndpointTests(EndpointFixture f)
     {
         [Fact]
-        public async Task Given_ExampleDoesNotExist_When_CreateCalled_Returns_Success()
+        public async Task Given_ExampleDoesNotExist_ReturnsSuccess()
         {
             //Arrange
             var createRequest = f.DataGenerator.Create<CreateExampleRequest>();
@@ -24,7 +24,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         }
 
         [Fact]
-        public async Task Given_ExampleExists_When_CreateCalled_Returns_Conflict()
+        public async Task Given_ExampleExists_ReturnsProblem()
         {
             //Arrange
             var createRequest = f.DataGenerator.Create<CreateExampleRequest>();
@@ -40,7 +40,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         }
 
         [Fact]
-        public async Task When_Called_With_FirstNameEmpty_Returns_BadRequest()
+        public async Task When_FirstNameEmpty_ReturnsProblem()
         {
             //Arrange
             var createRequest = f.DataGenerator.Create<CreateExampleRequest>();
@@ -56,7 +56,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         }
 
         [Fact]
-        public async Task When_Called_With_LaneNameEmpty_Returns_BadRequest()
+        public async Task When_LastNameEmpty_ReturnsProblem()
         {
             //Arrange
             var createRequest = f.DataGenerator.Create<CreateExampleRequest>();

@@ -6,7 +6,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
     public class GetExampleEndpointTests(EndpointFixture f)
     {
         [Fact]
-        public async void When_GetExampleEndpoint_Called_Returns_Success()
+        public async void When_RequestValid_ReturnsSuccess()
         {
             //Act            
             var (h, r) = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new()
@@ -21,7 +21,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         }
 
         [Fact]
-        public async void When_GetExampleEndpoint_Called_With_Invalid_Id_Returns_NotFound()
+        public async void Given_ExampleNonExistant_ReturnsProblem()
         {
             //Act            
             var (h, r) = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ProblemDetails>(new()
@@ -35,7 +35,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             r!.Title.Should().Be("Example not found");
         }
         [Fact]
-        public async void When_GetExampleEndpoint_Called_With_Invalid_Id_Returns_ValidationError()
+        public async void When_IdInvalid_ReturnsProblem()
         {
             //Act            
             var (h, r) = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ProblemDetails>(new()

@@ -6,7 +6,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
     public class GetExamplesEndpointTests(EndpointFixture f)
     {
         [Fact]
-        public async Task When_GetExamplesCalled_Returns_Success()
+        public async Task When_Called_ReturnsSuccess()
         {
             //Act
             var (h, r) = await f.Client.GetAsync<GetExamplesEndpoint, GetExamplesResponse>();

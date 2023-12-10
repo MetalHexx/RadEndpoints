@@ -11,7 +11,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         /// Complex functional use case test that creates an example, then deletes it and verifies it was deleted.
         /// </summary>
         [Fact]
-        public async Task Given_ExampleExists_When_Deleted_ReturnsSuccess()
+        public async Task Given_ExampleExists_ReturnsSuccess()
         {
             //Arrange 
             var createRequest = f.DataGenerator.Create<CreateExampleRequest>();

@@ -6,7 +6,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
     public class CustomPutEndpointTests(EndpointFixture f): EndpointFixture
     {
         [Fact]
-        public async Task When_ExampleUpdated_ReturnsSuccess()
+        public async Task Given_ExampleExists_When_RequestValid_ReturnsSuccess()
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<CustomPutRequest>();
@@ -23,7 +23,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
         }
 
         [Fact]
-        public async Task Given_ExampleDoesNotExist_When_ExampleUpdated_Returns_NotFoundProblem()
+        public async Task Given_ExampleDoesntExist_ReturnsProblem()
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<CustomPutRequest>();
@@ -39,7 +39,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
         }
 
         [Fact]        
-        public async Task When_ExampleUpdated_And_FirstNameEmpty_Returns_ValidationProblem()
+        public async Task When_FirstNameEmpty_ReturnsProblem()
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<CustomPutRequest>();
@@ -57,7 +57,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
         }
 
         [Fact]
-        public async Task When_ExampleUpdated_And_LastNameEmpty_Returns_ValidationProblem()
+        public async Task When_LastNameEmpty_ReturnsProblem()
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<CustomPutRequest>();

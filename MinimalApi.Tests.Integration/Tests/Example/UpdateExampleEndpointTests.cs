@@ -1,5 +1,4 @@
-﻿using MinimalApi.Features.Examples.CreateExample;
-using MinimalApi.Features.Examples.UpdateExample;
+﻿using MinimalApi.Features.Examples.UpdateExample;
 
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
@@ -8,7 +7,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 
     {
         [Fact]
-        public async Task Given_ExampleExists_When_Called_Returns_Success()
+        public async Task Given_ExampleExists_ReturnsSuccess()
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<UpdateExampleRequest>();
@@ -27,7 +26,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         }
 
         [Fact]
-        public async Task Given_DoesNotExist_When_Called_Returns_NotFound()
+        public async Task Given_DoesNotExist_Returns_Problem()
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<UpdateExampleRequest>();
@@ -43,7 +42,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         }
 
         [Fact]
-        public async Task When_Called_With_FirstNameEmpty_Returns_BadRequest()
+        public async Task When_FirstNameEmpty_ReturnsProblem()
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<UpdateExampleRequest>();
@@ -59,7 +58,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         }
 
         [Fact]
-        public async Task When_Called_With_LastNameEmpty_Returns_BadRequest()
+        public async Task When_LastNameEmpty_ReturnsProblem()
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<UpdateExampleRequest>();
