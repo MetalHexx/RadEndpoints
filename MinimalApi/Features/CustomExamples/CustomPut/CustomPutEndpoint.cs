@@ -13,6 +13,7 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
         {
             RouteBuilder
                 .MapPut("/custom-examples/{id}", (int id, CustomPutRequest r, CancellationToken ct) => Handle(r, id, ct))
+                .AddEndpointFilter<ValidationFilter<CustomPutRequest>>()
                 .Produces<CustomPutResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .AddSwagger(tag: "Custom Examples", desc: "Update an example.");

@@ -37,5 +37,41 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             r.Should().BeOfType<ProblemDetails>();           
             r!.Title.Should().Be("Could not find and example with the id provided");
         }
+
+        [Fact]        
+        public async Task When_ExampleUpdated_And_FirstNameEmpty_Returns_ValidationProblem()
+        {
+            //Arrange
+            var updateRequest = f.DataGenerator.Create<CustomPutRequest>();
+            updateRequest.FirstName = string.Empty;
+
+            var route = "/custom-examples/1";
+
+            //Act
+            var (h, r) = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
+
+            //Assert
+            h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            r.Should().BeOfType<ProblemDetails>();
+            r!.Extensions.Should().ContainKey("FirstName");
+        }
+
+        [Fact]
+        public async Task When_ExampleUpdated_And_LastNameEmpty_Returns_ValidationProblem()
+        {
+            //Arrange
+            var updateRequest = f.DataGenerator.Create<CustomPutRequest>();
+            updateRequest.LastName = string.Empty;
+
+            var route = "/custom-examples/1";
+
+            //Act
+            var (h, r) = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
+
+            //Assert
+            h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            r.Should().BeOfType<ProblemDetails>();
+            r!.Extensions.Should().ContainKey("LastName");
+        }
     }
 }
