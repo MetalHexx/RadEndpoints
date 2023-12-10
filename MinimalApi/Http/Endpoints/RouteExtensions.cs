@@ -24,13 +24,25 @@ namespace MinimalApi.Tests.Integration.Common
         {
             foreach (var property in request.GetType().GetProperties())
             {
-                var value = property.GetValue(request);
+                var value = property.GetValue(request)
+                    ?.ToString()
+                    ?.WebEncode();
 
-                if (value is null) continue;
+                if (string.IsNullOrEmpty(value)) continue;
 
-                route = route.Replace($"{{{property.Name}}}", WebUtility.UrlEncode(value.ToString()), StringComparison.OrdinalIgnoreCase);
+                if(route.Contains(property.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    route = route.Replace($"{{{property.Name}}}", value, StringComparison.OrdinalIgnoreCase);
+                }
+                else
+                {   
+                    route = route.Contains("?") 
+                        ? route + $"&{property.Name}={value}"
+                        : route + $"?{property.Name}={value}";
+                }
             }
             return route;
         }
+        private static string WebEncode(this string value) => WebUtility.UrlEncode(value);
     }
 }
