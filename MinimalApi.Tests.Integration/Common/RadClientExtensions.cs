@@ -8,7 +8,7 @@ namespace MinimalApi.Tests.Integration.Common
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> GetAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
         {
-            var route = RouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
+            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
             var httpResponse = await client.GetAsync(route);
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
@@ -26,7 +26,7 @@ namespace MinimalApi.Tests.Integration.Common
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> DeleteAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
         {
-            var route = RouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
+            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
             var httpResponse = await client.DeleteAsync(route);
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());

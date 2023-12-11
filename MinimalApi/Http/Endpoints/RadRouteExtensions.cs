@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace MinimalApi.Tests.Integration.Common
 {
-    public static class RouteExtensions
+    public static class RadRouteExtensions
     {
         public static string GetAndMapRoute<TEndpoint, TRequest>(TRequest request)
             where TEndpoint : RadEndpoint
