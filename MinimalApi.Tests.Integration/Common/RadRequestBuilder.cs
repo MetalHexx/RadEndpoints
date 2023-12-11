@@ -7,7 +7,7 @@ using MinimalApi.Http.Endpoints;
 
 namespace MinimalApi.Tests.Integration.Common
 {
-    public static class EndpointRequestBuilder
+    public static class RadRequestBuilder
     {
         public static HttpRequestMessage BuildRequest<TEndpoint, TRequest>(HttpClient client, TRequest requestModel, HttpMethod method)
             where TEndpoint : RadEndpoint
@@ -35,7 +35,7 @@ namespace MinimalApi.Tests.Integration.Common
 
                 var attribute = property.GetCustomAttributes().FirstOrDefault();
 
-                if (attribute is null) throw new RadRequestBuilderException("Missing a request binding attribute.  If you're going to use binding attributes, make sure you add them to every property on the request model.");
+                if (attribute is null) throw new RadTestException("Make sure you add binding attributes to every property on your request model.  Possible attributes you can use include: [FromRoute] [FromQuery] [FromBody] [FromForm] [FromHeader]");
 
                 switch (attribute)
                 {

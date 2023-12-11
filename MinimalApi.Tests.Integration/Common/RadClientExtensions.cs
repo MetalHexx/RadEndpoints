@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace MinimalApi.Tests.Integration.Common
 {
-    public static class HttpClientExtensions
+    public static class RadClientExtensions
     {
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> GetAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
@@ -49,7 +49,7 @@ namespace MinimalApi.Tests.Integration.Common
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PutAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
         {   
-            var httpRequest = EndpointRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, HttpMethod.Put);
+            var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, HttpMethod.Put);
             var httpResponse = await client.SendAsync(httpRequest);
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
@@ -64,7 +64,7 @@ namespace MinimalApi.Tests.Integration.Common
             catch (JsonException ex)
             {
                 var stringResponse = await response.Content.ReadAsStringAsync();
-                throw new EndpointResponseException(stringResponse, response, ex);
+                throw new RadTestException(stringResponse, response, ex);
             }
         }
     }

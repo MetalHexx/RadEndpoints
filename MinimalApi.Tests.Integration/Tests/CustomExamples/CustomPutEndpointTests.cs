@@ -3,7 +3,7 @@
 namespace MinimalApi.Tests.Integration.Tests.CustomExamples
 {
     [Collection("Endpoint")]
-    public class CustomPutEndpointTests(EndpointFixture f): EndpointFixture
+    public class CustomPutEndpointTests(RadEndpointFixture f): RadEndpointFixture
     {
         [Fact]
         public async Task Given_ExampleExists_When_RequestValid_ReturnsSuccess()

@@ -3,7 +3,7 @@ using MinimalApi.Features.Environment.GetEnvironment;
 namespace MinimalApi.Tests.Integration.Tests.Environment
 {
     [Collection("Endpoint")]
-    public class EnvironmentEndpointTests(EndpointFixture f)
+    public class EnvironmentEndpointTests(RadEndpointFixture f)
     {
         [Fact]
         public async Task When_Called_ReturnsSuccess()

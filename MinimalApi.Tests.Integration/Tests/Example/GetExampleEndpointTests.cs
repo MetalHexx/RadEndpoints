@@ -3,7 +3,7 @@
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class GetExampleEndpointTests(EndpointFixture f)
+    public class GetExampleEndpointTests(RadEndpointFixture f)
     {
         [Fact]
         public async void When_RequestValid_ReturnsSuccess()

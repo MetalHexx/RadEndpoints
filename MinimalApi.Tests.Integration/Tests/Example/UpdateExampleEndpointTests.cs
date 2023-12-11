@@ -3,7 +3,7 @@
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class UpdateExampleEndpointTests(EndpointFixture f)
+    public class UpdateExampleEndpointTests(RadEndpointFixture f)
     {
         [Fact]
         public async Task Given_ExampleExists_ReturnsSuccess()
@@ -19,8 +19,8 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             h.StatusCode.Should().Be(HttpStatusCode.OK);
             r.Should().BeOfType<UpdateExampleResponse>();
             r!.Data!.Id.Should().Be(updateRequest.Id);
-            r!.Data!.FirstName.Should().Be(updateRequest.Example.FirstName);
-            r!.Data!.LastName.Should().Be(updateRequest.Example.LastName);
+            r!.Data!.FirstName.Should().Be(updateRequest.Data.FirstName);
+            r!.Data!.LastName.Should().Be(updateRequest.Data.LastName);
             r!.Message.Should().Be("Example updated successfully");
         }
 
@@ -45,7 +45,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<UpdateExampleRequest>();
-            updateRequest.Example.FirstName = string.Empty;
+            updateRequest.Data.FirstName = string.Empty;
 
             //Act
             var (h, r) = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(updateRequest);
@@ -53,7 +53,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Assert
             h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             r.Should().BeOfType<ProblemDetails>();
-            r!.Extensions.Should().ContainKey("Example.FirstName");
+            r!.Extensions.Should().ContainKey("Data.FirstName");
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<UpdateExampleRequest>();
-            updateRequest.Example.LastName = string.Empty;
+            updateRequest.Data.LastName = string.Empty;
 
             //Act
             var (h, r) = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(updateRequest);
@@ -69,7 +69,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Assert
             h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             r.Should().BeOfType<ProblemDetails>();
-            r!.Extensions.Should().ContainKey("Example.LastName");
+            r!.Extensions.Should().ContainKey("Data.LastName");
         }
     }
 }

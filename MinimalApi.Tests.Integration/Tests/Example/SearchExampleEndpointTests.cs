@@ -3,7 +3,7 @@
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class SearchExampleEndpointTests(EndpointFixture f)
+    public class SearchExampleEndpointTests(RadEndpointFixture f)
     {
 
         [Theory]

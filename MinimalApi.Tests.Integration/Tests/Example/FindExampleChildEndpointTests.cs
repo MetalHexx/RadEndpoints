@@ -3,7 +3,7 @@
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class FindExampleChildEndpointTests(EndpointFixture f)
+    public class FindExampleChildEndpointTests(RadEndpointFixture f)
     {
         [Fact]
         public async Task Given_ParentWithChildExists_ReturnsSuccess()

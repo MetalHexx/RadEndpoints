@@ -5,7 +5,7 @@ using MinimalApi.Features.Examples.GetExample;
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class DeleteExampleEndpointTests(EndpointFixture f)
+    public class DeleteExampleEndpointTests(RadEndpointFixture f)
     {
         /// <summary>
         /// Complex functional use case test that creates an example, then deletes it and verifies it was deleted.
