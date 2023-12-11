@@ -12,6 +12,15 @@ namespace MinimalApi.Tests.Integration.Common
         public static HttpRequestMessage BuildRequest<TEndpoint, TRequest>(HttpClient client, TRequest requestModel, HttpMethod method)
             where TEndpoint : RadEndpoint
         {
+            if(HasRequestModelAttributes<TRequest>())
+            {
+                return BuildRequestFromAttributes<TEndpoint, TRequest>(client, requestModel, method);
+            }
+            return new HttpRequestMessage();
+        }
+
+        private static HttpRequestMessage BuildRequestFromAttributes<TEndpoint, TRequest>(HttpClient client, TRequest requestModel, HttpMethod method) where TEndpoint : RadEndpoint
+        {
             var routeTemplate = RadEndpoint.GetRoute<TEndpoint>();
             var queryValues = HttpUtility.ParseQueryString(string.Empty);
             var headers = new HeaderDictionary();
@@ -26,7 +35,7 @@ namespace MinimalApi.Tests.Integration.Common
 
                 var attribute = property.GetCustomAttributes().FirstOrDefault();
 
-                if (attribute is null) continue;
+                if (attribute is null) throw new RadRequestBuilderException("Missing a request binding attribute.  If you're going to use binding attributes, make sure you add them to every property on the request model.");
 
                 switch (attribute)
                 {
@@ -55,7 +64,6 @@ namespace MinimalApi.Tests.Integration.Common
             };
             httpRequest.AddHeaders(headers);
             httpRequest.AddContent(body, formContent);
-
             return httpRequest;
         }
 
@@ -88,5 +96,17 @@ namespace MinimalApi.Tests.Integration.Common
 
         private static string MapRouteParam(this string url, string name, string value) =>
             url.Replace($"{{{name}}}", HttpUtility.UrlEncode(value), StringComparison.OrdinalIgnoreCase);
+        public static bool HasRequestModelAttributes<TRequest>()
+        {
+            var hasAttribute = typeof(TRequest).GetProperties()
+                .Any(property => property.GetCustomAttributes().Any(attribute =>
+                    attribute.GetType().Name == "FromRouteAttribute" ||
+                    attribute.GetType().Name == "FromQueryAttribute" ||
+                    attribute.GetType().Name == "FromHeaderAttribute" ||
+                    attribute.GetType().Name == "FromFormAttribute" ||
+                    attribute.GetType().Name == "FromBodyAttribute"));
+
+            return hasAttribute;
+        }
     }
 }
