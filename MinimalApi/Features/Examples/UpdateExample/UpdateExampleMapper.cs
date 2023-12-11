@@ -14,6 +14,7 @@ namespace MinimalApi.Features.Examples.UpdateExample
             }
         };
 
-        public override Example ToEntity(UpdateExampleRequest request) => new(request.Example.FirstName, request.Example.LastName, request.Id);
+        public override Example ToEntity(UpdateExampleRequest request) => 
+            new(request.Data.FirstName, request.Data.LastName, request.Id);
     }
 }
