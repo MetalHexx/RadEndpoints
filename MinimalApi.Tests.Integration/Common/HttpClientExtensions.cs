@@ -1,5 +1,5 @@
-﻿using System.Text.Json;
-using RadEndpoint = MinimalApi.Http.Endpoints.RadEndpoint;
+﻿using MinimalApi.Http.Endpoints;
+using System.Text.Json;
 
 namespace MinimalApi.Tests.Integration.Common
 {
@@ -41,16 +41,16 @@ namespace MinimalApi.Tests.Integration.Common
         }
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PutAsync<TRequest, TResponse>(this HttpClient client, string route, TRequest request)
-        {
+        {            
             var httpResponse = await client.PutAsJsonAsync(route, request);
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
         }
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PutAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-        {
-            var route = RadEndpoint.GetRoute<TEndpoint>();
-            var httpResponse = await client.PutAsJsonAsync(route, request);
+        {   
+            var httpRequest = EndpointRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, HttpMethod.Put);
+            var httpResponse = await client.SendAsync(httpRequest);
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
         }
@@ -66,6 +66,6 @@ namespace MinimalApi.Tests.Integration.Common
                 var stringResponse = await response.Content.ReadAsStringAsync();
                 throw new EndpointResponseException(stringResponse, response, ex);
             }
-        } 
+        }
     }
 }

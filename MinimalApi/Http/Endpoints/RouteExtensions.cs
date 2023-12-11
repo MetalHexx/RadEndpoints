@@ -1,7 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Net;
+﻿using System.Net;
 using System.Reflection;
-using RadEndpoint = MinimalApi.Http.Endpoints.RadEndpoint;
 
 namespace MinimalApi.Tests.Integration.Common
 {
@@ -15,34 +13,63 @@ namespace MinimalApi.Tests.Integration.Common
             return route;
         }
 
-        /// <summary>
-        /// Speeds up test runs by caching property info and reducing reflection calls
-        /// </summary>
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
-
-        public static string MapRoute(this string route, object request)
+        public static string MapRoute(this string path, object requestObject)
         {
-            foreach (var property in request.GetType().GetProperties())
+            var properties = requestObject.GetType().GetProperties();
+            bool hasAnyRouteOrQueryAttributes = properties.Any(property => property.IsDefined(typeof(FromRouteAttribute)) || property.IsDefined(typeof(FromQueryAttribute)));
+
+            foreach (var property in properties)
             {
-                var value = property.GetValue(request)
-                    ?.ToString()
-                    ?.WebEncode();
+                var isFromRoute = property.IsDefined(typeof(FromRouteAttribute));
+                var isFromQuery = property.IsDefined(typeof(FromQueryAttribute));
+                var hasNoAttributes = !property.IsDefined(typeof(Attribute));
 
-                if (string.IsNullOrEmpty(value)) continue;
+                if (isFromQuery) path = path.AppendQueryParameter(property, requestObject);
 
-                if(route.Contains(property.Name, StringComparison.OrdinalIgnoreCase))
-                {
-                    route = route.Replace($"{{{property.Name}}}", value, StringComparison.OrdinalIgnoreCase);
-                }
-                else
-                {   
-                    route = route.Contains("?") 
-                        ? route + $"&{property.Name}={value}"
-                        : route + $"?{property.Name}={value}";
-                }
+                else if (isFromRoute) path = path.AppendRouteParameter(property, requestObject);
+
+                else if (hasNoAttributes) path = property.ProcessNoAttributeProperty(path, requestObject);
             }
-            return route;
+            return path;
         }
+
+        private static string ProcessNoAttributeProperty(this PropertyInfo property, string route, object request)
+        {
+            if (property.PropertyType.IsClass && property.PropertyType != typeof(string))
+            {
+                return route;
+            }
+            if (route.Contains(property.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                return AppendRouteParameter(route, property, request);
+            }
+            else
+            {
+                return AppendQueryParameter(route, property, request);
+            }
+        }
+
+        private static string AppendQueryParameter(this string route, PropertyInfo property, object requestObject)
+        {
+            var value = property.GetPropertyValue(requestObject);
+
+            if (string.IsNullOrEmpty(value)) return route;
+
+            return route.Contains("?")
+                ? route + $"&{property.Name}={value}"
+                : route + $"?{property.Name}={value}";
+        }
+
+        private static string AppendRouteParameter(this string route, PropertyInfo property, object requestObject)
+        {
+            var value = property.GetPropertyValue(requestObject);
+
+            if (string.IsNullOrEmpty(value)) return route;
+
+            return route.Replace($"{{{property.Name}}}", value, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string? GetPropertyValue(this PropertyInfo property, object requestObject) => property.GetValue(requestObject)?.ToString()?.WebEncode();
         private static string WebEncode(this string value) => WebUtility.UrlEncode(value);
     }
 }

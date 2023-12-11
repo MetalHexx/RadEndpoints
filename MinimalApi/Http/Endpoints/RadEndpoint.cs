@@ -85,7 +85,7 @@ namespace MinimalApi.Http.Endpoints
         public RouteHandlerBuilder Put(string route)
         {
             SetRoute(route);
-            var builder = RouteBuilder!.MapPut(route, async (TRequest request, CancellationToken ct) => await Handle(request, ct));            
+            var builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));            
             return TryAddEndpointFilter(builder);
         }
 

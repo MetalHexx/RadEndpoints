@@ -6,7 +6,7 @@ namespace MinimalApi.Features.Examples.UpdateExample
     {
         public override void Configure()
         {
-            Put("/examples")
+            Put("/examples/{id}")
                 .Produces<UpdateExampleResponse>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound)
                 .AddSwagger(tag: Constants.ExamplesTag, desc: "Update an example.");
