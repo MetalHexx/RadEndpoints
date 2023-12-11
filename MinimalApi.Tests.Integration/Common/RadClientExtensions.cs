@@ -7,6 +7,7 @@ namespace MinimalApi.Tests.Integration.Common
     {
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> GetAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
+            where TRequest : RadRequest
         {
             var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
             var httpResponse = await client.GetAsync(route);
@@ -25,6 +26,7 @@ namespace MinimalApi.Tests.Integration.Common
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> DeleteAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
+            where TRequest : RadRequest
         {
             var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
             var httpResponse = await client.DeleteAsync(route);
@@ -34,6 +36,7 @@ namespace MinimalApi.Tests.Integration.Common
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PostAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
+            where TRequest : RadRequest
         {
             var route = RadEndpoint.GetRoute<TEndpoint>();
             var httpResponse = await client.PostAsJsonAsync(route, request);            
@@ -41,6 +44,7 @@ namespace MinimalApi.Tests.Integration.Common
         }
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PutAsync<TRequest, TResponse>(this HttpClient client, string route, TRequest request)
+            where TRequest : RadRequest
         {            
             var httpResponse = await client.PutAsJsonAsync(route, request);
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
@@ -48,6 +52,7 @@ namespace MinimalApi.Tests.Integration.Common
 
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PutAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
+            where TRequest : RadRequest
         {   
             var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, HttpMethod.Put);
             var httpResponse = await client.SendAsync(httpRequest);
