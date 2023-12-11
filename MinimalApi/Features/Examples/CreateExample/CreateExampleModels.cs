@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.CreateExample
 {
-    public class CreateExampleRequest 
+    public class CreateExampleRequest: RadRequest
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

@@ -3,7 +3,7 @@ using MinimalApi.Features.Examples._common;
 
 namespace MinimalApi.Features.Examples.GetExampleChild
 {
-    public class SearchExampleChildRequest
+    public class SearchExampleChildRequest : RadRequest
     {
         [FromRoute]
         public int ParentId { get; set; }

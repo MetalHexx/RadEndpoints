@@ -1,8 +1,6 @@
 ﻿namespace MinimalApi.Features.Examples.DeleteExample
 {
-    public class DeleteExampleResponse : RadResponse { }
-
-    public class DeleteExampleRequest
+    public class DeleteExampleRequest : RadRequest
     {
         public int Id { get; set; }
     }
@@ -14,4 +12,6 @@
             RuleFor(e => e.Id).GreaterThan(0);
         }
     }
+
+    public class DeleteExampleResponse : RadResponse { }
 }

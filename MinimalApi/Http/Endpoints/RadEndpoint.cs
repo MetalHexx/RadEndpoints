@@ -59,7 +59,7 @@ namespace MinimalApi.Http.Endpoints
     }
     public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint 
         where TResponse : RadResponse, new() 
-        where TRequest : class
+        where TRequest : RadRequest
     {
         public TResponse Response { get; set; } = new();
 
@@ -111,7 +111,7 @@ namespace MinimalApi.Http.Endpoints
 
     public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>
         where TResponse : RadResponse, new()
-        where TRequest : class
+        where TRequest : RadRequest
         where TMapper : IRadMapper
     {
         protected TMapper Map { get; private set; } = default!;
@@ -121,7 +121,8 @@ namespace MinimalApi.Http.Endpoints
         }
     }
 
-    public abstract class RadEndpointWithoutRequest<TResponse> : RadEndpoint where TResponse : RadResponse, new()
+    public abstract class RadEndpointWithoutRequest<TResponse> : RadEndpoint 
+        where TResponse : RadResponse, new()
     {
         public TResponse Response { get; set; } = new();
         public abstract Task<IResult> Handle(CancellationToken ct);

@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.GetExample
 {
-    public class GetExampleRequest
+    public class GetExampleRequest : RadRequest
     {
         public int Id { get; set; }
     }

@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.SearchExamples
 {
-    public class SearchExamplesRequest
+    public class SearchExamplesRequest : RadRequest
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
