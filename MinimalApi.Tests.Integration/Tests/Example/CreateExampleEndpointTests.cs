@@ -15,12 +15,11 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             var (h, r) = await f.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, CreateExampleResponse>(createRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.Created);
-            r.Should().BeOfType<CreateExampleResponse>();
+            h.Should().BeSuccessful();
+            r.Should().BeRadResponse<CreateExampleResponse>().WithMessage("Example created successfully");
             r!.Data!.Id.Should().BeGreaterThan(0);
             r!.Data!.FirstName.Should().Be(createRequest.FirstName);
             r!.Data!.LastName.Should().Be(createRequest.LastName);
-            r!.Message.Should().Be("Example created successfully");
         }
 
         [Fact]
@@ -34,9 +33,8 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             var (h, r) = await f.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, ProblemDetails>(createRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.Conflict);
-            r.Should().BeOfType<ProblemDetails>();            
-            r!.Title.Should().Be("An example with the same first and last name already exists");
+            h.Should().HaveClientError();
+            r.Should().BeProblem().WithTitle("An example with the same first and last name already exists");
         }
 
         [Fact]
@@ -50,9 +48,8 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             var (h, r) = await f.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, ProblemDetails>(createRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Should().BeOfType<ProblemDetails>();
-            r!.Extensions.Should().ContainKey("FirstName");
+            h.Should().HaveClientError();
+            r.Should().BeProblem().WithKey("FirstName");
         }
 
         [Fact]
@@ -66,9 +63,8 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             var (h, r) = await f.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, ProblemDetails>(createRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Should().BeOfType<ProblemDetails>();
-            r!.Extensions.Should().ContainKey("LastName");
+            h.Should().HaveClientError();
+            r.Should().BeProblem().WithTitle("Validation Error").WithKey("LastName");
         }
     }
 }
