@@ -10,7 +10,7 @@ namespace MinimalApi.Tests.Integration.Common
             where TRequest : RadRequest
         {
             var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
-            using var httpResponse = await client.GetAsync(route);
+            var httpResponse = await client.GetAsync(route);
             client.Dispose();
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
@@ -20,7 +20,7 @@ namespace MinimalApi.Tests.Integration.Common
             where TEndpoint : RadEndpoint
         {
             var route = RadEndpoint.GetRoute<TEndpoint>();
-            using var httpResponse = await client.GetAsync(route);
+            var httpResponse = await client.GetAsync(route);
             client.Dispose();
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
@@ -31,7 +31,7 @@ namespace MinimalApi.Tests.Integration.Common
             where TRequest : RadRequest
         {
             var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
-            using var httpResponse = await client.DeleteAsync(route);
+            var httpResponse = await client.DeleteAsync(route);
             client.Dispose();
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
@@ -42,7 +42,7 @@ namespace MinimalApi.Tests.Integration.Common
             where TRequest : RadRequest
         {
             var route = RadEndpoint.GetRoute<TEndpoint>();
-            using var httpResponse = await client.PostAsJsonAsync(route, request);
+            var httpResponse = await client.PostAsJsonAsync(route, request);
             client.Dispose();
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
@@ -51,7 +51,7 @@ namespace MinimalApi.Tests.Integration.Common
         public async static Task<(HttpResponseMessage HttpResponse, TResponse? EndpointResponse)> PutAsync<TRequest, TResponse>(this HttpClient client, string route, TRequest request)
             where TRequest : RadRequest
         {            
-            using var httpResponse = await client.PutAsJsonAsync(route, request);
+            var httpResponse = await client.PutAsJsonAsync(route, request);
             client.Dispose();
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
@@ -62,7 +62,7 @@ namespace MinimalApi.Tests.Integration.Common
             where TRequest : RadRequest
         {   
             var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, HttpMethod.Put);
-            using var httpResponse = await client.SendAsync(httpRequest);
+            var httpResponse = await client.SendAsync(httpRequest);
             client.Dispose();
 
             return (httpResponse, await httpResponse.DeserializeJson<TResponse>());
