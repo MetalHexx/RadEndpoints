@@ -20,16 +20,19 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 
             //Act
             var deleteResult = await f.Client.DeleteAsync<DeleteExampleEndpoint, DeleteExampleRequest, DeleteExampleResponse>(deleteRequest);
-            var getResult = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new() 
+            var getResult = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ProblemDetails>(new() 
             { 
                 Id = createResult.Content.Data.Id 
             });
 
             //Assert
-            deleteResult.Http.StatusCode.Should().Be(HttpStatusCode.OK);
-            deleteResult.Content.Should().BeOfType<DeleteExampleResponse>();
-            deleteResult.Content.Message.Should().Be("Example deleted successfully");
-            getResult.Http.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            deleteResult.Should().BeSuccessful<DeleteExampleResponse>()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithMessage("Example deleted successfully");
+
+            getResult.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.NotFound)
+                .WithMessage("Example not found");
         }
     }
 }

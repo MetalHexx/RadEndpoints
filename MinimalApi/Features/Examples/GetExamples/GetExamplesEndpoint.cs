@@ -16,6 +16,7 @@ namespace MinimalApi.Features.Examples.GetExamples
             Logger.Log(LogLevel.Information, "This is an example log message.");
             var examples = await s.GetExamples();
             Response = Map.FromEntity(examples);
+            Response.Message = "Examples retrieved successfully";
 
             return Ok(Response);
         }

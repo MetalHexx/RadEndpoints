@@ -51,6 +51,12 @@ namespace MinimalApi.Tests.Integration.Common
             result.Http.StatusCode.Should().Be(statusCode, $"the status code should be {statusCode}");
             return this;
         }
+
+        public RadTestResultAssertion<TResponse> WithContentNotNull()
+        {
+            result.Content.Should().NotBeNull($"the content should have data");
+            return this;
+        }
     }
 
     public class RadTestResultProblemAssertion(RadTestResult<ProblemDetails> result)

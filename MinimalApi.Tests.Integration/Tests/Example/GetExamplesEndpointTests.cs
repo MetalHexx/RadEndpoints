@@ -12,9 +12,10 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             var r = await f.Client.GetAsync<GetExamplesEndpoint, GetExamplesResponse>();
 
             //Arrange
-            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Content.Should().BeOfType<GetExamplesResponse>();
-            r.Content.Data.Should().NotBeEmpty();
+            r.Should().BeSuccessful<GetExamplesResponse>()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithMessage("Examples retrieved successfully")
+                .WithContentNotNull();
         }
     }
 }

@@ -16,10 +16,10 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             var r = await f.Client.PutAsync<CustomPutRequest, CustomPutResponse>(route, updateRequest);
 
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Content.Should().BeOfType<CustomPutResponse>();
-            r.Content.Data!.Id.Should().Be(1);
-            r.Content.Message.Should().Be("Example updated successfully");
+            r.Should().BeSuccessful<CustomPutResponse>()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithMessage("Example updated successfully")
+                .WithContentNotNull();
         }
 
         [Fact]
@@ -33,9 +33,9 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             var r = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
 
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            r.Content.Should().BeOfType<ProblemDetails>();
-            r.Content.Title.Should().Be("Could not find and example with the id provided");
+            r.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.NotFound)
+                .WithMessage("Could not find and example with the id provided");
         }
 
         [Fact]        
@@ -51,9 +51,10 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             var r = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
 
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Content.Should().BeOfType<ProblemDetails>();
-            r.Content.Extensions.Should().ContainKey("FirstName");
+            r.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.BadRequest)
+                .WithMessage("Validation Error")
+                .WithKey("FirstName");
         }
 
         [Fact]
@@ -69,9 +70,10 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             var r = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
 
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Content.Should().BeOfType<ProblemDetails>();
-            r.Content.Extensions.Should().ContainKey("LastName");
+            r.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.BadRequest)
+                .WithMessage("Validation Error")
+                .WithKey("LastName");
         }
     }
 }

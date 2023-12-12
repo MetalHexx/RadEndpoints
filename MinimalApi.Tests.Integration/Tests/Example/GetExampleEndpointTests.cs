@@ -1,4 +1,5 @@
-﻿using MinimalApi.Features.Examples.GetExample;
+﻿using MinimalApi.Features.Examples.CreateExample;
+using MinimalApi.Features.Examples.GetExample;
 
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
@@ -15,8 +16,10 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             });
 
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Content.Should().BeOfType<GetExampleResponse>();           
+            r.Should().BeSuccessful<GetExampleResponse>()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithMessage("Example retrieved successfully");
+          
             r.Content.Data!.Id.Should().Be(1);
         }
 
@@ -30,9 +33,9 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             });
 
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            r.Content.Should().BeOfType<ProblemDetails>();
-            r.Content.Title.Should().Be("Example not found");
+            r.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.NotFound)
+                .WithMessage("Example not found");
         }
         [Fact]
         public async void When_IdInvalid_ReturnsProblem()
@@ -44,9 +47,9 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             });
 
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Content.Should().BeOfType<ProblemDetails>();
-            r.Content.Extensions.Should().ContainKey("Id");
+            r.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.BadRequest)
+                .WithKey("Id");
         }
     }
 }

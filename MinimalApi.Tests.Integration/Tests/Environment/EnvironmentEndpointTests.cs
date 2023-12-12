@@ -12,9 +12,11 @@ namespace MinimalApi.Tests.Integration.Tests.Environment
             var r = await f.Client.GetAsync<GetEnvironmentEndpoint, GetEnvironmentResponse>();
 
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Content.Should().BeOfType<GetEnvironmentResponse>();
-            r.Content.Should().NotBeNull();
+            r.Should().BeSuccessful<GetEnvironmentResponse>()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithMessage("Environment information retrieved successfully")
+                .WithContentNotNull();
+
             r.Content.ApplicationName.Should().NotBeEmpty();
             r.Content.EnvironmentName.Should().NotBeEmpty();
         }

@@ -17,10 +17,12 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             });
 
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Content.Should().BeOfType<SearchChildExampleResponse>();            
+
+            r.Should().BeSuccessful<SearchChildExampleResponse>()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithMessage("Children found");
+
             r.Content.Data.Should().Contain(e => e.FirstName == "Luke" && e.LastName == "Skywalker");
-            r.Content.Message.Should().Be("Children found");
         }
 
         [Theory]
@@ -37,9 +39,10 @@ namespace MinimalApi.Tests.Integration.Tests.Example
                 LastName = lastName
             });
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Content.Should().BeOfType<ProblemDetails>();
-            r.Content.Should().NotBeNull();
+
+            r.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.BadRequest)
+                .WithMessage("Validation Error");
         }
 
         [Fact]
@@ -53,9 +56,9 @@ namespace MinimalApi.Tests.Integration.Tests.Example
                 LastName = "Skywalker"
             });
             //Assert
-            r.Http.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            r.Content.Should().BeOfType<ProblemDetails>();
-            r.Content.Should().NotBeNull();
+            r.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.NotFound)
+                .WithMessage("No children found");
         }
     }
 }
