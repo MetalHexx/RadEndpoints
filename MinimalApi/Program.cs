@@ -10,7 +10,7 @@ builder.Services.AddEndpoints();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IExampleService, ExampleService>();
-builder.Services.AddSingleton<ICustomPutMapper, CustomPutMapper>();
+builder.Services.AddSingleton<ICustomPutMapper, CustomPutMapper>(); //To demonstrate how to create a custom mapper with no rad magic
 
 var app = builder.Build();
 
