@@ -96,17 +96,16 @@ namespace MinimalApi.Tests.Integration.Common
 
         private static string MapRouteParam(this string url, string name, string value) =>
             url.Replace($"{{{name}}}", HttpUtility.UrlEncode(value), StringComparison.OrdinalIgnoreCase);
+
         public static bool HasRequestModelAttributes<TRequest>()
         {
-            var hasAttribute = typeof(TRequest).GetProperties()
-                .Any(property => property.GetCustomAttributes().Any(attribute =>
-                    attribute.GetType().Name == "FromRouteAttribute" ||
-                    attribute.GetType().Name == "FromQueryAttribute" ||
-                    attribute.GetType().Name == "FromHeaderAttribute" ||
-                    attribute.GetType().Name == "FromFormAttribute" ||
-                    attribute.GetType().Name == "FromBodyAttribute"));
-
-            return hasAttribute;
+            return typeof(TRequest).GetProperties()
+                .SelectMany(property => property.GetCustomAttributes())
+                .Any(attribute => attribute is FromRouteAttribute ||
+                                  attribute is FromQueryAttribute ||
+                                  attribute is FromHeaderAttribute ||
+                                  attribute is FromFormAttribute ||
+                                  attribute is FromBodyAttribute);
         }
     }
 }
