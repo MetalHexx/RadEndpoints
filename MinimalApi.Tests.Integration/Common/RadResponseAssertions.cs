@@ -1,89 +1,101 @@
-﻿using FluentAssertions.Primitives;
+﻿using FluentAssertions.Execution;
+using FluentAssertions.Primitives;
 using MinimalApi.Http.Endpoints;
 
 namespace MinimalApi.Tests.Integration.Common
 {
-    public static class RadResponseAssertionsExtensions
+    public static class RadTestResultAssertions
     {
-        public static RadResponseBuilder BeRadResponse<T>(this ObjectAssertions assertions) where T : RadResponse
+        public static RadTestResultAssertion<TResponse> BeSuccessful<TResponse>(this ObjectAssertions assertions)
+        where TResponse : RadResponse
         {
-            var response = assertions.Subject.Should().BeOfType<T>().Subject;
+            var testResult = assertions.Subject as RadTestResult<TResponse>;
 
-            var castedResponse = response as RadResponse;
+            Execute.Assertion
+                .ForCondition(testResult != null)
+                .FailWith("Expected object to be of type RadTestResult<{0}>, but found {1}.", typeof(TResponse), assertions.Subject.GetType());
 
-            return castedResponse is null
-                ? throw new RadTestException("The object is not a RadResponse or derived type.")
-                : new RadResponseBuilder(castedResponse);
+            Execute.Assertion
+                .ForCondition(testResult!.Http.IsSuccessStatusCode)
+                .FailWith("Expected HTTP response to be successful (2xx), but found {0}.", testResult.Http.StatusCode);
+
+            return new RadTestResultAssertion<TResponse>(testResult);
+        }
+
+        public static RadTestResultProblemAssertion BeProblem(this ObjectAssertions assertions)
+        {
+            var testResult = assertions.Subject as RadTestResult<ProblemDetails>;
+
+            Execute.Assertion
+                .ForCondition(testResult?.Content != null)
+                .FailWith("Expected object to be of type ProblemDetails, but found {1}.", typeof(ProblemDetails), assertions.Subject.GetType());
+
+            Execute.Assertion
+                .ForCondition(!testResult!.Http.IsSuccessStatusCode)
+                .FailWith("Expected HTTP response to be a problem (4xx), but found {0}.", testResult.Http.StatusCode);
+
+            return new RadTestResultProblemAssertion(testResult);
         }
     }
 
-    public class RadResponseBuilder(RadResponse response)
+    public class RadTestResultAssertion<TResponse>(RadTestResult<TResponse> result) where TResponse : RadResponse
     {
-        public RadResponseBuilder WithMessage(string message)
+        public RadTestResultAssertion<TResponse> WithMessage(string expectedMessage)
         {
-            response.Message.Should().Be(message);
+            result.Content.Message.Should().Be(expectedMessage, "the message in the response content should match");
+            return this;
+        }
+
+        public RadTestResultAssertion<TResponse> WithStatusCode(HttpStatusCode statusCode)
+        {
+            result.Http.StatusCode.Should().Be(statusCode, $"the status code should be {statusCode}");
             return this;
         }
     }
 
-    public static class ProblemDetailsAssertionsExtensions
+    public class RadTestResultProblemAssertion(RadTestResult<ProblemDetails> result)
     {
-        public static ProblemDetailsAssertionBuilder BeProblem(this ObjectAssertions assertions)
+        public RadTestResultProblemAssertion WithMessage(string expectedTitle)
         {
-            var problemDetails = assertions.Subject.Should().BeOfType<ProblemDetails>().Subject;
-            return new ProblemDetailsAssertionBuilder(problemDetails);
-        }
-    }
-
-    public class ProblemDetailsAssertionBuilder
-    {
-        private readonly ProblemDetails _problemDetails;
-
-        public ProblemDetailsAssertionBuilder(ProblemDetails problemDetails)
-        {
-            _problemDetails = problemDetails;
-        }
-
-        public ProblemDetailsAssertionBuilder WithKey(string expectedKey)
-        {
-            _problemDetails.Extensions.Should().ContainKey(expectedKey);
+            result.Content.Title.Should().Be(expectedTitle, "the message in the response content should match");
             return this;
         }
 
-        public ProblemDetailsAssertionBuilder WithKeyAndValue(string expectedKey, string expectedValue)
+        public RadTestResultProblemAssertion WithStatusCode(HttpStatusCode statusCode)
         {
-            _problemDetails.Extensions.Should().ContainKey(expectedKey)
+            result.Http.StatusCode.Should().Be(statusCode, $"the status code should be {statusCode}");
+            result.Content.Status.Should().Be((int)statusCode, $"the status code should be {statusCode}");
+            return this;
+        }
+
+        public RadTestResultProblemAssertion WithKey(string expectedKey)
+        {
+            result.Content.Extensions.Should().ContainKey(expectedKey);
+            return this;
+        }
+
+        public RadTestResultProblemAssertion WithKeyAndValue(string expectedKey, string expectedValue)
+        {
+            result.Content.Extensions.Should().ContainKey(expectedKey)
                 .WhoseValue!.ToString().Should().Be(expectedValue);
             return this;
         }
 
-        public ProblemDetailsAssertionBuilder WithTitle(string title)
+        public RadTestResultProblemAssertion WithDetail(string expectedDetail)
         {
-            _problemDetails.Title.Should().Be(title);
+            result.Content.Detail.Should().Be(expectedDetail);
             return this;
         }
 
-        public ProblemDetailsAssertionBuilder WithStatus(int status)
+        public RadTestResultProblemAssertion WithInstance(string expectedInstance)
         {
-            _problemDetails.Status.Should().Be(status);
+            result.Content.Instance.Should().Be(expectedInstance);
             return this;
         }
 
-        public ProblemDetailsAssertionBuilder WithDetail(string detail)
+        public RadTestResultProblemAssertion WithContentType(string expectedType)
         {
-            _problemDetails.Detail.Should().Be(detail);
-            return this;
-        }
-
-        public ProblemDetailsAssertionBuilder WithInstance(string instance)
-        {
-            _problemDetails.Instance.Should().Be(instance);
-            return this;
-        }
-
-        public ProblemDetailsAssertionBuilder WithType(string type)
-        {
-            _problemDetails.Type.Should().Be(type);
+            result.Content.Type.Should().Be(expectedType);
             return this;
         }
     }
