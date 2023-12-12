@@ -103,15 +103,19 @@ namespace MinimalApi.Http.Endpoints
 
             var validatorType = typeof(IValidator<>).MakeGenericType(requestType);
 
-            var services = serviceProvider.GetServices(validatorType);            
-
-            foreach (var service in services)
+            using (var scope = serviceProvider.CreateScope())
             {
-                if (service is null) continue;
+                var scopedProvider = scope.ServiceProvider;
+                var services = scopedProvider.GetServices(validatorType);
 
-                if (validatorType.IsAssignableFrom(service.GetType()))
+                foreach (var service in services)
                 {
-                    return true;
+                    if (service is null) continue;
+
+                    if (validatorType.IsAssignableFrom(service.GetType()))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;

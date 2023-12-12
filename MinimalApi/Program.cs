@@ -5,8 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>(lifetime: ServiceLifetime.Singleton); //This must be added before AddEndpoints to discover validators
 builder.Services.AddEndpoints();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>(lifetime: ServiceLifetime.Scoped);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IExampleService, ExampleService>();
