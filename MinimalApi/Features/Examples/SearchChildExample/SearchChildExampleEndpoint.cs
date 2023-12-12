@@ -2,20 +2,20 @@
 
 namespace MinimalApi.Features.Examples.GetExampleChild
 {
-    public class SearchExampleChildrenEndpoint(IExampleService s) : RadEndpoint<SearchExampleChildRequest, SearchExampleChildResponse, SearchExampleChildMapper>
+    public class SearchChildExampleEndpoint(IExampleService s) : RadEndpoint<SearchChildExampleRequest, SearchChildExampleResponse, SearchChildExampleMapper>
     {
         public override void Configure()
         {
             Get("/examples/{parentId}/child")
-                .Produces<SearchExampleChildResponse>(StatusCodes.Status200OK)
+                .Produces<SearchChildExampleResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .AddSwagger(tag: Constants.ExamplesTag, desc: "Given a parent, find children by first or last name");
         }
 
-        public override async Task<IResult> Handle(SearchExampleChildRequest r, CancellationToken ct)
+        public override async Task<IResult> Handle(SearchChildExampleRequest r, CancellationToken ct)
         {
-            var children = await s.FindExampleChild(r.ParentId, r.FirstName, r.LastName);
+            var children = await s.SearchChildExample(r.ParentId, r.FirstName, r.LastName);
 
             if(children.Any() == false)
             {

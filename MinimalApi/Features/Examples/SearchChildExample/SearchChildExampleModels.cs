@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MinimalApi.Features.Examples._common;
+﻿using MinimalApi.Features.Examples._common;
 
 namespace MinimalApi.Features.Examples.GetExampleChild
 {
-    public class SearchExampleChildRequest : RadRequest
+    public class SearchChildExampleRequest : RadRequest
     {
         [FromRoute]
         public int ParentId { get; set; }
@@ -13,9 +12,9 @@ namespace MinimalApi.Features.Examples.GetExampleChild
         public string? LastName { get; set; }
     }
 
-    public class SearchExampleChildrenValidator : AbstractValidator<SearchExampleChildRequest>
+    public class SearchChildExampleValidator : AbstractValidator<SearchChildExampleRequest>
     {
-        public SearchExampleChildrenValidator()
+        public SearchChildExampleValidator()
         {
             RuleFor(x => x.ParentId).GreaterThan(0);
             RuleFor(x => x.FirstName).NotEmpty().When(x => string.IsNullOrEmpty(x.LastName));
@@ -23,5 +22,5 @@ namespace MinimalApi.Features.Examples.GetExampleChild
         }
     }
 
-    public class SearchExampleChildResponse : RadResponse<IEnumerable<ExampleDto>> { }
+    public class SearchChildExampleResponse : RadResponse<IEnumerable<ExampleDto>> { }
 }

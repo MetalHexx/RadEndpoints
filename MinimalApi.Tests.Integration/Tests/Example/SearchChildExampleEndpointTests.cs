@@ -3,13 +3,13 @@
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
     [Collection("Endpoint")]
-    public class FindExampleChildEndpointTests(RadEndpointFixture f)
+    public class SearchChildExampleEndpointTests(RadEndpointFixture f)
     {
         [Fact]
         public async Task Given_ParentWithChildExists_ReturnsSuccess()
         {
             //Act
-            var (h, r) = await f.Client.GetAsync<SearchExampleChildrenEndpoint, SearchExampleChildRequest, SearchExampleChildResponse>(new()
+            var (h, r) = await f.Client.GetAsync<SearchChildExampleEndpoint, SearchChildExampleRequest, SearchChildExampleResponse>(new()
             {
                 ParentId = 4,
                 FirstName = "Luke",
@@ -18,7 +18,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 
             //Assert
             h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().BeOfType<SearchExampleChildResponse>();            
+            r.Should().BeOfType<SearchChildExampleResponse>();            
             r!.Data.Should().Contain(e => e.FirstName == "Luke" && e.LastName == "Skywalker");
             r.Message.Should().Be("Children found");
         }
@@ -30,7 +30,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         public async Task When_InvalidRequest_ReturnsProblem(string firstName, string lastName, int parentId)
         {
             //Act
-            var (h, r) = await f.Client.GetAsync<SearchExampleChildrenEndpoint, SearchExampleChildRequest, ProblemDetails>(new()
+            var (h, r) = await f.Client.GetAsync<SearchChildExampleEndpoint, SearchChildExampleRequest, ProblemDetails>(new()
             {
                 ParentId = parentId,
                 FirstName = firstName,
@@ -46,7 +46,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         public async Task Given_ParentDoesntExists_ReturnsProblem()
         {
             //Act
-            var (h, r) = await f.Client.GetAsync<SearchExampleChildrenEndpoint, SearchExampleChildRequest, ProblemDetails>(new()
+            var (h, r) = await f.Client.GetAsync<SearchChildExampleEndpoint, SearchChildExampleRequest, ProblemDetails>(new()
             {
                 ParentId = 1,
                 FirstName = "Luke",

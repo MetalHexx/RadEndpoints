@@ -8,7 +8,7 @@
         Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
         Task<Example?> InsertExample(Example example);
         Task<Example?> UpdateExample(Example example);
-        Task<IEnumerable<Example>> FindExampleChild(int parentId, string? firstName, string? lastName);
+        Task<IEnumerable<Example>> SearchChildExample(int parentId, string? firstName, string? lastName);
     }
 
     public class ExampleService : IExampleService
@@ -102,7 +102,7 @@
             return results;
         }
 
-        public async Task<IEnumerable<Example>> FindExampleChild(int parentId, string? firstName, string? lastName)
+        public async Task<IEnumerable<Example>> SearchChildExample(int parentId, string? firstName, string? lastName)
         {
             await Task.Delay(1);
 
