@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using MinimalApi.Features.Examples.CreateExample;
-using MinimalApi.Http.Filters;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace MinimalApi.Http.Endpoints
 {
@@ -53,8 +50,8 @@ namespace MinimalApi.Http.Endpoints
                 if (typeof(IRadMapper).IsAssignableFrom(arg))
                 {
                     var mapper = Activator.CreateInstance(arg);
-                    var setMapperMethod = endpoint.GetType().GetMethod("SetMapper", new[] { arg });
-                    setMapperMethod?.Invoke(endpoint, new[] { mapper });
+                    var setMapperMethod = endpoint.GetType().GetMethod("SetMapper", [arg]);
+                    setMapperMethod?.Invoke(endpoint, [mapper]);
                     break;
                 }
             }
