@@ -99,7 +99,8 @@ namespace MinimalApi.Tests.Integration.Common
 
         public static bool HasRequestModelAttributes<TRequest>()
         {
-            return typeof(TRequest).GetProperties()
+            return typeof(TRequest)
+                .GetProperties()
                 .SelectMany(property => property.GetCustomAttributes())
                 .Any(attribute => attribute is FromRouteAttribute ||
                                   attribute is FromQueryAttribute ||
