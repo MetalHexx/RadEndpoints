@@ -20,13 +20,13 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             };
 
             //Act
-            var (h, r) = await f.Client.GetAsync<SearchExamplesEndpoint, SearchExamplesRequest, SearchExamplesResponse>(request); 
+            var r = await f.Client.GetAsync<SearchExamplesEndpoint, SearchExamplesRequest, SearchExamplesResponse>(request); 
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().BeOfType<SearchExamplesResponse>();
-            r!.Data.Should().Contain(e => e.FirstName == "Luke" && e.LastName == "Skywalker");
-            r.Data!.First().LastName.Should().Be("Skywalker");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
+            r.Content.Should().BeOfType<SearchExamplesResponse>();
+            r.Content.Data.Should().Contain(e => e.FirstName == "Luke" && e.LastName == "Skywalker");
+            r.Content.Data!.First().LastName.Should().Be("Skywalker");
         }
 
         [Fact]
@@ -40,13 +40,13 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             };
 
             //Act
-            var (h, r) = await f.Client.GetAsync<SearchExamplesEndpoint, SearchExamplesRequest, ProblemDetails>(request); 
+            var r = await f.Client.GetAsync<SearchExamplesEndpoint, SearchExamplesRequest, ProblemDetails>(request); 
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Should().BeOfType<ProblemDetails>();
-            r!.Extensions.Should().ContainKey("FirstName");
-            r.Extensions.Should().ContainKey("LastName");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            r.Content.Should().BeOfType<ProblemDetails>();
+            r.Content.Extensions.Should().ContainKey("FirstName");
+            r.Content.Extensions.Should().ContainKey("LastName");
         }
     }
 }

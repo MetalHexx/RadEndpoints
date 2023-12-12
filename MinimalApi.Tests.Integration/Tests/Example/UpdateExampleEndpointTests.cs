@@ -13,15 +13,15 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             updateRequest.Id = 1;
 
             //Act
-            var (h, r) = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, UpdateExampleResponse>(updateRequest);
+            var r = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, UpdateExampleResponse>(updateRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().BeOfType<UpdateExampleResponse>();
-            r!.Data!.Id.Should().Be(updateRequest.Id);
-            r!.Data!.FirstName.Should().Be(updateRequest.Data.FirstName);
-            r!.Data!.LastName.Should().Be(updateRequest.Data.LastName);
-            r!.Message.Should().Be("Example updated successfully");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
+            r.Content.Should().BeOfType<UpdateExampleResponse>();
+            r.Content.Data!.Id.Should().Be(updateRequest.Id);
+            r.Content.Data.FirstName.Should().Be(updateRequest.Data.FirstName);
+            r.Content.Data.LastName.Should().Be(updateRequest.Data.LastName);
+            r.Content.Message.Should().Be("Example updated successfully");
         }
 
         [Fact]
@@ -32,12 +32,12 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             updateRequest.Id = 999;
 
             //Act
-            var (h, r) = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(updateRequest);
+            var r = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(updateRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            r.Should().BeOfType<ProblemDetails>();            
-            r!.Title.Should().Be("Example not found");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            r.Content.Should().BeOfType<ProblemDetails>();            
+            r.Content.Title.Should().Be("Example not found");
         }
 
         [Fact]
@@ -48,12 +48,12 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             updateRequest.Data.FirstName = string.Empty;
 
             //Act
-            var (h, r) = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(updateRequest);
+            var r = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(updateRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Should().BeOfType<ProblemDetails>();
-            r!.Extensions.Should().ContainKey("Data.FirstName");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            r.Content.Should().BeOfType<ProblemDetails>();
+            r.Content.Extensions.Should().ContainKey("Data.FirstName");
         }
 
         [Fact]
@@ -64,12 +64,12 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             updateRequest.Data.LastName = string.Empty;
 
             //Act
-            var (h, r) = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(updateRequest);
+            var r = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(updateRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Should().BeOfType<ProblemDetails>();
-            r!.Extensions.Should().ContainKey("Data.LastName");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            r.Content.Should().BeOfType<ProblemDetails>();
+            r.Content.Extensions.Should().ContainKey("Data.LastName");
         }
     }
 }

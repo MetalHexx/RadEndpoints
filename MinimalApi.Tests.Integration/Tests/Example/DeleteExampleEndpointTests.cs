@@ -15,21 +15,21 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         {
             //Arrange 
             var createRequest = f.DataGenerator.Create<CreateExampleRequest>();
-            var (_, createResponse) = await f.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, CreateExampleResponse>(createRequest);
-            var deleteRequest = new DeleteExampleRequest { Id = createResponse!.Data!.Id };
+            var createResult = await f.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, CreateExampleResponse>(createRequest);
+            var deleteRequest = new DeleteExampleRequest { Id = createResult.Content.Data!.Id };
 
             //Act
-            var (deleteHttpRequest, deleteResponse) = await f.Client.DeleteAsync<DeleteExampleEndpoint, DeleteExampleRequest, DeleteExampleResponse>(deleteRequest);
-            var (getHttpResponse, _) = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new() 
+            var deleteResult = await f.Client.DeleteAsync<DeleteExampleEndpoint, DeleteExampleRequest, DeleteExampleResponse>(deleteRequest);
+            var getResult = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new() 
             { 
-                Id = createResponse.Data.Id 
+                Id = createResult.Content.Data.Id 
             });
 
             //Assert
-            deleteHttpRequest.StatusCode.Should().Be(HttpStatusCode.OK);
-            deleteResponse.Should().BeOfType<DeleteExampleResponse>();
-            deleteResponse!.Message.Should().Be("Example deleted successfully");
-            getHttpResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            deleteResult.Http.StatusCode.Should().Be(HttpStatusCode.OK);
+            deleteResult.Content.Should().BeOfType<DeleteExampleResponse>();
+            deleteResult.Content.Message.Should().Be("Example deleted successfully");
+            getResult.Http.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
     }
 }

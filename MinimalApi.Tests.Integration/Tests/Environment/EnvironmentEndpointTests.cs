@@ -9,14 +9,14 @@ namespace MinimalApi.Tests.Integration.Tests.Environment
         public async Task When_Called_ReturnsSuccess()
         {
             //Act            
-            var (h, r) = await f.Client.GetAsync<GetEnvironmentEndpoint, GetEnvironmentResponse>();
+            var r = await f.Client.GetAsync<GetEnvironmentEndpoint, GetEnvironmentResponse>();
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().BeOfType<GetEnvironmentResponse>();
-            r!.Should().NotBeNull();
-            r!.ApplicationName.Should().NotBeEmpty();
-            r!.EnvironmentName.Should().NotBeEmpty();
+            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
+            r.Content.Should().BeOfType<GetEnvironmentResponse>();
+            r.Content.Should().NotBeNull();
+            r.Content.ApplicationName.Should().NotBeEmpty();
+            r.Content.EnvironmentName.Should().NotBeEmpty();
         }
     }
 }

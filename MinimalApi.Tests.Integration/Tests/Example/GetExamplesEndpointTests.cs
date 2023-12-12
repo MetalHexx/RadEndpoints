@@ -9,12 +9,12 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         public async Task When_Called_ReturnsSuccess()
         {
             //Act
-            var (h, r) = await f.Client.GetAsync<GetExamplesEndpoint, GetExamplesResponse>();
+            var r = await f.Client.GetAsync<GetExamplesEndpoint, GetExamplesResponse>();
 
             //Arrange
-            h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().BeOfType<GetExamplesResponse>();
-            r!.Data.Should().NotBeEmpty();
+            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
+            r.Content.Should().BeOfType<GetExamplesResponse>();
+            r.Content.Data.Should().NotBeEmpty();
         }
     }
 }

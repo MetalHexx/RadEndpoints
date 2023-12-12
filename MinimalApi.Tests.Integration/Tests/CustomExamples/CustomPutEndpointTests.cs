@@ -13,13 +13,13 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             var route = "/custom-examples/1";
 
             //Act
-            var (h, r) = await f.Client.PutAsync<CustomPutRequest, CustomPutResponse>(route, updateRequest);
+            var r = await f.Client.PutAsync<CustomPutRequest, CustomPutResponse>(route, updateRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().BeOfType<CustomPutResponse>();
-            r!.Data!.Id.Should().Be(1);
-            r!.Message.Should().Be("Example updated successfully");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
+            r.Content.Should().BeOfType<CustomPutResponse>();
+            r.Content.Data!.Id.Should().Be(1);
+            r.Content.Message.Should().Be("Example updated successfully");
         }
 
         [Fact]
@@ -30,12 +30,12 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             var route = "/custom-examples/999";
 
             //Act
-            var (h, r) = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
+            var r = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            r.Should().BeOfType<ProblemDetails>();           
-            r!.Title.Should().Be("Could not find and example with the id provided");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            r.Content.Should().BeOfType<ProblemDetails>();
+            r.Content.Title.Should().Be("Could not find and example with the id provided");
         }
 
         [Fact]        
@@ -48,12 +48,12 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             var route = "/custom-examples/1";
 
             //Act
-            var (h, r) = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
+            var r = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Should().BeOfType<ProblemDetails>();
-            r!.Extensions.Should().ContainKey("FirstName");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            r.Content.Should().BeOfType<ProblemDetails>();
+            r.Content.Extensions.Should().ContainKey("FirstName");
         }
 
         [Fact]
@@ -66,12 +66,12 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             var route = "/custom-examples/1";
 
             //Act
-            var (h, r) = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
+            var r = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Should().BeOfType<ProblemDetails>();
-            r!.Extensions.Should().ContainKey("LastName");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            r.Content.Should().BeOfType<ProblemDetails>();
+            r.Content.Extensions.Should().ContainKey("LastName");
         }
     }
 }

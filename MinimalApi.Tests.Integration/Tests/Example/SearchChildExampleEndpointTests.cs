@@ -9,7 +9,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         public async Task Given_ParentWithChildExists_ReturnsSuccess()
         {
             //Act
-            var (h, r) = await f.Client.GetAsync<SearchChildExampleEndpoint, SearchChildExampleRequest, SearchChildExampleResponse>(new()
+            var r = await f.Client.GetAsync<SearchChildExampleEndpoint, SearchChildExampleRequest, SearchChildExampleResponse>(new()
             {
                 ParentId = 4,
                 FirstName = "Luke",
@@ -17,10 +17,10 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             });
 
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.OK);
-            r.Should().BeOfType<SearchChildExampleResponse>();            
-            r!.Data.Should().Contain(e => e.FirstName == "Luke" && e.LastName == "Skywalker");
-            r.Message.Should().Be("Children found");
+            r.Http.StatusCode.Should().Be(HttpStatusCode.OK);
+            r.Content.Should().BeOfType<SearchChildExampleResponse>();            
+            r.Content.Data.Should().Contain(e => e.FirstName == "Luke" && e.LastName == "Skywalker");
+            r.Content.Message.Should().Be("Children found");
         }
 
         [Theory]
@@ -30,32 +30,32 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         public async Task When_InvalidRequest_ReturnsProblem(string firstName, string lastName, int parentId)
         {
             //Act
-            var (h, r) = await f.Client.GetAsync<SearchChildExampleEndpoint, SearchChildExampleRequest, ProblemDetails>(new()
+            var r = await f.Client.GetAsync<SearchChildExampleEndpoint, SearchChildExampleRequest, ProblemDetails>(new()
             {
                 ParentId = parentId,
                 FirstName = firstName,
                 LastName = lastName
             });
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            r.Should().BeOfType<ProblemDetails>();
-            r!.Should().NotBeNull();
+            r.Http.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            r.Content.Should().BeOfType<ProblemDetails>();
+            r.Content.Should().NotBeNull();
         }
 
         [Fact]
         public async Task Given_ParentDoesntExists_ReturnsProblem()
         {
             //Act
-            var (h, r) = await f.Client.GetAsync<SearchChildExampleEndpoint, SearchChildExampleRequest, ProblemDetails>(new()
+            var r = await f.Client.GetAsync<SearchChildExampleEndpoint, SearchChildExampleRequest, ProblemDetails>(new()
             {
                 ParentId = 1,
                 FirstName = "Luke",
                 LastName = "Skywalker"
             });
             //Assert
-            h.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            r.Should().BeOfType<ProblemDetails>();
-            r!.Should().NotBeNull();
+            r.Http.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            r.Content.Should().BeOfType<ProblemDetails>();
+            r.Content.Should().NotBeNull();
         }
     }
 }
