@@ -17,8 +17,7 @@ namespace MinimalApi.Http.Endpoints
         public static void MapEndpoints(this WebApplication app)
         {
             var httpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
-            var env = app.Services.GetRequiredService<IWebHostEnvironment>();
-            var logger = app.Services.GetRequiredService<ILogger<RadEndpoint>>();
+            var env = app.Services.GetRequiredService<IWebHostEnvironment>();            
 
             var endpointTypes = GetEndpointTypes();
 
@@ -29,12 +28,19 @@ namespace MinimalApi.Http.Endpoints
                 if (IsRequestValidatorRegistered(app.Services, endpoint)) endpoint.EnableValidation();
                 AddMapper(endpointType, endpoint);
 
-                endpoint.SetLogger(logger);
+                endpoint.SetLogger(GetLogger(app, endpointType));
                 endpoint.SetContext(httpContextAccessor);
                 endpoint.SetBuilder(app);
                 endpoint.SetEnvironment(env);
                 endpoint.Configure();
             }
+        }
+
+        private static ILogger GetLogger(WebApplication app, Type endpointType)
+        {
+            var loggerType = typeof(ILogger<>).MakeGenericType(endpointType);
+            var logger = (ILogger)app.Services.GetRequiredService(loggerType);
+            return logger;
         }
 
         private static void AddMapper(Type endpointType, RadEndpoint endpoint)
