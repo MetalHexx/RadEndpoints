@@ -1,5 +1,5 @@
 # RadEndpoints
-A lightweight API framework that embraces the power of Net Core Minimal APIs using a well-defined REPR Style (Request-Endpoint-Response) endpoint pattern.  
+A lightweight API framework that embraces the power of Net Core Minimal APIs using a well-defined REPR Style (Request-Endpoint-Response) endpoint pattern.
 
 While the framework has very strong opinions on endpoint structure, all of the helper/conveniences are virtually optional. Full minimal api functionality is preserved for more uncommon edge case scenarios or custom use cases.  As of now, this code is for experimental and educational purposes only.  
 
@@ -21,6 +21,7 @@ While the framework has very strong opinions on endpoint structure, all of the h
 - Clean and convenient response assertions for RadResponse / HttpResponse / [ProblemDetails](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-8.0) using [FluentAssertions](https://fluentassertions.com/introduction)
 ### Coming Soon:
 - Open Telemetry Endpoint Filters (Logging, Metrics, Traces)
+- Project item and api project templates 
 - Unit test coverage for framework code
 - Demo for Example API: observability infrastructure using Grafana / Prometheus / Zipkin / Kibana
 - Demo for Example API: Bogus oriented test mocking service
