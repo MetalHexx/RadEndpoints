@@ -19,10 +19,13 @@ While the framework has very strong opinions on endpoint structure, all of the h
 - [WebApplicationFactory](https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0) In-Memory Approach
 - Strongly typed "Routeless" HttpClient RadEndpoint Extensions
 - Clean and convenient response assertions for RadResponse / HttpResponse / [ProblemDetails](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-8.0) using [FluentAssertions](https://fluentassertions.com/introduction)
-#### Planned Features:
+### Coming Soon:
 - Open Telemetry Endpoint Filters (Logging, Metrics, Traces)
-
-### How to (coming soon!):
+- Unit test coverage for framework code
+- Demo for Example API: observability infrastructure using Grafana / Prometheus / Zipkin / Kibana
+- Demo for Example API: Bogus oriented test mocking service
+- Demo Ephemeral Test Environment w/[TestContainers](https://testcontainers.com/) 
+- Documentation / How Tos
 
 ### Credits
 This framework pays humble tribute to the [FastEndpoints](https://fast-endpoints.com/) as it borrows many syntactical and developer experience concepts from it.  Unless you're dead set on using Minimal APIs, I would highly recommend taking a look at that superior project which is actively maintained by a large community of contributors.
