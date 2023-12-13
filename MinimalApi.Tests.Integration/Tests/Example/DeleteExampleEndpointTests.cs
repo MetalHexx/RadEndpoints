@@ -17,13 +17,11 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             var createRequest = f.DataGenerator.Create<CreateExampleRequest>();
             var createResult = await f.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, CreateExampleResponse>(createRequest);
             var deleteRequest = new DeleteExampleRequest { Id = createResult.Content.Data!.Id };
+            var getRequest = new GetExampleRequest { Id = createResult.Content.Data!.Id };
 
             //Act
             var deleteResult = await f.Client.DeleteAsync<DeleteExampleEndpoint, DeleteExampleRequest, DeleteExampleResponse>(deleteRequest);
-            var getResult = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ProblemDetails>(new() 
-            { 
-                Id = createResult.Content.Data.Id 
-            });
+            var getResult = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ProblemDetails>(getRequest);
 
             //Assert
             deleteResult.Should().BeSuccessful<DeleteExampleResponse>()
