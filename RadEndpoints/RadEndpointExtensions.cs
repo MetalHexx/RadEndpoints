@@ -1,12 +1,17 @@
-﻿using System.Reflection;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-namespace MinimalApi.Http.Endpoints
+namespace RadEndpoints
 {
     public static class RadEndpointExtensions
     {
-        public static void AddEndpoints(this IServiceCollection services)
+        public static void AddEndpoints(this IServiceCollection services, Type assemblyType)
         {
-            var endpointTypes = GetEndpointTypes();
+            var endpointTypes = GetEndpointTypes(assemblyType);
 
             foreach (var endpointType in endpointTypes)
             {
@@ -14,12 +19,12 @@ namespace MinimalApi.Http.Endpoints
             }
         }
 
-        public static void MapEndpoints(this WebApplication app)
+        public static void MapEndpoints(this WebApplication app, Type assemblyType)
         {
             var httpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
-            var env = app.Services.GetRequiredService<IWebHostEnvironment>();            
+            var env = app.Services.GetRequiredService<IWebHostEnvironment>();
 
-            var endpointTypes = GetEndpointTypes();
+            var endpointTypes = GetEndpointTypes(assemblyType);
 
             foreach (var endpointType in endpointTypes)
             {
@@ -48,7 +53,7 @@ namespace MinimalApi.Http.Endpoints
             if (endpointType.BaseType is null) return;
 
             if (!IsSubclassOfRawGeneric(typeof(RadEndpoint<,,>), endpointType) && !IsSubclassOfRawGeneric(typeof(RadEndpointWithoutRequest<,>), endpointType)) return;
-            
+
             var genericArguments = endpointType.BaseType.GetGenericArguments();
 
             foreach (var arg in genericArguments)
@@ -127,8 +132,7 @@ namespace MinimalApi.Http.Endpoints
             return false;
         }
 
-        private static IEnumerable<Type> GetEndpointTypes() => Assembly
-            .GetExecutingAssembly()
+        public static IEnumerable<Type> GetEndpointTypes(Type assemblyType) => assemblyType.Assembly
             .GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(RadEndpoint)));
     }

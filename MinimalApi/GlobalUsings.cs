@@ -1,4 +1,3 @@
-﻿global using Microsoft.AspNetCore.Mvc;
-global using MinimalApi.Http.Endpoints;
-global using MinimalApi.Http.Filters;
+﻿global using RadEndpoints;
 global using FluentValidation;
+global using Microsoft.AspNetCore.Mvc;

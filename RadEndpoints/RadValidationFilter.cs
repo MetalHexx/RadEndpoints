@@ -1,10 +1,13 @@
-﻿namespace MinimalApi.Http.Filters
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
+
+namespace RadEndpoints
 {
-    internal class ValidationFilter<TRequest> : IEndpointFilter where TRequest : class
+    public class RadValidationFilter<TRequest> : IEndpointFilter where TRequest : class
     {
         private readonly IValidator<TRequest> _validator;
 
-        public ValidationFilter(IValidator<TRequest> validator)
+        public RadValidationFilter(IValidator<TRequest> validator)
         {
             _validator = validator;
         }

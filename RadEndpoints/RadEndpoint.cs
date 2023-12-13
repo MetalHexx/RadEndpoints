@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
-namespace MinimalApi.Http.Endpoints
+namespace RadEndpoints
 {
     public abstract class RadEndpoint
-    {   
+    {
         protected ILogger Logger { get; private set; } = null!;
         protected IEndpointRouteBuilder RouteBuilder { get; private set; } = null!;
         protected HttpContext HttpContext => _httpContextAccessor.HttpContext!;
@@ -13,7 +18,7 @@ namespace MinimalApi.Http.Endpoints
         protected bool HasValidator;
 
         protected static Ok Ok() => TypedResults.Ok();
-        protected static Ok<TResponse> Ok<TResponse>(TResponse responseData) => TypedResults.Ok(responseData);        
+        protected static Ok<TResponse> Ok<TResponse>(TResponse responseData) => TypedResults.Ok(responseData);
         protected static Created Created(string uri) => TypedResults.Created(uri);
         protected static Created<TResponse> Created<TResponse>(string uri, TResponse response) => TypedResults.Created(uri, response);
         protected static ProblemHttpResult ServerError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status500InternalServerError);
@@ -57,8 +62,8 @@ namespace MinimalApi.Http.Endpoints
             Env = env;
         }
     }
-    public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint 
-        where TResponse : RadResponse, new() 
+    public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint
+        where TResponse : RadResponse, new()
         where TRequest : RadRequest
     {
         public TResponse Response { get; set; } = new();
@@ -71,21 +76,21 @@ namespace MinimalApi.Http.Endpoints
         public RouteHandlerBuilder Get(string route)
         {
             SetRoute(route);
-            var builder = RouteBuilder!.MapGet(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));            
+            var builder = RouteBuilder!.MapGet(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Post(string route)
         {
             SetRoute(route);
-            var builder = RouteBuilder!.MapPost(route, async (TRequest request, CancellationToken ct) => await Handle(request, ct));            
+            var builder = RouteBuilder!.MapPost(route, async (TRequest request, CancellationToken ct) => await Handle(request, ct));
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Put(string route)
         {
             SetRoute(route);
-            var builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));            
+            var builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
             return TryAddEndpointFilter(builder);
         }
 
@@ -104,7 +109,7 @@ namespace MinimalApi.Http.Endpoints
         }
         private RouteHandlerBuilder TryAddEndpointFilter(RouteHandlerBuilder builder)
         {
-            if (HasValidator) builder.AddEndpointFilter<ValidationFilter<TRequest>>();
+            if (HasValidator) builder.AddEndpointFilter<RadValidationFilter<TRequest>>();
             return builder;
         }
     }
@@ -121,7 +126,7 @@ namespace MinimalApi.Http.Endpoints
         }
     }
 
-    public abstract class RadEndpointWithoutRequest<TResponse> : RadEndpoint 
+    public abstract class RadEndpointWithoutRequest<TResponse> : RadEndpoint
         where TResponse : RadResponse, new()
     {
         public TResponse Response { get; set; } = new();

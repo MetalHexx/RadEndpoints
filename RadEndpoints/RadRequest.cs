@@ -1,4 +1,4 @@
-﻿namespace MinimalApi.Http.Endpoints
+﻿namespace RadEndpoints
 {
     public abstract class RadRequest { }
     public abstract class RadRequest<T> : RadRequest

@@ -1,7 +1,8 @@
-﻿using System.Net;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Reflection;
 
-namespace MinimalApi.Tests.Integration.Common
+namespace RadEndpoints
 {
     public static class RadRouteExtensions
     {
@@ -41,11 +42,11 @@ namespace MinimalApi.Tests.Integration.Common
             }
             if (route.Contains(property.Name, StringComparison.OrdinalIgnoreCase))
             {
-                return AppendRouteParameter(route, property, request);
+                return route.AppendRouteParameter(property, request);
             }
             else
             {
-                return AppendQueryParameter(route, property, request);
+                return route.AppendQueryParameter(property, request);
             }
         }
 
