@@ -12,13 +12,13 @@ While the framework has very strong opinions on endpoint structure, all of the h
 - Ready-to-send response Object
 - Object Mapping (optional)
 - Simple Endpoint Mapping Helpers
-- Common TypedResult Helpers w/ProblemDetails
+- Common TypedResult Helpers w/[ProblemDetails](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-8.0)
 #### Automatic Endpoint Validation Filter
-- Using FluentValidations
+- Using [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
 #### Integration Testing
-- WebApplicationFactory Fixture
-- Routeless HttpClient Extentions
-- Custom response validators using FluentAssertions
+- [WebApplicationFactory](https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0) In-Memory Approach
+- Strongly typed "Routeless" HttpClient RadEndpoint Extensions
+- Clean and convenient response assertions for RadResponse / HttpResponse / [ProblemDetails](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-8.0) using [FluentAssertions](https://fluentassertions.com/introduction)
 #### Planned Features:
 - Open Telemetry Endpoint Filters (Logging, Metrics, Traces)
 
