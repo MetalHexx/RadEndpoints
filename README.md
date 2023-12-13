@@ -25,9 +25,10 @@ While the framework has very strong opinions on endpoint structure, all of the h
 - Using feature based "vertical slice" style architecture (optional approach)
 ### Coming Soon:
 - Open Telemetry Endpoint Filters (Logging, Metrics, Traces)
+- Unit test coverage for framework code
 - Project item and api project templates
 - CLI Tool w/[Spectre.Console](https://spectreconsole.net/)
-- Unit test coverage for framework code
+- Nuget package
 - Demo for Example API: observability infrastructure using Grafana / Prometheus / Zipkin / Kibana
 - Demo for Example API: Bogus oriented test mocking service
 - Demo Ephemeral Test Environment w/[TestContainers](https://testcontainers.com/) 
