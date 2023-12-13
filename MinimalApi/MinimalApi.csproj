@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Http\Filters\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RadEndpoints\RadEndpoints.csproj" />
   </ItemGroup>
 

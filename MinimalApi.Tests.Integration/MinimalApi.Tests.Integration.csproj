@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MinimalApi\MinimalApi.csproj" />
+    <ProjectReference Include="..\RadEndpoints.Testing\RadEndpoints.Testing.csproj" />
   </ItemGroup>
 
 </Project>

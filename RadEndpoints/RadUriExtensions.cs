@@ -1,8 +1,8 @@
 ﻿using System.Collections.Specialized;
 
-namespace MinimalApi.Http.Endpoints
+namespace RadEndpoints
 {
-    public static class UriExtensions
+    public static class RadUriExtensions
     {
         public static Uri AppendUri(this Uri uri, string path, NameValueCollection queries)
         {

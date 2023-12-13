@@ -1,4 +1,4 @@
-﻿namespace MinimalApi.Tests.Integration.Common
+﻿namespace RadEndpoints.Testing
 {
     public class RadTestException : Exception
     {

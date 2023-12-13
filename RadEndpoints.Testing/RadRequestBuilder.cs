@@ -3,16 +3,17 @@ using System.Text;
 using System.Web;
 using System.Text.Json;
 using System.Net.Mime;
-using MinimalApi.Http.Endpoints;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace MinimalApi.Tests.Integration.Common
+namespace RadEndpoints.Testing
 {
     public static class RadRequestBuilder
     {
         public static HttpRequestMessage BuildRequest<TEndpoint, TRequest>(HttpClient client, TRequest requestModel, HttpMethod method)
             where TEndpoint : RadEndpoint
         {
-            if(HasRequestModelAttributes<TRequest>())
+            if (HasRequestModelAttributes<TRequest>())
             {
                 return BuildRequestFromAttributes<TEndpoint, TRequest>(client, requestModel, method);
             }

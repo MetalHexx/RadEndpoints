@@ -1,8 +1,10 @@
-﻿using FluentAssertions.Execution;
+﻿using FluentAssertions;
+using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
-using MinimalApi.Http.Endpoints;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
-namespace MinimalApi.Tests.Integration.Common
+namespace RadEndpoints.Testing
 {
     public static class RadTestResultAssertions
     {
