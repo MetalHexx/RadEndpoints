@@ -1,5 +1,7 @@
 # RadEndpoints
-A lightweight API framework that embraces the power of Net Core Minimal APIs using a well-defined REPR Style (Request-Endpoint-Response) endpoint pattern.  While the framework has very strong opinions on endpoint structure, all of it is virtually optional and full fledged minimal api functionality is preserved for more uncommon edge case scenarios.  As of now, this code is for experimental and educational purposes only.  
+A lightweight API framework that embraces the power of Net Core Minimal APIs using a well-defined REPR Style (Request-Endpoint-Response) endpoint pattern.  
+
+While the framework has very strong opinions on endpoint structure, all of the helper/conveniences are virtually optional. Full minimal api functionality is preserved for more uncommon edge case scenarios or custom use cases.  As of now, this code is for experimental and educational purposes only.  
 
 ### Features:
 #### Endpoint Base Classes with common conveniences
