@@ -2,7 +2,7 @@
 A lightweight API framework that embraces the power of Net Core Minimal APIs using a well-defined REPR Style (Request-Endpoint-Response) endpoint pattern.  While the framework has very strong opinions on endpoint structure, all of it is virtually optional and full fledged minimal api functionality is preserved for more uncommon edge case scenarios.
 
 ### Features:
-#### Endpoint Base Classes with common built-in conveniences
+#### Endpoint Base Classes with common conveniences
 - HttpContext
 - ILogger<EndpointName>
 - IWebHostEnvironment
