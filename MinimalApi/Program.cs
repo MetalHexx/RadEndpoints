@@ -1,4 +1,5 @@
 using MinimalApi.Domain.Examples;
+using MinimalApi.Domain.Superhero;
 using MinimalApi.Features.CustomExamples.CustomPut;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>(lifetime: ServiceL
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IExampleService, ExampleService>();
+builder.Services.AddSingleton<ISuperheroService, SuperheroService>();
 builder.Services.AddSingleton<ICustomPutMapper, CustomPutMapper>(); //To demonstrate how to create a custom mapper with no rad magic
 
 var app = builder.Build();
