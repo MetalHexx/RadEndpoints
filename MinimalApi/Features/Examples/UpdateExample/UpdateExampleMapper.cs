@@ -2,9 +2,9 @@
 
 namespace MinimalApi.Features.Examples.UpdateExample
 {
-    public class UpdateExampleMapper : RadMapper<UpdateExampleRequest, UpdateExampleResponse, Example>
+    public class UpdateExampleMapper : IRadMapper<UpdateExampleRequest, UpdateExampleResponse, Example>
     {
-        public override UpdateExampleResponse FromEntity(Example entity) => new()
+        public UpdateExampleResponse FromEntity(Example entity) => new()
         {
             Data = new()
             {
@@ -14,7 +14,7 @@ namespace MinimalApi.Features.Examples.UpdateExample
             }
         };
 
-        public override Example ToEntity(UpdateExampleRequest request) => 
+        public Example ToEntity(UpdateExampleRequest request) => 
             new(request.Data.FirstName, request.Data.LastName, request.Id);
     }
 }

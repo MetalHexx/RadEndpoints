@@ -2,9 +2,9 @@
 
 namespace MinimalApi.Features.Examples.CreateExample
 {
-    public class CreateExampleMapper : RadMapper<CreateExampleRequest, CreateExampleResponse, Example>
+    public class CreateExampleMapper : IRadMapper<CreateExampleRequest, CreateExampleResponse, Example>
     {
-        public override CreateExampleResponse FromEntity(Example e) => new()
+        public CreateExampleResponse FromEntity(Example e) => new()
         {
             Data = new()
             {
@@ -14,6 +14,6 @@ namespace MinimalApi.Features.Examples.CreateExample
             }
         };
 
-        public override Example ToEntity(CreateExampleRequest r) => new(r.FirstName, r.LastName);
+        public Example ToEntity(CreateExampleRequest r) => new(r.FirstName, r.LastName);
     }
 }

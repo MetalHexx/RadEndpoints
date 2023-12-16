@@ -3,9 +3,9 @@ using MinimalApi.Features.Examples._common;
 
 namespace MinimalApi.Features.Examples.GetExamples
 {
-    public class GetExamplesMapper : RadMapper<GetExamplesResponse, IEnumerable<Example>>
+    public class GetExamplesMapper : IRadMapper<GetExamplesResponse, IEnumerable<Example>>
     {
-        public override GetExamplesResponse FromEntity(IEnumerable<Example> e) => new()
+        public GetExamplesResponse FromEntity(IEnumerable<Example> e) => new()
         {
             Data = e.Select(e => new ExampleDto
             {

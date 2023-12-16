@@ -2,9 +2,9 @@
 
 namespace MinimalApi.Features.Examples.GetExample
 {
-    public class GetExampleMapper : RadMapper<GetExampleRequest, GetExampleResponse, Example>
+    public class GetExampleMapper : IRadMapper<GetExampleRequest, GetExampleResponse, Example>
     {
-        public override GetExampleResponse FromEntity(Example e) => new()
+        public GetExampleResponse FromEntity(Example e) => new()
         {
             Data = new()
             {
@@ -13,6 +13,6 @@ namespace MinimalApi.Features.Examples.GetExample
                 LastName = e.LastName
             }
         };
-        public override Example ToEntity(GetExampleRequest r) => throw new NotImplementedException();
+        public Example ToEntity(GetExampleRequest r) => throw new NotImplementedException();
     }
 }

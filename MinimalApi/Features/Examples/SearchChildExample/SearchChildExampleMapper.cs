@@ -3,9 +3,9 @@ using MinimalApi.Features.Examples._common;
 
 namespace MinimalApi.Features.Examples.GetExampleChild
 {
-    public class SearchChildExampleMapper : RadMapper<SearchChildExampleResponse, IEnumerable<Example>>
+    public class SearchChildExampleMapper : IRadMapper<SearchChildExampleResponse, IEnumerable<Example>>
     {
-        public override SearchChildExampleResponse FromEntity(IEnumerable<Example> e) => new()
+        public SearchChildExampleResponse FromEntity(IEnumerable<Example> e) => new()
         {
             Data = e.Select(e => new ExampleDto
             {
