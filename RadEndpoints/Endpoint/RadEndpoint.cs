@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
@@ -60,6 +61,11 @@ namespace RadEndpoints
         {
             if (Env is not null) throw new InvalidOperationException("Host environment already set.");
             Env = env;
+        }
+
+        public T Service<T>() where T : notnull
+        {
+            return HttpContext.RequestServices.GetRequiredService<T>();
         }
     }
     public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint, IRadEndpoint<TRequest, TResponse> where TResponse : RadResponse, new()

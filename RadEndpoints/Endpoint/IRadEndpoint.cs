@@ -15,6 +15,7 @@ namespace RadEndpoints
         void SetEnvironment(IWebHostEnvironment env);
         void SetLogger(ILogger logger);
         void SetRoute(string route);
+        T Service<T>() where T : notnull;
     }
     public interface IRadEndpointWithMapper<TMapper> where TMapper : IRadMapper
     {
