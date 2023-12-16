@@ -31,7 +31,7 @@ namespace RadEndpoints
         public abstract void Configure();
 
         private static readonly ConcurrentDictionary<Type, string> _routeCache = new();
-        public void SetRoute(string route) => _routeCache.TryAdd(GetType(), route);
+        protected void SetRoute(string route) => _routeCache.TryAdd(GetType(), route);
 
         public static string GetRoute<TEndpoint>() => _routeCache.TryGetValue(typeof(TEndpoint), out var route)
             ? route
