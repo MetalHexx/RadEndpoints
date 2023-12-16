@@ -14,16 +14,16 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
         public override void Configure()
         {
             RouteBuilder
-                .MapPut("/custom-examples/{id}", (int id, CustomPutRequest r, CancellationToken ct) => Handle(r, id, ct))
+                .MapPut("/custom-examples/{id}", (int id, CustomPutRequest r, IExampleService s, CancellationToken ct) => Handle(r, id, s, ct))
                 .AddEndpointFilter<RadValidationFilter<CustomPutRequest>>()
                 .Produces<CustomPutResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .WithDocument(tag: "Custom Examples", desc: "Update an example.");
         }
 
-        public async Task<IResult> Handle(CustomPutRequest r, int id, CancellationToken ct)
+        public async Task<IResult> Handle(CustomPutRequest r, int id, IExampleService s, CancellationToken ct)
         {
-            var example = await Service<IExampleService>().UpdateExample(m.ToEntity(r, id));            
+            var example = await s.UpdateExample(m.ToEntity(r, id));            
 
             if (example is null)
             {
