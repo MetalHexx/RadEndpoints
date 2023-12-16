@@ -1,5 +1,4 @@
-﻿using MinimalApi.Features.Examples.CreateExample;
-using MinimalApi.Features.Examples.GetExample;
+﻿using MinimalApi.Features.Examples.GetExample;
 
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
