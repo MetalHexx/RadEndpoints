@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using RadEndpoints.Abstractions;
 using System.Collections.Concurrent;
 
 namespace RadEndpoints
