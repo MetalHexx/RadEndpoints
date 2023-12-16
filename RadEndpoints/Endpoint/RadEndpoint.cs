@@ -78,34 +78,34 @@ namespace RadEndpoints
         public RouteHandlerBuilder Get(string route)
         {
             SetRoute(route);
-            var builder = RouteBuilder!.MapGet(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
+            var builder = RouteBuilder!.MapGet(route, async ([AsParameters] TRequest request, CancellationToken ct) => await ExecuteHandler(request, ct));
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Post(string route)
         {
             SetRoute(route);
-            var builder = RouteBuilder!.MapPost(route, async (TRequest request, CancellationToken ct) => await Handle(request, ct));
+            var builder = RouteBuilder!.MapPost(route, async (TRequest request, CancellationToken ct) => await ExecuteHandler(request, ct));
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Put(string route)
         {
             SetRoute(route);
-            var builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
+            var builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await ExecuteHandler(request, ct));
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Patch(string route)
         {
-            var builder = RouteBuilder!.MapPatch(route, async (TRequest request, CancellationToken ct) => await Handle(request, ct));
+            var builder = RouteBuilder!.MapPatch(route, async (TRequest request, CancellationToken ct) => await ExecuteHandler(request, ct));
             SetRoute(route);
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Delete(string route)
         {
-            var builder = RouteBuilder!.MapDelete(route, async ([AsParameters] TRequest request, CancellationToken ct) => await Handle(request, ct));
+            var builder = RouteBuilder!.MapDelete(route, async ([AsParameters] TRequest request, CancellationToken ct) => await ExecuteHandler(request, ct));
             SetRoute(route);
             return TryAddEndpointFilter(builder);
         }
@@ -113,6 +113,11 @@ namespace RadEndpoints
         {
             if (HasValidator) builder.AddEndpointFilter<RadValidationFilter<TRequest>>();
             return builder;
+        }
+        protected async Task<IResult> ExecuteHandler(TRequest r, CancellationToken ct)
+        {
+            Response = new();
+            return await Handle(r, ct);
         }
     }
     public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>, IRadEndpointWithMapper<TMapper> 
@@ -134,27 +139,33 @@ namespace RadEndpoints
         public RouteHandlerBuilder Get(string route)
         {
             SetRoute(route);
-            return RouteBuilder!.MapGet(route, async (CancellationToken ct) => await Handle(ct));
+            return RouteBuilder!.MapGet(route, async (CancellationToken ct) => await ExecuteHandler(ct));
         }
         public RouteHandlerBuilder Post(string route)
         {
             SetRoute(route);
-            return RouteBuilder!.MapPost(route, async (CancellationToken ct) => await Handle(ct));
+            return RouteBuilder!.MapPost(route, async (CancellationToken ct) => await ExecuteHandler(ct));
         }
         public RouteHandlerBuilder Put(string route)
         {
             SetRoute(route);
-            return RouteBuilder!.MapPut(route, async (CancellationToken ct) => await Handle(ct));
+            return RouteBuilder!.MapPut(route, async (CancellationToken ct) => await ExecuteHandler(ct));
         }
         public RouteHandlerBuilder Patch(string route)
         {
             SetRoute(route);
-            return RouteBuilder!.MapPatch(route, async (CancellationToken ct) => await Handle(ct));
+            return RouteBuilder!.MapPatch(route, async (CancellationToken ct) => await ExecuteHandler(ct));
         }
         public RouteHandlerBuilder Delete(string route)
         {
             SetRoute(route);
-            return RouteBuilder!.MapDelete(route, async (CancellationToken ct) => await Handle(ct));
+            return RouteBuilder!.MapDelete(route, async (CancellationToken ct) => await ExecuteHandler(ct));
+        }
+
+        protected async Task<IResult> ExecuteHandler(CancellationToken ct)
+        {
+            Response = new();
+            return await Handle(ct);
         }
     }
     public abstract class RadEndpointWithoutRequest<TResponse, TMapper> : RadEndpointWithoutRequest<TResponse>, IRadEndpointWithoutRequest<TResponse>, IRadEndpointWithMapper<TMapper>
