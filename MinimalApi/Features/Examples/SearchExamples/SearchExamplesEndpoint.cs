@@ -8,7 +8,7 @@ namespace MinimalApi.Features.Examples.SearchExamples
         {
             Get("/examples/search")
                 .Produces<SearchExamplesResponse>(StatusCodes.Status200OK)
-                .AddDocument(tag: Constants.ExamplesTag, desc: "Search for examples");
+                .WithDocument(tag: Constants.ExamplesTag, desc: "Search for examples");
         }
 
         public async override Task<IResult> Handle(SearchExamplesRequest r, CancellationToken ct)

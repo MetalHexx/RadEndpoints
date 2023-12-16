@@ -9,7 +9,7 @@ namespace MinimalApi.Features.Examples.CreateExample
             Post("/examples")
                 .Produces<CreateExampleResponse>(StatusCodes.Status201Created)
                 .ProducesProblem(StatusCodes.Status409Conflict)
-                .AddDocument(tag: Constants.ExamplesTag, desc: "Create a new example.");
+                .WithDocument(tag: Constants.ExamplesTag, desc: "Create a new example.");
         }
 
         public override async Task<IResult> Handle(CreateExampleRequest r, CancellationToken ct)

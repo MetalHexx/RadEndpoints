@@ -6,7 +6,7 @@
         {
             Get("/environment")
                 .Produces<GetEnvironmentResponse>(StatusCodes.Status200OK)
-                .AddDocument(tag: "Environment", desc: "Get information about the application environment.");
+                .WithDocument(tag: "Environment", desc: "Get information about the application environment.");
         }
 
         public async override Task<IResult> Handle(CancellationToken ct)

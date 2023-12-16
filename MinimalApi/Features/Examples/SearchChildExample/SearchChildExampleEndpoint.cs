@@ -10,7 +10,7 @@ namespace MinimalApi.Features.Examples.GetExampleChild
                 .Produces<SearchChildExampleResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .ProducesProblem(StatusCodes.Status404NotFound)
-                .AddDocument(tag: Constants.ExamplesTag, desc: "Given a parent, find children by first or last name");
+                .WithDocument(tag: Constants.ExamplesTag, desc: "Given a parent, find children by first or last name");
         }
 
         public override async Task<IResult> Handle(SearchChildExampleRequest r, CancellationToken ct)

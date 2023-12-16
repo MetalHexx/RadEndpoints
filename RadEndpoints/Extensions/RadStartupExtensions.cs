@@ -80,7 +80,7 @@ namespace RadEndpoints
             }
         }
 
-        public static RouteHandlerBuilder AddDocument(this RouteHandlerBuilder routeBuilder, string tag, string desc) => routeBuilder
+        public static RouteHandlerBuilder WithDocument(this RouteHandlerBuilder routeBuilder, string tag, string desc) => routeBuilder
             .WithTags(tag)
             .WithDescription(desc)
             .WithOpenApi();
