@@ -41,7 +41,7 @@ namespace RadEndpoints.Testing
             where TEndpoint : RadEndpoint
             where TRequest : RadRequest
         {
-            var route = RadEndpoint.GetRoute<TEndpoint>();
+            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
             var httpResponse = await client.PostAsJsonAsync(route, request);
             client.Dispose();
 
@@ -60,8 +60,11 @@ namespace RadEndpoints.Testing
         public async static Task<RadTestResult<TResponse>> PutAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
             where TRequest : RadRequest
-        {
+        {            
             var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, HttpMethod.Put);
+            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
+            httpRequest.RequestUri = client.BaseAddress!.Combine(route);
+
             var httpResponse = await client.SendAsync(httpRequest);
             client.Dispose();
 

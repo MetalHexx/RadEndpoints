@@ -60,7 +60,7 @@ namespace RadEndpoints.Testing
             var httpRequest = new HttpRequestMessage
             {
                 Method = method,
-                RequestUri = client.BaseAddress!.AppendUri(routeTemplate, queryValues),
+                RequestUri = client.BaseAddress!.Combine(routeTemplate, queryValues),
                 Content = body ?? formContent as HttpContent
             };
             httpRequest.AddHeaders(headers);

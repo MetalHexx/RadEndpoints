@@ -2,7 +2,14 @@
 
 namespace MinimalApi.Features.CustomExamples.CustomPut
 {
-    public class CustomPutRequest: RadRequest
+    public class CustomPutRequest : RadRequest<ExampleUpdateDto>
+    {
+        [FromRoute]
+        public int Id { get; set; }
+        [FromBody]
+        public override ExampleUpdateDto Data { get; set; } = null!;
+    }
+    public class ExampleUpdateDto
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
@@ -12,8 +19,8 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
     {
         public CustomPutRequestValidator()
         {
-            RuleFor(x => x.FirstName).NotEmpty();
-            RuleFor(x => x.LastName).NotEmpty();
+            RuleFor(x => x.Data.FirstName).NotEmpty();
+            RuleFor(x => x.Data.LastName).NotEmpty();
         }
     }
     public class CustomPutResponse : RadResponse<ExampleDto> { }

@@ -5,7 +5,7 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
     public interface ICustomPutMapper : IRadMapper
     {
         CustomPutResponse FromEntity(Example entity);
-        Example ToEntity(CustomPutRequest request, int id);
+        Example ToEntity(CustomPutRequest request);
     }
     public class CustomPutMapper: ICustomPutMapper
     {
@@ -19,6 +19,6 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
             }
         };
 
-        public Example ToEntity(CustomPutRequest request, int id) => new(request.FirstName, request.LastName, id);
+        public Example ToEntity(CustomPutRequest request) => new(request.Data.FirstName, request.Data.LastName, request.Id);
     }
 }

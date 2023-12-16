@@ -10,10 +10,10 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<CustomPutRequest>();
-            var route = "/custom-examples/1";
+            updateRequest.Id = 1;
 
             //Act
-            var r = await f.Client.PutAsync<CustomPutRequest, CustomPutResponse>(route, updateRequest);
+            var r = await f.Client.PutAsync<CustomPutEndpoint, CustomPutRequest, CustomPutResponse>(updateRequest);
 
             //Assert
             r.Should().BeSuccessful<CustomPutResponse>()
@@ -27,10 +27,10 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<CustomPutRequest>();
-            var route = "/custom-examples/999";
+            updateRequest.Id = 999;
 
             //Act
-            var r = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
+            var r = await f.Client.PutAsync<CustomPutEndpoint, CustomPutRequest, ProblemDetails>(updateRequest);
 
             //Assert
             r.Should().BeProblem()
@@ -43,18 +43,16 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<CustomPutRequest>();
-            updateRequest.FirstName = string.Empty;
-
-            var route = "/custom-examples/1";
+            updateRequest.Data.FirstName = string.Empty;
 
             //Act
-            var r = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
+            var r = await f.Client.PutAsync<CustomPutEndpoint, CustomPutRequest, ProblemDetails>(updateRequest);
 
             //Assert
             r.Should().BeProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
                 .WithMessage("Validation Error")
-                .WithKey("FirstName");
+                .WithKey("Data.FirstName");
         }
 
         [Fact]
@@ -62,18 +60,16 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
         {
             //Arrange
             var updateRequest = f.DataGenerator.Create<CustomPutRequest>();
-            updateRequest.LastName = string.Empty;
-
-            var route = "/custom-examples/1";
+            updateRequest.Data.LastName = string.Empty;
 
             //Act
-            var r = await f.Client.PutAsync<CustomPutRequest, ProblemDetails>(route, updateRequest);
+            var r = await f.Client.PutAsync<CustomPutEndpoint, CustomPutRequest, ProblemDetails>(updateRequest);
 
             //Assert
             r.Should().BeProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
                 .WithMessage("Validation Error")
-                .WithKey("LastName");
+                .WithKey("Data.LastName");
         }
     }
 }
