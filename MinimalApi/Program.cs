@@ -11,7 +11,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>(lifetime: ServiceL
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IExampleService, ExampleService>();
-builder.Services.AddSingleton<ICustomPutMapper, CustomPutMapper>(); //To demonstrate how to create a custom mapper with no rad magic
+builder.Services.AddSingleton<ICustomPutMapper, CustomPutMapper>();
 
 var app = builder.Build();
 
