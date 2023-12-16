@@ -79,11 +79,7 @@ namespace RadEndpoints
                 currentType = currentType.BaseType;
             }
         }
-
-        public static RouteHandlerBuilder WithDocument(this RouteHandlerBuilder routeBuilder, string tag, string desc) => routeBuilder
-            .WithTags(tag)
-            .WithDescription(desc)
-            .WithOpenApi();
+        
         private static Type? GetRequestType(IRadEndpoint endpointInstance)
         {
             var endpointType = endpointInstance.GetType();
