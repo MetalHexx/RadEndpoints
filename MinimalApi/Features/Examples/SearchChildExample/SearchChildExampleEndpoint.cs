@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.GetExampleChild
 {
-    public class SearchChildExampleEndpoint(IExampleService s) : RadEndpoint<SearchChildExampleRequest, SearchChildExampleResponse, SearchChildExampleMapper>
+    public class SearchChildExampleEndpoint() : RadEndpoint<SearchChildExampleRequest, SearchChildExampleResponse, SearchChildExampleMapper>
     {
         public override void Configure()
         {
@@ -15,7 +15,7 @@ namespace MinimalApi.Features.Examples.GetExampleChild
 
         public override async Task<IResult> Handle(SearchChildExampleRequest r, CancellationToken ct)
         {
-            var children = await s.SearchChildExample(r.ParentId, r.FirstName, r.LastName);
+            var children = await Service<IExampleService>().SearchChildExample(r.ParentId, r.FirstName, r.LastName);
 
             if(children.Any() == false)
             {
