@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace RadEndpoints.Testing
 {
-    public static class RadClientExtensions
+    public static class RadTestClientExtensions
     {
         public async static Task<RadTestResult<TResponse>> GetAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
