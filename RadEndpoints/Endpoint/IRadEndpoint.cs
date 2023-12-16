@@ -16,35 +16,31 @@ namespace RadEndpoints
         void SetLogger(ILogger logger);
         void SetRoute(string route);
     }
+    public interface IRadEndpointWithMapper<TMapper> where TMapper : IRadMapper
+    {
+        void SetMapper(TMapper mapper);
+    }
 
     public interface IRadEndpoint<TRequest, TResponse> : IRadEndpoint
         where TRequest : RadRequest
         where TResponse : RadResponse, new()
     {
         TResponse Response { get; set; }
-
-        RouteHandlerBuilder Delete(string route);
         RouteHandlerBuilder Get(string route);
-        Task<IResult> Handle(TRequest r, CancellationToken ct);
-        RouteHandlerBuilder Patch(string route);
         RouteHandlerBuilder Post(string route);
         RouteHandlerBuilder Put(string route);
+        RouteHandlerBuilder Patch(string route);
+        RouteHandlerBuilder Delete(string route);        
+        Task<IResult> Handle(TRequest r, CancellationToken ct);
     }
-
-    public interface IRadEndpointWithMapper<TMapper> where TMapper : IRadMapper
-    {
-        void SetMapper(TMapper mapper);
-    }
-
     public interface IRadEndpointWithoutRequest<TResponse> where TResponse : RadResponse, new()
     {
         TResponse Response { get; set; }
-
-        RouteHandlerBuilder Delete(string route);
         RouteHandlerBuilder Get(string route);
-        Task<IResult> Handle(CancellationToken ct);
-        RouteHandlerBuilder Patch(string route);
         RouteHandlerBuilder Post(string route);
         RouteHandlerBuilder Put(string route);
+        RouteHandlerBuilder Patch(string route);
+        RouteHandlerBuilder Delete(string route);
+        Task<IResult> Handle(CancellationToken ct);
     }
 }
