@@ -6,7 +6,7 @@
         {
             Get("/environment")
                 .Produces<GetEnvironmentResponse>(StatusCodes.Status200OK)
-                .AddSwagger(tag: "Environment", desc: "Get information about the application environment.");
+                .AddDocument(tag: "Environment", desc: "Get information about the application environment.");
         }
 
         public async override Task<IResult> Handle(CancellationToken ct)

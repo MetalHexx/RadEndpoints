@@ -10,7 +10,7 @@ namespace MinimalApi.Features.Examples.GetExample
                 .Produces<GetExampleResponse>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound)
                 .Produces(StatusCodes.Status400BadRequest)
-                .AddSwagger(tag: Constants.ExamplesTag, desc: "Get an example by id");                
+                .AddDocument(tag: Constants.ExamplesTag, desc: "Get an example by id");                
         }
 
         public async override Task<IResult> Handle(GetExampleRequest r, CancellationToken ct)

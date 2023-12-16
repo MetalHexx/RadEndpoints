@@ -9,7 +9,7 @@ namespace MinimalApi.Features.Examples.UpdateExample
             Put("/examples/{id}")
                 .Produces<UpdateExampleResponse>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound)
-                .AddSwagger(tag: Constants.ExamplesTag, desc: "Update an example.");
+                .AddDocument(tag: Constants.ExamplesTag, desc: "Update an example.");
         }
 
         public async override Task<IResult> Handle(UpdateExampleRequest r, CancellationToken ct)

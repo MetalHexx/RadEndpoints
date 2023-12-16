@@ -8,7 +8,7 @@ namespace MinimalApi.Features.Examples.GetExamples
         {
             Get("/examples")
                 .Produces<GetExamplesResponse>(StatusCodes.Status200OK)
-                .AddSwagger(tag: Constants.ExamplesTag, desc: "Create a new example.");
+                .AddDocument(tag: Constants.ExamplesTag, desc: "Create a new example.");
         }
 
         public override async Task<IResult> Handle(CancellationToken c)

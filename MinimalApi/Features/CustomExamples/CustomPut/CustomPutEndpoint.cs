@@ -16,7 +16,7 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
                 .AddEndpointFilter<RadValidationFilter<CustomPutRequest>>()
                 .Produces<CustomPutResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound)
-                .AddSwagger(tag: "Custom Examples", desc: "Update an example.");
+                .AddDocument(tag: "Custom Examples", desc: "Update an example.");
         }
 
         public async Task<IResult> Handle(CustomPutRequest r, int id, CancellationToken ct)

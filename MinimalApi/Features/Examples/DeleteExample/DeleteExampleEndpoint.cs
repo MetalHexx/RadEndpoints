@@ -8,7 +8,7 @@ namespace MinimalApi.Features.Examples.DeleteExample
         {
             Delete("/examples/{id}")
                 .Produces<DeleteExampleResponse>(StatusCodes.Status200OK)
-                .AddSwagger(tag: Constants.ExamplesTag, desc: "Delete an example.");
+                .AddDocument(tag: Constants.ExamplesTag, desc: "Delete an example.");
         }
 
         public async override Task<IResult> Handle(DeleteExampleRequest r, CancellationToken ct)
