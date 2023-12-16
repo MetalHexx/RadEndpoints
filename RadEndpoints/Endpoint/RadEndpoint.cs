@@ -69,9 +69,6 @@ namespace RadEndpoints
 
         public abstract Task<IResult> Handle(TRequest r, CancellationToken ct);
 
-        public static Ok<TResponse> Ok(TResponse response) => TypedResults.Ok(response);
-        protected static Created<TResponse> Created(string uri, TResponse response) => TypedResults.Created(uri, response);
-
         public RouteHandlerBuilder Get(string route)
         {
             SetRoute(route);
@@ -127,9 +124,6 @@ namespace RadEndpoints
     {
         public TResponse Response { get; set; } = new();
         public abstract Task<IResult> Handle(CancellationToken ct);
-
-        public static Ok<TResponse> Ok(TResponse response) => TypedResults.Ok(response);
-        protected static Created<TResponse> Created(string uri, TResponse response) => TypedResults.Created(uri, response);
 
         public RouteHandlerBuilder Get(string route)
         {
