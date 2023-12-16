@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RadEndpoints.Abstractions;
+using System.Reflection;
 
 namespace RadEndpoints
 {
@@ -28,9 +30,11 @@ namespace RadEndpoints
 
             foreach (var endpointType in endpointTypes)
             {
-                var endpoint = (RadEndpoint)app.Services.GetRequiredService(endpointType);
-
+                var endpoint = app.Services.GetRequiredService(endpointType) as IRadEndpoint 
+                    ?? throw new InvalidOperationException($"Endpoint {endpointType.Name} not found as a registered service.");
+                
                 if (IsRequestValidatorRegistered(app.Services, endpoint)) endpoint.EnableValidation();
+
                 AddMapper(endpointType, endpoint);
 
                 endpoint.SetLogger(GetLogger(app, endpointType));
@@ -41,6 +45,15 @@ namespace RadEndpoints
             }
         }
 
+        public static RouteHandlerBuilder AddSwagger(this RouteHandlerBuilder routeBuilder, string tag, string desc) => routeBuilder
+            .WithTags(tag)
+            .WithDescription(desc)
+            .WithOpenApi();
+
+        private static IEnumerable<Type> GetEndpointTypes(Type assemblyType) => assemblyType.Assembly
+            .GetTypes()
+            .Where(t => t.IsClass && !t.IsAbstract && t.GetInterfaces().Contains(typeof(IRadEndpoint)));
+
         private static ILogger GetLogger(WebApplication app, Type endpointType)
         {
             var loggerType = typeof(ILogger<>).MakeGenericType(endpointType);
@@ -48,65 +61,55 @@ namespace RadEndpoints
             return logger;
         }
 
-        private static void AddMapper(Type endpointType, RadEndpoint endpoint)
+        private static void AddMapper(Type endpointType, IRadEndpoint endpoint)
         {
-            if (endpointType.BaseType is null) return;
-
-            if (!IsSubclassOfRawGeneric(typeof(RadEndpoint<,,>), endpointType) && !IsSubclassOfRawGeneric(typeof(RadEndpointWithoutRequest<,>), endpointType)) return;
-
-            var genericArguments = endpointType.BaseType.GetGenericArguments();
-
-            foreach (var arg in genericArguments)
-            {
-                if (typeof(IRadMapper).IsAssignableFrom(arg))
-                {
-                    var mapper = Activator.CreateInstance(arg);
-                    var setMapperMethod = endpoint.GetType().GetMethod("SetMapper", [arg]);
-                    setMapperMethod?.Invoke(endpoint, [mapper]);
-                    break;
-                }
-            }
-        }
-
-        private static bool IsSubclassOfRawGeneric(Type generic, Type toCheck)
-        {
-            while (toCheck != null && toCheck != typeof(object))
-            {
-                var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
-                if (generic == cur)
-                {
-                    return true;
-                }
-                toCheck = toCheck.BaseType;
-            }
-            return false;
-        }
-
-        public static RouteHandlerBuilder AddSwagger(this RouteHandlerBuilder routeBuilder, string tag, string desc) => routeBuilder
-            .WithTags(tag)
-            .WithDescription(desc)
-            .WithOpenApi();
-
-        private static Type? GetRequestType(RadEndpoint endpointInstance)
-        {
-            var currentType = endpointInstance.GetType();
+            var currentType = endpointType;
+            var mapperType = typeof(IRadMapper);
 
             while (currentType != null && currentType != typeof(object))
             {
-                if (currentType.IsGenericType &&
-                    currentType.GetGenericTypeDefinition() == typeof(RadEndpoint<,>))
+                if (currentType.IsGenericType)
                 {
-                    var requestType = currentType.GetGenericArguments()[0];
-                    return requestType;
+                    var genericArguments = currentType.GetGenericArguments();
+                    foreach (var arg in genericArguments)
+                    {
+                        if (mapperType.IsAssignableFrom(arg))
+                        {
+                            var mapper = Activator.CreateInstance(arg);
+                            var setMapperMethod = endpoint.GetType().GetMethod("SetMapper", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { arg }, null);
+                            setMapperMethod?.Invoke(endpoint, new[] { mapper });
+                            return;
+                        }
+                    }
+                }
+                currentType = currentType.BaseType;
+            }
+        }
+
+        private static Type? GetRequestType(IRadEndpoint endpointInstance)
+        {
+            var endpointType = endpointInstance.GetType();
+
+            while (endpointType != null && endpointType != typeof(object))
+            {
+                if (endpointType.IsGenericType)
+                {
+                    var genericArguments = endpointType.GetGenericArguments();
+                    var requestType = genericArguments.FirstOrDefault(arg => typeof(RadRequest).IsAssignableFrom(arg));
+
+                    if (requestType != null)
+                    {
+                        return requestType;
+                    }
                 }
 
-                currentType = currentType.BaseType;
+                endpointType = endpointType.BaseType;
             }
 
             return null;
         }
 
-        private static bool IsRequestValidatorRegistered(this IServiceProvider serviceProvider, RadEndpoint endpoint)
+        private static bool IsRequestValidatorRegistered(this IServiceProvider serviceProvider, IRadEndpoint endpoint)
         {
             var requestType = GetRequestType(endpoint);
 
@@ -131,9 +134,5 @@ namespace RadEndpoints
             }
             return false;
         }
-
-        public static IEnumerable<Type> GetEndpointTypes(Type assemblyType) => assemblyType.Assembly
-            .GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(RadEndpoint)));
     }
 }

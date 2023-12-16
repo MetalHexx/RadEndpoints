@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using RadEndpoints.Abstractions;
 using System.Collections.Concurrent;
 
 namespace RadEndpoints
 {
-    public abstract class RadEndpoint
+    public abstract class RadEndpoint : IRadEndpoint
     {
         protected ILogger Logger { get; private set; } = null!;
         protected IEndpointRouteBuilder RouteBuilder { get; private set; } = null!;
@@ -62,9 +63,8 @@ namespace RadEndpoints
             Env = env;
         }
     }
-    public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint
-        where TResponse : RadResponse, new()
-        where TRequest : RadRequest
+    public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint, IRadEndpoint<TRequest, TResponse> where TResponse : RadResponse, new()
+            where TRequest : RadRequest
     {
         public TResponse Response { get; set; } = new();
 
@@ -113,8 +113,7 @@ namespace RadEndpoints
             return builder;
         }
     }
-
-    public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>
+    public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>, IRadEndpointWithMapper<TMapper> 
         where TResponse : RadResponse, new()
         where TRequest : RadRequest
         where TMapper : IRadMapper
@@ -125,9 +124,7 @@ namespace RadEndpoints
             Map = mapper;
         }
     }
-
-    public abstract class RadEndpointWithoutRequest<TResponse> : RadEndpoint
-        where TResponse : RadResponse, new()
+    public abstract class RadEndpointWithoutRequest<TResponse> : RadEndpoint, IRadEndpointWithoutRequest<TResponse> where TResponse : RadResponse, new()
     {
         public TResponse Response { get; set; } = new();
         public abstract Task<IResult> Handle(CancellationToken ct);
@@ -161,8 +158,7 @@ namespace RadEndpoints
             return RouteBuilder!.MapDelete(route, async (CancellationToken ct) => await Handle(ct));
         }
     }
-
-    public abstract class RadEndpointWithoutRequest<TResponse, TMapper> : RadEndpointWithoutRequest<TResponse>
+    public abstract class RadEndpointWithoutRequest<TResponse, TMapper> : RadEndpointWithoutRequest<TResponse>, IRadEndpointWithoutRequest<TResponse>, IRadEndpointWithMapper<TMapper>
         where TResponse : RadResponse, new()
         where TMapper : IRadMapper
     {
