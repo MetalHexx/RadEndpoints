@@ -45,11 +45,6 @@ namespace RadEndpoints
             }
         }
 
-        public static RouteHandlerBuilder AddSwagger(this RouteHandlerBuilder routeBuilder, string tag, string desc) => routeBuilder
-            .WithTags(tag)
-            .WithDescription(desc)
-            .WithOpenApi();
-
         private static IEnumerable<Type> GetEndpointTypes(Type assemblyType) => assemblyType.Assembly
             .GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract && t.GetInterfaces().Contains(typeof(IRadEndpoint)));
@@ -86,6 +81,10 @@ namespace RadEndpoints
             }
         }
 
+        public static RouteHandlerBuilder AddSwagger(this RouteHandlerBuilder routeBuilder, string tag, string desc) => routeBuilder
+            .WithTags(tag)
+            .WithDescription(desc)
+            .WithOpenApi();
         private static Type? GetRequestType(IRadEndpoint endpointInstance)
         {
             var endpointType = endpointInstance.GetType();
