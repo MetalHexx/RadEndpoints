@@ -10,6 +10,13 @@ namespace RadEndpoints
 {
     public static class RadStartupExtensions
     {
+        /// <summary>
+        /// Registers endpoint classes.
+        /// </summary>
+        /// <remarks>Endpoint classes are always registered as singletons. 
+        /// Only singleton dependencies are safely supported with constructor injection.</remarks>
+        /// <param name="services">The service collection where the endpoints will be registered</param>
+        /// <param name="assemblyType">The assembly to scan for endpoint classes</param>
         public static void AddEndpoints(this IServiceCollection services, Type assemblyType)
         {
             var endpointTypes = GetEndpointTypes(assemblyType);
@@ -20,23 +27,32 @@ namespace RadEndpoints
             }
         }
 
+        /// <summary>
+        /// Maps endpoints
+        /// </summary>
+        /// <param name="app">Web application instance</param>
+        /// <param name="assemblyType">The assembly to scan for endpoint classes</param>
+        /// <exception cref="InvalidOperationException">Throws an exception if there are any problems mapping endpoints</exception>
         public static void MapEndpoints(this WebApplication app, Type assemblyType)
         {
-            var httpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
+            using var scope = app.Services.CreateScope();
+            var provider = scope.ServiceProvider;
+
+            var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
             var env = app.Services.GetRequiredService<IWebHostEnvironment>();
 
             var endpointTypes = GetEndpointTypes(assemblyType);
 
             foreach (var endpointType in endpointTypes)
             {
-                var endpoint = app.Services.GetRequiredService(endpointType) as IRadEndpoint 
+                var endpoint = provider.GetRequiredService(endpointType) as IRadEndpoint
                     ?? throw new InvalidOperationException($"Endpoint {endpointType.Name} not found as a registered service.");
-                
-                if (IsRequestValidatorRegistered(app.Services, endpoint)) endpoint.EnableValidation();
+
+                if (IsRequestValidatorRegistered(provider, endpoint)) endpoint.EnableValidation();
 
                 AddMapper(endpointType, endpoint);
 
-                endpoint.SetLogger(GetLogger(app, endpointType));
+                endpoint.SetLogger(GetLogger(provider, endpointType));
                 endpoint.SetContext(httpContextAccessor);
                 endpoint.SetBuilder(app);
                 endpoint.SetEnvironment(env);
@@ -48,10 +64,10 @@ namespace RadEndpoints
             .GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract && t.GetInterfaces().Contains(typeof(IRadEndpoint)));
 
-        private static ILogger GetLogger(WebApplication app, Type endpointType)
+        private static ILogger GetLogger(this IServiceProvider serviceProvider, Type endpointType)
         {
             var loggerType = typeof(ILogger<>).MakeGenericType(endpointType);
-            var logger = (ILogger)app.Services.GetRequiredService(loggerType);
+            var logger = (ILogger)serviceProvider.GetRequiredService(loggerType);
             return logger;
         }
 
@@ -79,7 +95,7 @@ namespace RadEndpoints
                 currentType = currentType.BaseType;
             }
         }
-        
+
         private static Type? GetRequestType(IRadEndpoint endpointInstance)
         {
             var endpointType = endpointInstance.GetType();
@@ -110,20 +126,15 @@ namespace RadEndpoints
             if (requestType is null) return false;
 
             var validatorType = typeof(IValidator<>).MakeGenericType(requestType);
+            var services = serviceProvider.GetServices(validatorType);
 
-            using (var scope = serviceProvider.CreateScope())
+            foreach (var service in services)
             {
-                var scopedProvider = scope.ServiceProvider;
-                var services = scopedProvider.GetServices(validatorType);
+                if (service is null) continue;
 
-                foreach (var service in services)
+                if (validatorType.IsAssignableFrom(service.GetType()))
                 {
-                    if (service is null) continue;
-
-                    if (validatorType.IsAssignableFrom(service.GetType()))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
