@@ -2,14 +2,14 @@
 
 namespace MinimalApi.Features.CustomExamples.CustomPut
 {
-    public class CustomPutRequest : RadRequest<ExampleUpdateDto>
+    public class CustomPutRequest : RadRequest<CustomPutDto>
     {
         [FromRoute]
         public int Id { get; set; }
         [FromBody]
-        public override ExampleUpdateDto Data { get; set; } = null!;
+        public override CustomPutDto Data { get; set; } = null!;
     }
-    public class ExampleUpdateDto
+    public class CustomPutDto
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
