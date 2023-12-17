@@ -9,7 +9,7 @@ namespace MinimalApi.Tests.Integration.Tests.Environment
         public async Task When_Called_ReturnsSuccess()
         {
             //Act            
-            var r = await f.Client.GetAsync<GetEnvironmentEndpoint, GetEnvironmentResponse>();
+            var r = await f.Client.GetAsync<GetEnvironmentEndpoint, GetEnvironmentRequest, GetEnvironmentResponse>(new());
 
             //Assert
             r.Should().BeSuccessful<GetEnvironmentResponse>()

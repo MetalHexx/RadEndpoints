@@ -9,7 +9,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         public async Task When_Called_ReturnsSuccess()
         {
             //Act
-            var r = await f.Client.GetAsync<GetExamplesEndpoint, GetExamplesResponse>();
+            var r = await f.Client.GetAsync<GetExamplesEndpoint, GetExamplesRequest, GetExamplesResponse>(new());
 
             //Arrange
             r.Should().BeSuccessful<GetExamplesResponse>()

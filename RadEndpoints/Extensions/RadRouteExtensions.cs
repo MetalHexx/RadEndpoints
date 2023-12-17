@@ -6,8 +6,9 @@ namespace RadEndpoints
 {
     public static class RadRouteExtensions
     {
-        public static string GetAndMapRoute<TEndpoint, TRequest>(TRequest request)
+        public static string GetAndMapRoute<TEndpoint, TRequest, TResponse>(TRequest request)
             where TEndpoint : RadEndpoint
+            where TRequest : RadRequest
         {
             var route = RadEndpoint.GetRoute<TEndpoint>();
             route = route.MapRoute(request!);

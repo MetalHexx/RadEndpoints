@@ -1,6 +1,6 @@
 ﻿namespace MinimalApi.Features.Environment.GetEnvironment
 {
-    public class GetEnvironmentEndpoint : RadEndpointWithoutRequest<GetEnvironmentResponse>
+    public class GetEnvironmentEndpoint : RadEndpoint<GetEnvironmentRequest, GetEnvironmentResponse>
     {
         public override void Configure()
         {
@@ -9,7 +9,7 @@
                 .WithDocument(tag: "Environment", desc: "Get information about the application environment.");
         }
 
-        public async override Task<IResult> Handle(CancellationToken ct)
+        public async override Task<IResult> Handle(GetEnvironmentRequest r, CancellationToken ct)
         {
             Response.EnvironmentName = Env.EnvironmentName;
             Response.ApplicationName = Env.ApplicationName;

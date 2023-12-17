@@ -17,7 +17,6 @@ namespace RadEndpoints
         private IHttpContextAccessor _httpContextAccessor = null!;
         protected IWebHostEnvironment Env { get; private set; } = null!;
         protected bool HasValidator;
-
         protected static Ok Ok() => TypedResults.Ok();
         protected static Ok<TResponse> Ok<TResponse>(TResponse responseData) => TypedResults.Ok(responseData);
         protected static Created Created(string uri) => TypedResults.Created(uri);
@@ -72,8 +71,9 @@ namespace RadEndpoints
             return HttpContext.RequestServices.GetRequiredService<T>();
         }
     }
-    public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint, IRadEndpoint<TRequest, TResponse> where TResponse : RadResponse, new()
-            where TRequest : RadRequest
+    public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint 
+        where TResponse : RadResponse, new()
+        where TRequest : RadRequest
     {
         public TResponse Response { get; set; } = new();
 
@@ -127,53 +127,6 @@ namespace RadEndpoints
     public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>, IRadEndpointWithMapper<TMapper> 
         where TResponse : RadResponse, new()
         where TRequest : RadRequest
-        where TMapper : IRadMapper
-    {
-        protected TMapper Map { get; private set; } = default!;
-        public void SetMapper(TMapper mapper)
-        {
-            Map = mapper;
-        }
-    }
-    public abstract class RadEndpointWithoutRequest<TResponse> : RadEndpoint, IRadEndpointWithoutRequest<TResponse> where TResponse : RadResponse, new()
-    {
-        public TResponse Response { get; set; } = new();
-        public abstract Task<IResult> Handle(CancellationToken ct);
-
-        public RouteHandlerBuilder Get(string route)
-        {
-            SetRoute(route);
-            return RouteBuilder!.MapGet(route, async (CancellationToken ct) => await ExecuteHandler(ct));
-        }
-        public RouteHandlerBuilder Post(string route)
-        {
-            SetRoute(route);
-            return RouteBuilder!.MapPost(route, async (CancellationToken ct) => await ExecuteHandler(ct));
-        }
-        public RouteHandlerBuilder Put(string route)
-        {
-            SetRoute(route);
-            return RouteBuilder!.MapPut(route, async (CancellationToken ct) => await ExecuteHandler(ct));
-        }
-        public RouteHandlerBuilder Patch(string route)
-        {
-            SetRoute(route);
-            return RouteBuilder!.MapPatch(route, async (CancellationToken ct) => await ExecuteHandler(ct));
-        }
-        public RouteHandlerBuilder Delete(string route)
-        {
-            SetRoute(route);
-            return RouteBuilder!.MapDelete(route, async (CancellationToken ct) => await ExecuteHandler(ct));
-        }
-
-        protected async Task<IResult> ExecuteHandler(CancellationToken ct)
-        {
-            Response = new();
-            return await Handle(ct);
-        }
-    }
-    public abstract class RadEndpointWithoutRequest<TResponse, TMapper> : RadEndpointWithoutRequest<TResponse>, IRadEndpointWithoutRequest<TResponse>, IRadEndpointWithMapper<TMapper>
-        where TResponse : RadResponse, new()
         where TMapper : IRadMapper
     {
         protected TMapper Map { get; private set; } = default!;

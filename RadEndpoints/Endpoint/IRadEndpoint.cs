@@ -33,14 +33,4 @@ namespace RadEndpoints
         RouteHandlerBuilder Delete(string route);        
         Task<IResult> Handle(TRequest r, CancellationToken ct);
     }
-    public interface IRadEndpointWithoutRequest<TResponse> where TResponse : RadResponse, new()
-    {
-        TResponse Response { get; set; }
-        RouteHandlerBuilder Get(string route);
-        RouteHandlerBuilder Post(string route);
-        RouteHandlerBuilder Put(string route);
-        RouteHandlerBuilder Patch(string route);
-        RouteHandlerBuilder Delete(string route);
-        Task<IResult> Handle(CancellationToken ct);
-    }
 }

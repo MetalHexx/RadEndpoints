@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace RadEndpoints.Testing
@@ -9,17 +10,7 @@ namespace RadEndpoints.Testing
             where TEndpoint : RadEndpoint
             where TRequest : RadRequest
         {
-            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
-            var httpResponse = await client.GetAsync(route);
-            client.Dispose();
-
-            return new(httpResponse, await httpResponse.DeserializeJson<TResponse>());
-        }
-
-        public async static Task<RadTestResult<TResponse>> GetAsync<TEndpoint, TResponse>(this HttpClient client)
-            where TEndpoint : RadEndpoint
-        {
-            var route = RadEndpoint.GetRoute<TEndpoint>();
+            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest, TResponse>(request);
             var httpResponse = await client.GetAsync(route);
             client.Dispose();
 
@@ -30,7 +21,7 @@ namespace RadEndpoints.Testing
             where TEndpoint : RadEndpoint
             where TRequest : RadRequest
         {
-            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
+            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest, TResponse>(request);
             var httpResponse = await client.DeleteAsync(route);
             client.Dispose();
 
@@ -41,17 +32,8 @@ namespace RadEndpoints.Testing
             where TEndpoint : RadEndpoint
             where TRequest : RadRequest
         {
-            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
+            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest, TResponse>(request);
             var httpResponse = await client.PostAsJsonAsync(route, request);
-            client.Dispose();
-
-            return new(httpResponse, await httpResponse.DeserializeJson<TResponse>());
-        }
-
-        public async static Task<RadTestResult<TResponse>> PutAsync<TRequest, TResponse>(this HttpClient client, string route, TRequest request)
-            where TRequest : RadRequest
-        {
-            var httpResponse = await client.PutAsJsonAsync(route, request);
             client.Dispose();
 
             return new(httpResponse, await httpResponse.DeserializeJson<TResponse>());
@@ -62,7 +44,7 @@ namespace RadEndpoints.Testing
             where TRequest : RadRequest
         {            
             var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, HttpMethod.Put);
-            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest>(request);
+            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest, TResponse>(request);
             httpRequest.RequestUri = client.BaseAddress!.Combine(route);
 
             var httpResponse = await client.SendAsync(httpRequest);
