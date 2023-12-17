@@ -10,22 +10,35 @@ namespace RadEndpoints.Testing
 {
     public static class RadRequestBuilder
     {
-        public static HttpRequestMessage BuildRequest<TEndpoint, TRequest>(HttpClient client, TRequest requestModel, HttpMethod method)
+        public static HttpRequestMessage BuildRequest<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method)
             where TEndpoint : RadEndpoint
         {
-            if (HasRequestModelAttributes<TRequest>())
-            {
-                return BuildRequestFromAttributes<TEndpoint, TRequest>(client, requestModel, method);
-            }
-            return new HttpRequestMessage();
+            return HasRequestModelAttributes<TRequest>()
+                ? client.BuildRequestFromAttributes<TEndpoint, TRequest>(requestModel, method)
+                : client.BuildRequestWithoutAttributes<TEndpoint, TRequest>(requestModel, method);
         }
 
-        private static HttpRequestMessage BuildRequestFromAttributes<TEndpoint, TRequest>(HttpClient client, TRequest requestModel, HttpMethod method) where TEndpoint : RadEndpoint
+        private static HttpRequestMessage BuildRequestWithoutAttributes<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method)
+        {
+            var routeTemplate = RadEndpoint.GetRoute<TEndpoint>();
+            if(routeTemplate.HasParameterPlaceholders())
+            {
+                throw new RadTestException($"\r\nProblem executing {requestModel?.GetType().Name}: ({method}) {routeTemplate} \r\nThe route has parameter placeholders but the {requestModel?.GetType().Name} is missing attributes.  \r\nEnsure you have attributes if you have route or query params.  \r\nPossible attributes: [FromRoute] [FromQuery] [FromBody] [FromForm] [FromHeader]");
+            }
+            return new()
+            {
+                Method = method,
+                RequestUri = client.BaseAddress!.Combine(routeTemplate),
+                Content = requestModel!.ToStringContent()
+            };
+        }
+
+        private static HttpRequestMessage BuildRequestFromAttributes<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method) where TEndpoint : RadEndpoint
         {
             var routeTemplate = RadEndpoint.GetRoute<TEndpoint>();
             var queryValues = HttpUtility.ParseQueryString(string.Empty);
             var headers = new HeaderDictionary();
-            var formContent = new MultipartFormDataContent();
+            MultipartFormDataContent formContent = null!;
             StringContent body = null!;
 
             foreach (var property in typeof(TRequest).GetProperties())
@@ -34,9 +47,8 @@ namespace RadEndpoints.Testing
 
                 if (string.IsNullOrEmpty(propertyValue)) continue;
 
-                var attribute = property.GetCustomAttributes().FirstOrDefault();
-
-                if (attribute is null) throw new RadTestException("Make sure you add binding attributes to every property on your request model.  Possible attributes you can use include: [FromRoute] [FromQuery] [FromBody] [FromForm] [FromHeader]");
+                var attribute = property.GetCustomAttributes().FirstOrDefault() 
+                    ?? throw new RadTestException("Make sure you add binding attributes to every property on your request model.  Possible attributes you can use include: [FromRoute] [FromQuery] [FromBody] [FromForm] [FromHeader]");
 
                 switch (attribute)
                 {
@@ -53,22 +65,25 @@ namespace RadEndpoints.Testing
                         formContent.Add(new StringContent(propertyValue), property.Name);
                         break;
                     case FromBodyAttribute:
-                        body = SerializeContent(property.GetValue(requestModel)!);
+                        body = property.GetValue(requestModel)!.ToStringContent();
                         break;
                 }
-            }
+            }            
             var httpRequest = new HttpRequestMessage
             {
                 Method = method,
-                RequestUri = client.BaseAddress!.Combine(routeTemplate, queryValues),
-                Content = body ?? formContent as HttpContent
+                RequestUri = client.BaseAddress!.Combine(routeTemplate, queryValues)
             };
+
+            if (body is not null || formContent is not null)
+            {
+                httpRequest.Content = body ?? formContent as HttpContent;
+            }
             httpRequest.AddHeaders(headers);
-            httpRequest.AddContent(body, formContent);
             return httpRequest;
         }
 
-        private static StringContent SerializeContent(object value, JsonSerializerOptions? options = null)
+        private static StringContent ToStringContent(this object value, JsonSerializerOptions? options = null)
         {
             var json = JsonSerializer.Serialize(value, options ?? new JsonSerializerOptions());
             return new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
@@ -94,6 +109,8 @@ namespace RadEndpoints.Testing
                 httpRequest.Content = formContent;
             }
         }
+
+        private static bool HasParameterPlaceholders(this string routeTemplate) => routeTemplate.Contains('{', StringComparison.OrdinalIgnoreCase);
 
         private static string MapRouteParam(this string url, string name, string value) =>
             url.Replace($"{{{name}}}", HttpUtility.UrlEncode(value), StringComparison.OrdinalIgnoreCase);

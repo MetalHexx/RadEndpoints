@@ -2,6 +2,7 @@
 {
     public class DeleteExampleRequest : RadRequest
     {
+        [FromRoute]
         public int Id { get; set; }
     }
 

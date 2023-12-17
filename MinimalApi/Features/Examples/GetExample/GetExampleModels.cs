@@ -4,6 +4,7 @@ namespace MinimalApi.Features.Examples.GetExample
 {
     public class GetExampleRequest : RadRequest
     {
+        [FromRoute]
         public int Id { get; set; }
     }
 
