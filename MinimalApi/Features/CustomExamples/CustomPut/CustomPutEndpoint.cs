@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
-using MinimalApi.Domain.Examples;
+﻿using MinimalApi.Domain.Examples;
 
 namespace MinimalApi.Features.CustomExamples.CustomPut
 {
     /// <summary>
-    /// This endpoint is an example of how one can use all the features of MinimalApi endpoint mapping 
-    /// to create a custom endpoint with none of the restrictions of the more convenient generic 
-    /// RadEndpoint types.
+    /// This endpoint shows minimal usage of RadEndpoint abstractions.  The framework stays out of the
+    /// way to allow you to use all native minimal API functionality. This will allow for very custom
+    /// use cases or scenarios that are not yet supported by the framework.
     /// </summary>
     public class CustomPutEndpoint(ICustomPutMapper m) : RadEndpoint
     {
@@ -19,7 +18,11 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
                 .AddEndpointFilter<RadValidationFilter<CustomPutRequest>>()
                 .Produces<CustomPutResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound)
-                .WithDocument(tag: "Custom Examples", desc: "Update an example.");
+                .WithDocument
+                (
+                    tag: "Custom Examples", 
+                    desc: "Update an example. \r\n\r\nThis endpoint shows minimal usage of RadEndpoint abstractions.  The framework stays out of the way to allow you to use all native minimal API functionality. This will allow for very custom use cases or scenarios that are not yet supported by the framework."
+                );
         }
 
         public async Task<IResult> Handle(CustomPutRequest r, IExampleService s, CancellationToken ct)
