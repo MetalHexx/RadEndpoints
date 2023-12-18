@@ -18,15 +18,15 @@ namespace RadEndpoints
         private IHttpContextAccessor _httpContextAccessor = null!;
         protected IWebHostEnvironment Env { get; private set; } = null!;
         protected bool HasValidator;
-        protected static Ok Ok() => TypedResults.Ok();
-        protected static Ok<TResponse> Ok<TResponse>(TResponse responseData) => TypedResults.Ok(responseData);
-        protected static Created Created(string uri) => TypedResults.Created(uri);
-        protected static Created<TResponse> Created<TResponse>(string uri, TResponse response) => TypedResults.Created(uri, response);
-        protected static ProblemHttpResult ServerError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status500InternalServerError);
-        protected static ProblemHttpResult ValidationError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status400BadRequest);
-        protected static ProblemHttpResult Conflict(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status409Conflict);
-        protected static ProblemHttpResult NotFound(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status404NotFound);
-        protected static ProblemHttpResult Forbidden(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status403Forbidden);
+        protected virtual IResult Ok() => TypedResults.Ok();
+        protected virtual IResult Ok<TResponse>(TResponse responseData) => TypedResults.Ok(responseData);
+        protected virtual IResult Created(string uri) => TypedResults.Created(uri);
+        protected virtual IResult Created<TResponse>(string uri, TResponse response) => TypedResults.Created(uri, response);
+        protected virtual IResult ServerError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status500InternalServerError);
+        protected virtual IResult ValidationError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status400BadRequest);
+        protected virtual IResult Conflict(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status409Conflict);
+        protected virtual IResult NotFound(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status404NotFound);
+        protected virtual IResult Forbidden(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status403Forbidden);
 
         public abstract void Configure();
 
