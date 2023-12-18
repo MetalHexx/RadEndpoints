@@ -2,18 +2,20 @@
 {
     public interface IExampleService
     {
+        Guid Id { get; } //Using to test scope
         Task DeleteExample(int id);
         Task<Example?> GetExample(int id);
         Task<IEnumerable<Example>> GetExamples();
         Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
         Task<Example?> InsertExample(Example example);
         Task<Example?> UpdateExample(Example example);
-        Task<IEnumerable<Example>> SearchChildExample(int parentId, string? firstName, string? lastName);
+        Task<IEnumerable<Example>?> SearchChildExample(int parentId, string? firstName, string? lastName);
     }
 
     public class ExampleService : IExampleService
     {
         private List<Example> _examples = new();
+        public Guid Id { get; } = Guid.NewGuid();
 
         public ExampleService()
         {
@@ -102,7 +104,7 @@
             return results;
         }
 
-        public async Task<IEnumerable<Example>> SearchChildExample(int parentId, string? firstName, string? lastName)
+        public async Task<IEnumerable<Example>?> SearchChildExample(int parentId, string? firstName, string? lastName)
         {
             await Task.Delay(1);
 
