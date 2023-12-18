@@ -14,16 +14,23 @@ While the framework appears to have strong opinions on endpoint structure on the
 - Built in Response Object
 - Built in Entity / Response Mapper (optional)
 - IResult/TypedResult helpers
-#### Automatic Endpoint Validation Filter
-- Using [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
+  
+#### Assembly Scanning for Automatic Configuration of
+- Endpoint classes
+- Mapping classes
+- Endpoint Filter Validators [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
+
 #### Integration Testing
 - [WebApplicationFactory](https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0) In-Memory Approach
-- Strongly typed "Routeless" HttpClient RadEndpoint Extensions
+- Strongly typed "Routeless" Test Helpers very convenient test development, maintanence and durability
 - Clean and convenient response assertions for RadResponse / HttpResponse / [ProblemDetails](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-8.0) using [FluentAssertions](https://fluentassertions.com/introduction)
+- Detailed exception messages so you dig less to find test issues.
+  
 #### Example Api
 - Lightweight api to demonstrate framework usage
 - Includes example endpoints and integration tests
 - Using feature based "vertical slice" style architecture (optional approach)
+  
 ### Coming Soon:
 - Open Telemetry Endpoint Filters (Logging, Metrics, Traces)
 - Unit test coverage for framework code
