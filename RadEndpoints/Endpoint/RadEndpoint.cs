@@ -36,9 +36,15 @@ namespace RadEndpoints
             return route;
         }
 
-        public static string GetRoute<TEndpoint>() => _routeCache.TryGetValue(typeof(TEndpoint), out var route)
-            ? route
-            : throw new InvalidOperationException($"Route not found for endpoint {typeof(TEndpoint).Name}.");
+        public static string GetRoute<TEndpoint>(TEndpoint endpoint) where TEndpoint: notnull => 
+            _routeCache.TryGetValue(endpoint.GetType(), out var route)
+                ? route
+                : throw new InvalidOperationException($"Route not found for endpoint {typeof(TEndpoint).Name}.");
+
+        public static string GetRoute<TEndpoint>() => 
+            _routeCache.TryGetValue(typeof(TEndpoint), out var route)
+                ? route
+                : throw new InvalidOperationException($"Route not found for endpoint {typeof(TEndpoint).Name}.");
 
         public void EnableValidation()
         {
@@ -82,34 +88,34 @@ namespace RadEndpoints
         public RouteHandlerBuilder Get(string route)
         {
             SetRoute(route);
-            var builder = RouteBuilder!.MapGet(route, async ([AsParameters] TRequest request, CancellationToken ct) => await ExecuteHandler(request, ct));
+            var builder = RouteBuilder!.MapGet(route, async ([AsParameters] TRequest r, IRadMediator m, CancellationToken ct) => await ExecuteHandler(r, m, ct));
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Post(string route)
         {
             SetRoute(route);
-            var builder = RouteBuilder!.MapPost(route, async (TRequest request, CancellationToken ct) => await ExecuteHandler(request, ct));
+            var builder = RouteBuilder!.MapPost(route, async (TRequest r, IRadMediator m, CancellationToken ct) => await ExecuteHandler(r, m, ct));
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Put(string route)
         {
             SetRoute(route);
-            var builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest request, CancellationToken ct) => await ExecuteHandler(request, ct));
+            var builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest r, IRadMediator m, CancellationToken ct) => await ExecuteHandler(r, m, ct));
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Patch(string route)
         {
-            var builder = RouteBuilder!.MapPatch(route, async (TRequest request, CancellationToken ct) => await ExecuteHandler(request, ct));
+            var builder = RouteBuilder!.MapPatch(route, async (TRequest r, IRadMediator m, CancellationToken ct) => await ExecuteHandler(r, m, ct));
             SetRoute(route);
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Delete(string route)
         {
-            var builder = RouteBuilder!.MapDelete(route, async ([AsParameters] TRequest request, CancellationToken ct) => await ExecuteHandler(request, ct));
+            var builder = RouteBuilder!.MapDelete(route, async ([AsParameters] TRequest r, IRadMediator m, CancellationToken ct) => await ExecuteHandler(r, m, ct));
             SetRoute(route);
             return TryAddEndpointFilter(builder);
         }
@@ -118,21 +124,20 @@ namespace RadEndpoints
             if (HasValidator) builder.AddEndpointFilter<RadValidationFilter<TRequest>>();
             return builder;
         }
-        protected async Task<IResult> ExecuteHandler(TRequest r, CancellationToken ct)
+        protected async Task<IResult> ExecuteHandler(TRequest r, IRadMediator mediator, CancellationToken ct)
         {
-            Response = new();
-            return await Handle(r, ct);
+            return await mediator.SendAsync<TRequest, TResponse>(r, ct);            
         }
     }
-    public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>, IRadEndpointWithMapper<TMapper> 
-        where TResponse : RadResponse, new()
-        where TRequest : RadRequest
-        where TMapper : IRadMapper
+    public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>, IRadEndpointWithMapper
+    where TResponse : RadResponse, new()
+    where TRequest : RadRequest
+    where TMapper : class, IRadMapper
     {
         protected TMapper Map { get; private set; } = default!;
-        public void SetMapper(TMapper mapper)
+        public void SetMapper(IRadMapper mapper)
         {
-            Map = mapper;
+            Map = mapper as TMapper ?? throw new InvalidOperationException("Invalid mapper type.");
         }
     }
 }

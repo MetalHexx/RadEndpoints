@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
@@ -11,19 +9,31 @@ namespace RadEndpoints
     public static class RadStartupExtensions
     {
         /// <summary>
-        /// Registers endpoint classes.
+        /// Scans assembly and registers endpoint classes as scoped services.
         /// </summary>
-        /// <remarks>Endpoint classes are always registered as singletons. 
-        /// Only singleton dependencies are safely supported with constructor injection.</remarks>
         /// <param name="services">The service collection where the endpoints will be registered</param>
-        /// <param name="assemblyType">The assembly to scan for endpoint classes</param>
-        public static void AddEndpoints(this IServiceCollection services, Type assemblyType)
+        /// <param name="assemblyType">Assembly to scan</param>
+        public static void AddRadEndpoints(this IServiceCollection services, Type assemblyType)
         {
-            var endpointTypes = GetEndpointTypes(assemblyType);
+            services.AddScopedAsSelfAndTypeOf<IRadEndpoint>(assemblyType.Assembly);
+            services.AddScopedAsSelfAndTypeOf<IRadMapper>(assemblyType.Assembly);
+            services.AddScoped<IRadMediator, RadMediator>();
+        }
 
-            foreach (var endpointType in endpointTypes)
+        /// <summary>
+        /// Scans an assembly for a specific type and registers a single instance as both itself and as the type it implements.
+        /// </summary>
+        /// <typeparam name="T">Type to register as</typeparam>
+        /// <param name="services">Application Service collection</param>
+        /// <param name="assembly">Assembly to scan</param>
+        private static void AddScopedAsSelfAndTypeOf<T> (this IServiceCollection services, Assembly assembly) where T : class
+        {
+            var types = assembly.FindConcreteImplementationsOf<T>();
+
+            foreach (var endpointType in types)
             {
-                services.AddSingleton(endpointType);
+                services.AddScoped(endpointType);
+                services.AddScoped(typeof(T), serviceProvider => serviceProvider.GetRequiredService(endpointType));
             }
         }
 
@@ -33,111 +43,22 @@ namespace RadEndpoints
         /// <param name="app">Web application instance</param>
         /// <param name="assemblyType">The assembly to scan for endpoint classes</param>
         /// <exception cref="InvalidOperationException">Throws an exception if there are any problems mapping endpoints</exception>
-        public static void MapEndpoints(this WebApplication app, Type assemblyType)
+        public static void MapRadEndpoints(this WebApplication app)
         {
             using var scope = app.Services.CreateScope();
             var provider = scope.ServiceProvider;
 
-            var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-            var env = app.Services.GetRequiredService<IWebHostEnvironment>();
+            var endpoints = provider.GetServices<IRadEndpoint>();
 
-            var endpointTypes = GetEndpointTypes(assemblyType);
-
-            foreach (var endpointType in endpointTypes)
+            foreach (var endpoint in endpoints)
             {
-                var endpoint = provider.GetRequiredService(endpointType) as IRadEndpoint
-                    ?? throw new InvalidOperationException($"Endpoint {endpointType.Name} not found as a registered service.");
-
-                if (IsRequestValidatorRegistered(provider, endpoint)) endpoint.EnableValidation();
-
-                AddMapper(endpointType, endpoint);
-
-                endpoint.SetLogger(GetLogger(provider, endpointType));
-                endpoint.SetContext(httpContextAccessor);
+                if (provider.IsValidatorRegistered(endpoint))
+                {
+                    endpoint.EnableValidation();
+                }
                 endpoint.SetBuilder(app);
-                endpoint.SetEnvironment(env);
                 endpoint.Configure();
             }
-        }
-
-        private static IEnumerable<Type> GetEndpointTypes(Type assemblyType) => assemblyType.Assembly
-            .GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract && t.GetInterfaces().Contains(typeof(IRadEndpoint)));
-
-        private static ILogger GetLogger(this IServiceProvider serviceProvider, Type endpointType)
-        {
-            var loggerType = typeof(ILogger<>).MakeGenericType(endpointType);
-            var logger = (ILogger)serviceProvider.GetRequiredService(loggerType);
-            return logger;
-        }
-
-        private static void AddMapper(Type endpointType, IRadEndpoint endpoint)
-        {
-            var currentType = endpointType;
-            var mapperType = typeof(IRadMapper);
-
-            while (currentType != null && currentType != typeof(object))
-            {
-                if (currentType.IsGenericType)
-                {
-                    var genericArguments = currentType.GetGenericArguments();
-                    foreach (var arg in genericArguments)
-                    {
-                        if (mapperType.IsAssignableFrom(arg))
-                        {
-                            var mapper = Activator.CreateInstance(arg);
-                            var setMapperMethod = endpoint.GetType().GetMethod("SetMapper", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { arg }, null);
-                            setMapperMethod?.Invoke(endpoint, new[] { mapper });
-                            return;
-                        }
-                    }
-                }
-                currentType = currentType.BaseType;
-            }
-        }
-
-        private static Type? GetRequestType(IRadEndpoint endpointInstance)
-        {
-            var endpointType = endpointInstance.GetType();
-
-            while (endpointType != null && endpointType != typeof(object))
-            {
-                if (endpointType.IsGenericType)
-                {
-                    var genericArguments = endpointType.GetGenericArguments();
-                    var requestType = genericArguments.FirstOrDefault(arg => typeof(RadRequest).IsAssignableFrom(arg));
-
-                    if (requestType != null)
-                    {
-                        return requestType;
-                    }
-                }
-
-                endpointType = endpointType.BaseType;
-            }
-
-            return null;
-        }
-
-        private static bool IsRequestValidatorRegistered(this IServiceProvider serviceProvider, IRadEndpoint endpoint)
-        {
-            var requestType = GetRequestType(endpoint);
-
-            if (requestType is null) return false;
-
-            var validatorType = typeof(IValidator<>).MakeGenericType(requestType);
-            var services = serviceProvider.GetServices(validatorType);
-
-            foreach (var service in services)
-            {
-                if (service is null) continue;
-
-                if (validatorType.IsAssignableFrom(service.GetType()))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

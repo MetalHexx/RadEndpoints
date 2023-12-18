@@ -16,10 +16,6 @@ namespace RadEndpoints
         void SetLogger(ILogger logger);
         T Service<T>() where T : notnull;
     }
-    public interface IRadEndpointWithMapper<TMapper> where TMapper : IRadMapper
-    {
-        void SetMapper(TMapper mapper);
-    }
 
     public interface IRadEndpoint<TRequest, TResponse> : IRadEndpoint
         where TRequest : RadRequest
@@ -32,5 +28,9 @@ namespace RadEndpoints
         RouteHandlerBuilder Patch(string route);
         RouteHandlerBuilder Delete(string route);        
         Task<IResult> Handle(TRequest r, CancellationToken ct);
+    }
+    public interface IRadEndpointWithMapper
+    {
+        void SetMapper(IRadMapper mapper);
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace RadEndpoints
 {
-    public static class RadEndpointExtensions
+    public static class RadRouteBuilderExtensions
     {
         public static RouteHandlerBuilder WithDocument(this RouteHandlerBuilder routeBuilder, string tag, string desc) => routeBuilder
             .WithTags(tag)
