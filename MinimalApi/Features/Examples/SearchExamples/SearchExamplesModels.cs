@@ -4,7 +4,9 @@ namespace MinimalApi.Features.Examples.SearchExamples
 {
     public class SearchExamplesRequest : RadRequest
     {
+        [FromQuery]
         public string? FirstName { get; set; }
+        [FromQuery]
         public string? LastName { get; set; }
     }
 

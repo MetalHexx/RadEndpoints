@@ -45,8 +45,6 @@ namespace RadEndpoints.Testing
             where TRequest : RadRequest
         {
             var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, method);
-            var route = RadRouteExtensions.GetAndMapRoute<TEndpoint, TRequest, TResponse>(request);
-            httpRequest.RequestUri = client.BaseAddress!.Combine(route);
 
             var httpResponse = await client.SendAsync(httpRequest);
             client.Dispose();
