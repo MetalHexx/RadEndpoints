@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace RadEndpoints
+namespace RadEndpoints.Mediator
 {
     public interface IRadMediator
     {

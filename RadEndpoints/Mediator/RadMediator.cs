@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 
-namespace RadEndpoints
+namespace RadEndpoints.Mediator
 {
     public class RadMediator : IRadMediator
     {
@@ -36,10 +36,10 @@ namespace RadEndpoints
 
                 var endpointType = endpoint.GetType();
 
-                _registrations.TryAdd(requestType, new RadMediatorRegistration 
+                _registrations.TryAdd(requestType, new RadMediatorRegistration
                 {
                     EndpointType = endpointType,
-                    RequestType = requestType,                      
+                    RequestType = requestType,
                     MapperType = mappertype,
                     LoggerType = endpointType.GetLoggerType()
                 });
@@ -54,15 +54,15 @@ namespace RadEndpoints
             {
                 throw new InvalidOperationException($"No endpoint found for request type {typeof(TRequest).Name}.");
             }
-            var endpoint = _provider.GetService(registration.EndpointType) as RadEndpoint<TRequest, TResponse> 
+            var endpoint = _provider.GetService(registration.EndpointType) as RadEndpoint<TRequest, TResponse>
                 ?? throw new InvalidOperationException($"Endpoint for {typeof(TRequest).Name} not found.");
 
             if (registration.MapperType is not null)
             {
-                var mapper = _provider.GetService(registration.MapperType) as IRadMapper 
+                var mapper = _provider.GetService(registration.MapperType) as IRadMapper
                     ?? throw new InvalidOperationException($"Mapper for {registration.MapperType.Name} not found.");
 
-                var endpointWithMapper = endpoint as IRadEndpointWithMapper 
+                var endpointWithMapper = endpoint as IRadEndpointWithMapper
                     ?? throw new InvalidOperationException($"Endpoint for {typeof(TRequest).Name} does not support mappers.");
 
                 endpointWithMapper.SetMapper(mapper);
