@@ -7,9 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinimalApi", "MinimalApi\Mi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinimalApi.Tests.Integration", "MinimalApi.Tests.Integration\MinimalApi.Tests.Integration.csproj", "{4CEB1AFD-CB2B-4D61-98EC-7A82DCF24EE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadEndpoints", "RadEndpoints\RadEndpoints.csproj", "{6FB8F2D8-D2B2-491D-977E-2F95DA9EEC18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadEndpoints", "RadEndpoints\RadEndpoints.csproj", "{6FB8F2D8-D2B2-491D-977E-2F95DA9EEC18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadEndpoints.Testing", "RadEndpoints.Testing\RadEndpoints.Testing.csproj", "{0923E1D3-73F2-49F8-A30F-375FF5453C5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadEndpoints.Testing", "RadEndpoints.Testing\RadEndpoints.Testing.csproj", "{0923E1D3-73F2-49F8-A30F-375FF5453C5A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PerfTests", "PerfTests", "{78CDBB38-5A69-4EC0-A8BD-ED1F189FA0BF}"
+	ProjectSection(SolutionItems) = preProject
+		RadEndpoints.Tests.Perf\BasicTest.js = RadEndpoints.Tests.Perf\BasicTest.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
