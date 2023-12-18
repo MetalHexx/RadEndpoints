@@ -4,15 +4,16 @@ A lightweight API framework that embraces the power of Net Core [Minimal APIs](h
 While the framework appears to have strong opinions on endpoint structure on the surface, all of the helper/conveniences are virtually optional. Full Minimal Api functionality is preserved for more uncommon edge case or custom use case scenarios.  As of now, this code is for experimental and educational purposes only. 
 
 ### Features:
-#### Endpoint Base Classes with common conveniences
-- HttpContext
-- ILogger<EndpointName>
-- IWebHostEnvironment
-- CancellationToken
-- Ready-to-send response Object
-- Object Mapping (optional)
-- Simple Endpoint Mapping Helpers
-- Common TypedResult Helpers w/[ProblemDetails](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-8.0)
+#### Convenient Structured Endpoint Classes
+- Less noisy configuration than original minimal api endpoints
+- Constructor dependency injection
+- Scoped lifetime
+- Built-in HttpContext
+- Built-in ILogger<EndpointName>
+- Built-in IWebHostEnvironment
+- Built in Response Object
+- Built in Entity / Response Mapper (optional)
+- IResult/TypedResult helpers
 #### Automatic Endpoint Validation Filter
 - Using [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
 #### Integration Testing
