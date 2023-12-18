@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.GetExamples
 {
-    public class GetExamplesEndpoint() : RadEndpoint<GetExamplesRequest, GetExamplesResponse, GetExamplesMapper>
+    public class GetExamplesEndpoint(IExampleService s) : RadEndpoint<GetExamplesRequest, GetExamplesResponse, GetExamplesMapper>
     {
         public override void Configure()
         {
@@ -14,7 +14,7 @@ namespace MinimalApi.Features.Examples.GetExamples
         public override async Task<IResult> Handle(GetExamplesRequest r, CancellationToken c)
         {
             Logger.Log(LogLevel.Information, "This is an example log message.");
-            var examples = await Service<IExampleService>().GetExamples();
+            var examples = await s.GetExamples();
             Response = Map.FromEntity(examples);
             Response.Message = "Examples retrieved successfully";
 
