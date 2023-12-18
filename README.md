@@ -6,6 +6,7 @@ While the framework appears to have strong opinions on endpoint structure on the
 ### Features:
 #### Convenient Structured Endpoint Classes
 - Less noisy configuration than original minimal api endpoints
+- Override or extend endpoint abstractions to fit app specific conventions/contracts
 - Constructor dependency injection
 - Scoped lifetime
 - Built-in HttpContext
