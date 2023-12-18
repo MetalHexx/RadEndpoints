@@ -4,26 +4,26 @@ namespace RadEndpoints
 {
     public static class RadUriExtensions
     {
-        public static Uri Combine(this Uri uri, string path, NameValueCollection queries)
+        public static Uri Combine(this Uri baseUri, string path, NameValueCollection queries)
         {
-            ArgumentNullException.ThrowIfNull(uri);
+            ArgumentNullException.ThrowIfNull(baseUri);
 
-            if (uri.ToString().EndsWith("/") && path.StartsWith("/"))
+            if (baseUri.ToString().EndsWith("/") && path.StartsWith("/"))
             {
                 path = path.TrimStart('/');
             }
-            return new Uri($"{uri}{path}?{queries}");
+            return new Uri($"{baseUri}{path}?{queries}");
         }
 
-        public static Uri Combine(this Uri uri, string path)
+        public static Uri Combine(this Uri baseUri, string path)
         {
-            ArgumentNullException.ThrowIfNull(uri);
+            ArgumentNullException.ThrowIfNull(baseUri);
 
-            if (uri.ToString().EndsWith("/") && path.StartsWith("/"))
+            if (baseUri.ToString().EndsWith("/") && path.StartsWith("/"))
             {
                 path = path.TrimStart('/');
             }
-            return new Uri($"{uri}{path}");
+            return new Uri($"{baseUri}{path}");
         }
     }
 }
