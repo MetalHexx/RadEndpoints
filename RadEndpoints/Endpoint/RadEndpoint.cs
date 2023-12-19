@@ -47,27 +47,27 @@ namespace RadEndpoints
                 ? route
                 : throw new InvalidOperationException($"Route not found for endpoint {typeof(TEndpoint).Name}.");
 
-        public void EnableValidation()
+        void IRadEndpoint.EnableValidation()
         {
             HasValidator = true;
         }
-        public void SetLogger(ILogger logger)
+        void IRadEndpoint.SetLogger(ILogger logger)
         {
             if (Logger is not null) throw new InvalidOperationException("Logger already set.");
             Logger = logger;
         }
-        public void SetBuilder(IEndpointRouteBuilder routeBuilder)
+        void IRadEndpoint.SetBuilder(IEndpointRouteBuilder routeBuilder)
         {
             if (RouteBuilder is not null) throw new InvalidOperationException("Route builder already set.");
             RouteBuilder = routeBuilder;
         }
-        public void SetContext(IHttpContextAccessor contextAccessor)
+        void IRadEndpoint.SetContext(IHttpContextAccessor contextAccessor)
         {
             if (_httpContextAccessor is not null) throw new InvalidOperationException("Context accessor already set.");
             _httpContextAccessor = contextAccessor;
         }
 
-        public void SetEnvironment(IWebHostEnvironment env)
+        void IRadEndpoint.SetEnvironment(IWebHostEnvironment env)
         {
             if (Env is not null) throw new InvalidOperationException("Host environment already set.");
             Env = env;
@@ -78,9 +78,9 @@ namespace RadEndpoints
             return HttpContext.RequestServices.GetRequiredService<T>();
         }
     }
-    public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint 
-        where TResponse : RadResponse, new()
+    public abstract class RadEndpoint<TRequest, TResponse> : RadEndpoint, IRadEndpoint<TRequest, TResponse>
         where TRequest : RadRequest
+        where TResponse : RadResponse, new()
     {
         public TResponse Response { get; set; } = new();
 
@@ -136,7 +136,7 @@ namespace RadEndpoints
     where TMapper : class, IRadMapper
     {
         protected TMapper Map { get; private set; } = default!;
-        public void SetMapper(IRadMapper mapper)
+        void IRadEndpointWithMapper.SetMapper(IRadMapper mapper)
         {
             Map = mapper as TMapper ?? throw new InvalidOperationException("Invalid mapper type.");
         }
