@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Concurrent;
 
 namespace RadEndpoints.Mediator
 {
     public class RadMediator : IRadMediator
     {
-        private static readonly ConcurrentDictionary<Type, RadMediatorRegistration> _registrations = new();
+        private static readonly Dictionary<Type, RadMediatorRegistration> _registrations = new();
         private readonly IServiceProvider _provider;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IWebHostEnvironment _env;
