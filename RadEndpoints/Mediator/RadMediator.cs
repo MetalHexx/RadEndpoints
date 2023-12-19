@@ -54,7 +54,7 @@ namespace RadEndpoints.Mediator
             {
                 throw new InvalidOperationException($"No endpoint found for request type {typeof(TRequest).Name}.");
             }
-            var endpoint = _provider.GetService(registration.EndpointType) as RadEndpoint<TRequest, TResponse>
+            var endpoint = _provider.GetService(registration.EndpointType) as IRadEndpoint<TRequest, TResponse>
                 ?? throw new InvalidOperationException($"Endpoint for {typeof(TRequest).Name} not found.");
 
             if (registration.MapperType is not null)
@@ -67,10 +67,9 @@ namespace RadEndpoints.Mediator
 
                 endpointWithMapper.SetMapper(mapper);
             }
-            var e = endpoint as IRadEndpoint;
-            e.SetLogger(_provider.GetLogger(endpoint.GetType()));
-            e.SetContext(_httpContextAccessor);
-            e.SetEnvironment(_env);
+            endpoint.SetLogger(_provider.GetLogger(endpoint.GetType()));
+            endpoint.SetContext(_httpContextAccessor);
+            endpoint.SetEnvironment(_env);
 
             endpoint.Response = new TResponse();
             return await endpoint.Handle(request, cancellationToken);
