@@ -13,8 +13,7 @@ namespace MinimalApi.Features.Examples.GetExamples
         }
 
         public override async Task<IResult> Handle(GetExamplesRequest r, CancellationToken c)
-        {
-            Logger.Log(LogLevel.Information, "This is an example log message.");
+        {   
             var results = await s.GetExamples();
 
             return results.Match
@@ -27,6 +26,7 @@ namespace MinimalApi.Features.Examples.GetExamples
                 },
                 notFound =>
                 {
+                    Logger.Log(LogLevel.Warning, "Examples not found");
                     return NotFound(notFound.Message);
                 }
             );
