@@ -3,7 +3,7 @@
     public interface IExampleService
     {
         Guid Id { get; } //Using to test scope
-        Task DeleteExample(int id);
+        Task<OneOf<None, NotFoundError>> DeleteExample(int id);
         Task<Example?> GetExample(int id);
         Task<IEnumerable<Example>> GetExamples();
         Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
@@ -77,17 +77,18 @@
             return example;
         }
 
-        public async Task DeleteExample(int id)
+        public async Task<OneOf<None, NotFoundError>> DeleteExample(int id)
         {
             await Task.Delay(1);
 
             var exampleToDelete = _examples.FirstOrDefault(e => e.Id == id);
 
-            if (exampleToDelete is not null)
-            {
-                var index = _examples.IndexOf(exampleToDelete);
-                _examples.RemoveAt(index);
-            }
+            if (exampleToDelete is null) return Problem.NotFound("Example not found");
+            
+            var index = _examples.IndexOf(exampleToDelete);
+            _examples.RemoveAt(index);
+            
+            return new None();
         }
 
         public async Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName)

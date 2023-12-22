@@ -13,10 +13,17 @@ namespace MinimalApi.Features.Examples.DeleteExample
 
         public async override Task<IResult> Handle(DeleteExampleRequest r, CancellationToken ct)
         {
-            await s.DeleteExample(r.Id);
-            Response.Message = "Example deleted successfully";
+            var result = await s.DeleteExample(r.Id);
 
-            return Ok(Response);
+            return result.Match
+            (
+                none => 
+                {
+                    Response.Message = "Example deleted successfully";
+                    return Ok(Response);
+                },
+                notFound => NotFound(notFound.Message)
+            );
         }
     }
 }

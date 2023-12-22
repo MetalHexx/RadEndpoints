@@ -32,5 +32,20 @@ namespace MinimalApi.Tests.Integration.Tests.Example
                 .WithStatusCode(HttpStatusCode.NotFound)
                 .WithMessage("Example not found");
         }
+
+        [Fact]
+        public async Task Given_ExampleDoesNotExist_ReturnsNotFound()
+        {
+            //Arrange 
+            var deleteRequest = new DeleteExampleRequest { Id = 9999 };
+
+            //Act
+            var deleteResult = await f.Client.DeleteAsync<DeleteExampleEndpoint, DeleteExampleRequest, ProblemDetails>(deleteRequest);
+
+            //Assert
+            deleteResult.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.NotFound)
+                .WithMessage("Example not found");
+        }
     }
 }
