@@ -8,22 +8,27 @@ namespace MinimalApi.Features.Examples.UpdateExample
         {
             Put("/examples/{id}")
                 .Produces<UpdateExampleResponse>(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status404NotFound)
+                .ProducesProblem(StatusCodes.Status404NotFound)
+                .ProducesProblem(StatusCodes.Status409Conflict)
+                .ProducesValidationProblem(StatusCodes.Status400BadRequest)
                 .WithDocument(tag: Constants.ExamplesTag, desc: "Update an example.");
         }
 
         public async override Task<IResult> Handle(UpdateExampleRequest r, CancellationToken ct)
         {
-            var example = await s.UpdateExample(Map.ToEntity(r));
+            var result = await s.UpdateExample(Map.ToEntity(r));
 
-            if (example is null)
-            {
-                return NotFound("Example not found");
-            }
-            Response = Map.FromEntity(example);
-            Response.Message = "Example updated successfully";
-            
-            return Ok(Response);
+            return result.Match
+            (
+                example =>
+                {
+                    var response = Map.FromEntity(example);
+                    response.Message = "Example updated successfully";
+                    return Ok(response);
+                },
+                notFound => NotFound(notFound.Message),
+                conflict => Conflict(conflict.Message)
+            );
         }
     }
 }

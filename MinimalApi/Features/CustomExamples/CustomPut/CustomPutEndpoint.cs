@@ -16,8 +16,10 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
             RouteBuilder
                 .MapPut(route, ([AsParameters]CustomPutRequest r, IExampleService s, CancellationToken ct) => Handle(r, s, ct))
                 .AddEndpointFilter<RadValidationFilter<CustomPutRequest>>()
-                .Produces<CustomPutResponse>(StatusCodes.Status200OK)
+                .Produces<CustomPutResponse>(StatusCodes.Status200OK)                
                 .ProducesProblem(StatusCodes.Status404NotFound)
+                .ProducesProblem(StatusCodes.Status409Conflict)
+                .ProducesValidationProblem(StatusCodes.Status400BadRequest)                
                 .WithDocument
                 (
                     tag: "Custom", 
@@ -27,16 +29,19 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
 
         public async Task<IResult> Handle(CustomPutRequest r, IExampleService s, CancellationToken ct)
         {
-            var example = await s.UpdateExample(m.ToEntity(r));            
+            var result = await s.UpdateExample(m.ToEntity(r));
 
-            if (example is null)
-            {
-                return NotFound("Could not find and example with the id provided");
-            }
-            var response = m.FromEntity(example);
-            response.Message = "Example updated successfully";
-
-            return Ok(response);
+            return result.Match
+            (
+                example =>
+                {
+                    var response = m.FromEntity(example);
+                    response.Message = "Example updated successfully";
+                    return Ok(response);
+                },
+                notFound => NotFound(notFound.Message),
+                conflict => Conflict(conflict.Message)
+            );
         }
     }
 }

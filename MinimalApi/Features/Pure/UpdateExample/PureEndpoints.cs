@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using MinimalApi.Domain.Examples;
-using MinimalApi.Features.CustomExamples.CustomPut;
+﻿using MinimalApi.Domain.Examples;
 using MinimalApi.Features.Examples.UpdateExample;
-using System.ComponentModel.DataAnnotations;
 
 namespace MinimalApi.Features.Pure.UpdateExample
 {
@@ -32,27 +29,32 @@ namespace MinimalApi.Features.Pure.UpdateExample
 
                 var entity = new Example(r.Data.FirstName, r.Data.LastName, r.Id);
 
-                var example = await s.UpdateExample(entity);
+                var result = await s.UpdateExample(entity);
 
-                if (example is null)
-                {
-                    return Results.Problem(title: "Example was not found", statusCode: StatusCodes.Status404NotFound);
-                }
-                var response = new UpdateExampleResponse
-                {
-                    Data = new()
+                return result.Match
+                (
+                    example =>
                     {
-                        Id = example.Id,
-                        FirstName = example.FirstName,
-                        LastName = example.LastName
+                        var response = new UpdateExampleResponse
+                        {
+                            Data = new()
+                            {
+                                Id = example.Id,
+                                FirstName = example.FirstName,
+                                LastName = example.LastName
+                            },
+                            Message = "Example updated successfully"
+                        };
+                        return Results.Ok(response);
                     },
-                    Message = "Example updated successfully"
-                };
-
-                return Results.Ok(response);
+                    notFound => Results.NotFound(notFound.Message),
+                    conflict => Results.Conflict(conflict.Message)
+                );
             })
             .Produces<UpdateExampleResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .WithDocument(tag: "Pure Minimal API", desc: "Update an example. \r\n\r\n This shows an example done in pure minimal api.  This is identical to UpdatedExampleEndpoint and CustomPutEndpoint.");
         }
     }

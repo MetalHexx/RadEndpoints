@@ -1,4 +1,6 @@
-﻿using MinimalApi.Features.Examples.UpdateExample;
+﻿using MinimalApi.Features.Examples.CreateExample;
+using MinimalApi.Features.Examples.GetExample;
+using MinimalApi.Features.Examples.UpdateExample;
 
 namespace MinimalApi.Tests.Integration.Tests.Example
 {
@@ -74,6 +76,31 @@ namespace MinimalApi.Tests.Integration.Tests.Example
                 .WithStatusCode(HttpStatusCode.BadRequest)
                 .WithMessage("Validation Error")
                 .WithKey("Data.LastName");
+        }
+
+        [Fact]
+        public async Task Given_ExampleExists_And_UpdateWithSameName_ReturnsConflict()
+        {
+            //Arrange            
+            var getResponse = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new() { Id = 1 });
+            var createRequest = f.DataGenerator.Create<CreateExampleRequest>();
+            var createResponse = await f.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, CreateExampleResponse>(createRequest);
+
+            //Act
+            var r = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(new UpdateExampleRequest
+            {
+                Id = createResponse.Content.Data!.Id,
+                Data = new ExampleUpdateDto
+                {
+                    FirstName = getResponse.Content.Data!.FirstName,
+                    LastName = getResponse.Content.Data!.LastName
+                }
+            });
+
+            //Assert
+            r.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.Conflict)
+                .WithMessage("Example with the same first and last name already exists");
         }
     }
 }

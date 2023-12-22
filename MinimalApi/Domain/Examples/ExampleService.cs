@@ -8,7 +8,7 @@
         Task<IEnumerable<Example>> GetExamples();
         Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
         Task<Example?> InsertExample(Example example);
-        Task<Example?> UpdateExample(Example example);
+        Task<OneOf<Example, NotFoundError, ConflictError>> UpdateExample(Example example);
         Task<IEnumerable<Example>> SearchChildExample(int parentId, string? firstName, string? lastName);
     }
 
@@ -58,19 +58,23 @@
             return newExample;
         }
 
-        public async Task<Example?> UpdateExample(Example example)
+        private bool IsDuplicateName(Example example) => _examples.Any(record =>
+            record.FirstName == example.FirstName
+            && record.LastName == example.LastName);
+
+        public async Task<OneOf<Example, NotFoundError, ConflictError>> UpdateExample(Example example)
         {
             await Task.Delay(1);
 
             var existingExample = _examples.FirstOrDefault(e => e.Id == example.Id);
 
-            if (existingExample is not null)
-            {
-                var index = _examples.IndexOf(existingExample);
-                _examples[index] = example;
-                return example;
-            }
-            return null;
+            if (existingExample is null) return Problem.NotFound("Example not found");
+
+            if (IsDuplicateName(example)) return Problem.Conflict("Example with the same first and last name already exists");
+
+            var index = _examples.IndexOf(existingExample);
+            _examples[index] = example;
+            return example;
         }
 
         public async Task DeleteExample(int id)
