@@ -6,7 +6,7 @@
         Task<OneOf<None, NotFoundError>> DeleteExample(int id);
         Task<OneOf<Example, NotFoundError>> GetExample(int id);
         Task<OneOf<IEnumerable<Example>, NotFoundError>> GetExamples();
-        Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
+        Task<OneOf<IEnumerable<Example>, NotFoundError>> FindExamples(string? firstName, string? lastName);
         Task<OneOf<Example, ConflictError>> InsertExample(Example example);
         Task<OneOf<Example, NotFoundError, ConflictError>> UpdateExample(Example example);
         Task<OneOf<IEnumerable<Example>, NotFoundError>> SearchChildExample(int parentId, string? firstName, string? lastName);
@@ -94,7 +94,7 @@
             return new None();
         }
 
-        public async Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName)
+        public async Task<OneOf<IEnumerable<Example>, NotFoundError>> FindExamples(string? firstName, string? lastName)
         {
             await Task.Delay(1);
 
@@ -109,7 +109,9 @@
             {
                 results = results.Where(e => e.LastName == lastName);
             }
-            return results;
+            return results.Any()
+                ? results.ToList()
+                : Problem.NotFound("No examples found");
         }
 
         public async Task<OneOf<IEnumerable<Example>, NotFoundError>> SearchChildExample(int parentId, string? firstName, string? lastName)

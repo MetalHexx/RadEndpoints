@@ -51,5 +51,24 @@ namespace MinimalApi.Tests.Integration.Tests.Example
                 .WithKey("FirstName")
                 .WithKey("LastName");
         }
+
+        [Fact]
+        public async Task Given_ExampleDoesNotExist_ReturnsNotFound()
+        {
+            //Arrange
+            var request = new SearchExamplesRequest
+            {
+                FirstName = "Darth",
+                LastName = "Vader"
+            };
+
+            //Act
+            var r = await f.Client.GetAsync<SearchExamplesEndpoint, SearchExamplesRequest, ProblemDetails>(request); 
+
+            //Assert
+            r.Should().BeProblem()
+                .WithStatusCode(HttpStatusCode.NotFound)
+                .WithMessage("No examples found");
+        }
     }
 }

@@ -13,14 +13,18 @@ namespace MinimalApi.Features.Examples.SearchExamples
 
         public async override Task<IResult> Handle(SearchExamplesRequest r, CancellationToken ct)
         {
-            var examples = await s.FindExamples(r.FirstName, r.LastName);
-            
-            Response = Map.FromEntity(examples);
-            Response.Message = examples.Any()
-                ? "Examples found successfully"
-                : "No examples found";
-            
-            return Ok(Response);
+            var results = await s.FindExamples(r.FirstName, r.LastName);
+
+            return results.Match
+            (
+                examples =>
+                {
+                    Response = Map.FromEntity(examples);
+                    Response.Message = "Examples found successfully";
+                    return Ok(Response);
+                },
+                notFound => NotFound(notFound.Message)
+            );
         }
     }
 }
