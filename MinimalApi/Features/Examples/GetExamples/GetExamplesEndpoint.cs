@@ -15,9 +15,9 @@ namespace MinimalApi.Features.Examples.GetExamples
         public override async Task<IResult> Handle(GetExamplesRequest r, CancellationToken c)
         {
             Logger.Log(LogLevel.Information, "This is an example log message.");
-            var examples = await s.GetExamples();
+            var results = await s.GetExamples();
 
-            return examples.Match
+            return results.Match
             (
                 examples =>
                 {

@@ -15,17 +15,21 @@ namespace MinimalApi.Features.Examples.GetExampleChild
 
         public override async Task<IResult> Handle(SearchChildExampleRequest r, CancellationToken ct)
         {
-            var children = await s.SearchChildExample(r.ParentId, r.FirstName, r.LastName);
+            var results = await s.SearchChildExample(r.ParentId, r.FirstName, r.LastName);
 
-            if(children.Any() == false)
-            {
-                return NotFound("No children found");
-            }  
-
-            Response = Map.FromEntity(children);
-            Response.Message = "Children found";
-
-            return Ok(Response);
+            return results.Match
+            (
+                children =>
+                {
+                    Response = Map.FromEntity(children);
+                    Response.Message = "Children found";
+                    return Ok(Response);
+                },
+                notFound =>
+                {
+                    return NotFound(notFound.Message);
+                }
+            );
         }
     }
 }

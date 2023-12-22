@@ -9,7 +9,7 @@
         Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
         Task<OneOf<Example, ConflictError>> InsertExample(Example example);
         Task<OneOf<Example, NotFoundError, ConflictError>> UpdateExample(Example example);
-        Task<IEnumerable<Example>> SearchChildExample(int parentId, string? firstName, string? lastName);
+        Task<OneOf<IEnumerable<Example>, NotFoundError>> SearchChildExample(int parentId, string? firstName, string? lastName);
     }
 
     public class ExampleService : IExampleService
@@ -112,7 +112,7 @@
             return results;
         }
 
-        public async Task<IEnumerable<Example>> SearchChildExample(int parentId, string? firstName, string? lastName)
+        public async Task<OneOf<IEnumerable<Example>, NotFoundError>> SearchChildExample(int parentId, string? firstName, string? lastName)
         {
             await Task.Delay(1);
 
@@ -127,7 +127,10 @@
             {
                 results = results.Where(e => e.LastName == lastName);
             }
-            return results;
+
+            return results.Any()
+                ? results.ToList()
+                : Problem.NotFound("No children found");
         }
     }
 }
