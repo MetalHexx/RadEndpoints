@@ -7,7 +7,7 @@
         Task<Example?> GetExample(int id);
         Task<IEnumerable<Example>> GetExamples();
         Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
-        Task<Example?> InsertExample(Example example);
+        Task<OneOf<Example, ConflictError>> InsertExample(Example example);
         Task<OneOf<Example, NotFoundError, ConflictError>> UpdateExample(Example example);
         Task<IEnumerable<Example>> SearchChildExample(int parentId, string? firstName, string? lastName);
     }
@@ -37,19 +37,15 @@
             return _examples.FirstOrDefault(e => e.Id == id);
         }
 
-        public async Task<Example?> InsertExample(Example example)
+        public async Task<OneOf<Example, ConflictError>> InsertExample(Example example)
         {
             await Task.Delay(1);
 
             var id = _examples.Max(e => e.Id) + 1;
 
-            var isDuplicateName = _examples.Any(record =>
-                record.FirstName == example.FirstName
-                && record.LastName == example.LastName);
-
-            if (isDuplicateName)
+            if (IsDuplicateName(example))
             {
-                return null;
+                return Problem.Conflict("An example with the same first and last name already exists");
             }
             var newExample = example with { Id = id };
 

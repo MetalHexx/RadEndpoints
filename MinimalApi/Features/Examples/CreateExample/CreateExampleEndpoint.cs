@@ -14,17 +14,18 @@ namespace MinimalApi.Features.Examples.CreateExample
 
         public override async Task<IResult> Handle(CreateExampleRequest r, CancellationToken ct)
         {
-            var entity = Map.ToEntity(r);
-            var savedEntity = await s.InsertExample(entity);
+            var result = await s.InsertExample(Map.ToEntity(r));
 
-            if (savedEntity is null)
-            {
-                return Conflict("An example with the same first and last name already exists");
-            }
-            Response = Map.FromEntity(savedEntity!);
-            Response.Message = "Example created successfully";
-            
-            return Created($"/examples/{savedEntity.Id}", Response);
+            return result.Match
+            (
+                example =>
+                {
+                    Response = Map.FromEntity(example);
+                    Response.Message = "Example created successfully";
+                    return Created($"/examples/{example.Id}", Response);
+                },
+                conflict => Conflict(conflict.Message)
+            );
         }
     }
 }
