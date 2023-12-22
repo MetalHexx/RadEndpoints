@@ -4,7 +4,7 @@
     {
         Guid Id { get; } //Using to test scope
         Task<OneOf<None, NotFoundError>> DeleteExample(int id);
-        Task<Example?> GetExample(int id);
+        Task<OneOf<Example, NotFoundError>> GetExample(int id);
         Task<IEnumerable<Example>> GetExamples();
         Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
         Task<OneOf<Example, ConflictError>> InsertExample(Example example);
@@ -31,10 +31,14 @@
             await Task.Delay(1);
             return _examples;
         }
-        public async Task<Example?> GetExample(int id)
+        public async Task<OneOf<Example, NotFoundError>> GetExample(int id)
         {
             await Task.Delay(1);            
-            return _examples.FirstOrDefault(e => e.Id == id);
+            var example = _examples.FirstOrDefault(e => e.Id == id);
+
+            return example is null
+                ? Problem.NotFound("Example not found")
+                : example;
         }
 
         public async Task<OneOf<Example, ConflictError>> InsertExample(Example example)

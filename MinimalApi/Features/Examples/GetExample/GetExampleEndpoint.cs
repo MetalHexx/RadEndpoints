@@ -15,16 +15,18 @@ namespace MinimalApi.Features.Examples.GetExample
 
         public async override Task<IResult> Handle(GetExampleRequest r, CancellationToken ct)
         {
-            var exampleEntity = await s.GetExample(r.Id);
+            var result = await s.GetExample(r.Id);
 
-            if (exampleEntity is null)
-            {
-                return NotFound("Example not found");
-            }
-            Response = Map.FromEntity(exampleEntity);
-            Response.Message = "Example retrieved successfully";
-
-            return Ok(Response);
+            return result.Match
+            (
+                example =>
+                {
+                    Response = Map.FromEntity(example);
+                    Response.Message = "Example retrieved successfully";
+                    return Ok(Response);
+                },
+                notFound => NotFound(notFound.Message)
+            );
         }
     }
 }
