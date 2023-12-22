@@ -50,10 +50,10 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             updateRequest.Data.FirstName = string.Empty;
 
             //Act
-            var r = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(updateRequest);
+            var r = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ValidationProblemDetails>(updateRequest);
 
             //Assert
-            r.Should().BeProblem()
+            r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
                 .WithMessage("Validation Error")
                 .WithKey("Data.FirstName");
@@ -67,10 +67,10 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             updateRequest.Data.LastName = string.Empty;
 
             //Act
-            var r = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ProblemDetails>(updateRequest);
+            var r = await f.Client.PutAsync<UpdateExampleEndpoint, UpdateExampleRequest, ValidationProblemDetails>(updateRequest);
 
             //Assert
-            r.Should().BeProblem()
+            r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
                 .WithMessage("Validation Error")
                 .WithKey("Data.LastName");

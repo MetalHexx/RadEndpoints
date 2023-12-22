@@ -38,6 +38,21 @@ namespace RadEndpoints.Testing
 
             return new RadTestResultProblemAssertion(testResult);
         }
+
+        public static RadTestResultValidationProblemAssertion BeValidationProblem(this ObjectAssertions assertions)
+        {
+            var testResult = assertions.Subject as RadTestResult<ValidationProblemDetails>;
+
+            Execute.Assertion
+                .ForCondition(testResult?.Content != null)
+                .FailWith("Expected object to be of type ValidationProblemDetails, but found {1}.", typeof(ValidationProblemDetails), assertions.Subject.GetType());
+
+            Execute.Assertion
+                .ForCondition(!testResult!.Http.IsSuccessStatusCode)
+                .FailWith("Expected HTTP response to be a problem (4xx), but found {0}.", testResult.Http.StatusCode);
+
+            return new RadTestResultValidationProblemAssertion(testResult);
+        }
     }
 
     public class RadTestResultAssertion<TResponse>(RadTestResult<TResponse> result) where TResponse : RadResponse
@@ -102,6 +117,53 @@ namespace RadEndpoints.Testing
         }
 
         public RadTestResultProblemAssertion WithContentType(string expectedType)
+        {
+            result.Content.Type.Should().Be(expectedType);
+            return this;
+        }
+    }
+
+    public class RadTestResultValidationProblemAssertion(RadTestResult<ValidationProblemDetails> result)
+    {
+        public RadTestResultValidationProblemAssertion WithMessage(string expectedTitle)
+        {
+            result.Content.Title.Should().Be(expectedTitle, "the message in the response content should match");
+            return this;
+        }
+
+        public RadTestResultValidationProblemAssertion WithStatusCode(HttpStatusCode statusCode)
+        {
+            result.Http.StatusCode.Should().Be(statusCode, $"the status code should be {statusCode}");
+            result.Content.Status.Should().Be((int)statusCode, $"the status code should be {statusCode}");
+            return this;
+        }
+
+        public RadTestResultValidationProblemAssertion WithKey(string expectedKey)
+        {
+            result.Content.Errors.Should().ContainKey(expectedKey);
+            return this;
+        }
+
+        public RadTestResultValidationProblemAssertion WithKeyAndValue(string expectedKey, string expectedValue)
+        {
+            result.Content.Errors.Should().ContainKey(expectedKey)
+                .WhoseValue!.ToString().Should().Be(expectedValue);
+            return this;
+        }
+
+        public RadTestResultValidationProblemAssertion WithDetail(string expectedDetail)
+        {
+            result.Content.Detail.Should().Be(expectedDetail);
+            return this;
+        }
+
+        public RadTestResultValidationProblemAssertion WithInstance(string expectedInstance)
+        {
+            result.Content.Instance.Should().Be(expectedInstance);
+            return this;
+        }
+
+        public RadTestResultValidationProblemAssertion WithContentType(string expectedType)
         {
             result.Content.Type.Should().Be(expectedType);
             return this;

@@ -22,17 +22,12 @@ namespace RadEndpoints
 
             if (!validationResult.IsValid)
             {
-                var problem = TypedResults.Problem
+                return TypedResults.ValidationProblem
                 (
-                    title: "Validation Error",
-                    statusCode: StatusCodes.Status400BadRequest
+                    errors: validationResult.ToDictionary(),
+                    title: "Validation Error"
                 );
-                validationResult.Errors.ForEach(error =>
-                    problem.ProblemDetails.Extensions.Add(error.PropertyName, error.ErrorMessage));
-
-                return problem;
             }
-
             return await next(context);
         }
     }

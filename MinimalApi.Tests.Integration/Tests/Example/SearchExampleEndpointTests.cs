@@ -42,10 +42,10 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             };
 
             //Act
-            var r = await f.Client.GetAsync<SearchExamplesEndpoint, SearchExamplesRequest, ProblemDetails>(request); 
+            var r = await f.Client.GetAsync<SearchExamplesEndpoint, SearchExamplesRequest, ValidationProblemDetails>(request); 
 
             //Assert
-            r.Should().BeProblem()
+            r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
                 .WithMessage("Validation Error")
                 .WithKey("FirstName")

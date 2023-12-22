@@ -40,13 +40,13 @@ namespace MinimalApi.Tests.Integration.Tests.Example
         public async void When_IdInvalid_ReturnsProblem()
         {
             //Act            
-            var r = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ProblemDetails>(new()
+            var r = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, ValidationProblemDetails>(new()
             {
                 Id = 0
             });
 
             //Assert
-            r.Should().BeProblem()
+            r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
                 .WithKey("Id");
         }
