@@ -8,6 +8,7 @@ namespace MinimalApi.Features.Examples.GetExamples
         {
             Get("/examples")
                 .Produces<GetExamplesResponse>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
                 .WithDocument(tag: Constants.ExamplesTag, desc: "Create a new example.");
         }
 
@@ -15,10 +16,20 @@ namespace MinimalApi.Features.Examples.GetExamples
         {
             Logger.Log(LogLevel.Information, "This is an example log message.");
             var examples = await s.GetExamples();
-            Response = Map.FromEntity(examples);
-            Response.Message = "Examples retrieved successfully";
 
-            return Ok(Response);
+            return examples.Match
+            (
+                examples =>
+                {
+                    Response = Map.FromEntity(examples);
+                    Response.Message = "Examples retrieved successfully";
+                    return Ok(Response);
+                },
+                notFound =>
+                {
+                    return NotFound(notFound.Message);
+                }
+            );
         }
     }
 }

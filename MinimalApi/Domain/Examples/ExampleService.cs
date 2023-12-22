@@ -5,7 +5,7 @@
         Guid Id { get; } //Using to test scope
         Task<OneOf<None, NotFoundError>> DeleteExample(int id);
         Task<OneOf<Example, NotFoundError>> GetExample(int id);
-        Task<IEnumerable<Example>> GetExamples();
+        Task<OneOf<IEnumerable<Example>, NotFoundError>> GetExamples();
         Task<IEnumerable<Example>> FindExamples(string? firstName, string? lastName);
         Task<OneOf<Example, ConflictError>> InsertExample(Example example);
         Task<OneOf<Example, NotFoundError, ConflictError>> UpdateExample(Example example);
@@ -26,10 +26,13 @@
             _examples.Add(new Example("Michael", "Brown", Id: 5, ParentId: 3));
             _examples.Add(new Example("Luke", "Skywalker", Id: 6, ParentId: 4));
         }
-        public async Task<IEnumerable<Example>> GetExamples()
+        public async Task<OneOf<IEnumerable<Example>, NotFoundError>> GetExamples()
         {
             await Task.Delay(1);
-            return _examples;
+
+            return _examples.Count == 0
+                ? Problem.NotFound("No examples found")
+                : _examples;
         }
         public async Task<OneOf<Example, NotFoundError>> GetExample(int id)
         {
