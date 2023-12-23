@@ -11,19 +11,19 @@ namespace MinimalApi.Features.Examples.SearchExamples
                 .WithDocument(tag: Constants.ExamplesTag, desc: "Search for examples");
         }
 
-        public async override Task<IResult> Handle(SearchExamplesRequest r, CancellationToken ct)
+        public async override Task Handle(SearchExamplesRequest r, CancellationToken ct)
         {
             var results = await s.FindExamples(r.FirstName, r.LastName);
 
-            return results.Match
+            results.Switch
             (
                 examples =>
                 {
                     Response = Map.FromEntity(examples);
                     Response.Message = "Examples found successfully";
-                    return Send(Response);
+                    Send();
                 },
-                notFound => SendNotFound(notFound.Message)
+                notFound => SendProblem(notFound)
             );
         }
     }

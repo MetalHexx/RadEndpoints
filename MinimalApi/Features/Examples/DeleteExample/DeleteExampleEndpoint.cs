@@ -11,18 +11,18 @@ namespace MinimalApi.Features.Examples.DeleteExample
                 .WithDocument(tag: Constants.ExamplesTag, desc: "Delete an example.");
         }
 
-        public async override Task<IResult> Handle(DeleteExampleRequest r, CancellationToken ct)
+        public async override Task Handle(DeleteExampleRequest r, CancellationToken ct)
         {
             var result = await s.DeleteExample(r.Id);
 
-            return result.Match
+            result.Switch
             (
                 none => 
                 {
                     Response.Message = "Example deleted successfully";
-                    return Send(Response);
+                    Send();
                 },
-                notFound => SendNotFound(notFound.Message)
+                notFound => SendProblem(notFound)
             );
         }
     }

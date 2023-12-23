@@ -45,7 +45,7 @@ namespace RadEndpoints.Mediator
             }
         }
 
-        public async Task<IResult> SendAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken)
+        public Task CallHandlerAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken)
             where TRequest : RadRequest
             where TResponse : RadResponse, new()
         {
@@ -70,7 +70,7 @@ namespace RadEndpoints.Mediator
             endpoint.SetContext(_httpContextAccessor);
             endpoint.SetEnvironment(_env);
             
-            return await endpoint.Handle(request, cancellationToken);
+            return endpoint.Handle(request, cancellationToken);
         }
     }
 }

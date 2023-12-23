@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using RadEndpoints.Mediator;
 
 namespace RadEndpoints
 {
@@ -27,7 +28,8 @@ namespace RadEndpoints
         RouteHandlerBuilder Put(string route);
         RouteHandlerBuilder Patch(string route);
         RouteHandlerBuilder Delete(string route);        
-        Task<IResult> Handle(TRequest r, CancellationToken ct);
+        Task Handle(TRequest r, CancellationToken ct);
+        Task<IResult> ExecuteHandler(TRequest request, IRadMediator mediator, HttpContext context, CancellationToken ct);
     }
     public interface IRadEndpointWithMapper
     {

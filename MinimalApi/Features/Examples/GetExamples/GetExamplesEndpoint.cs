@@ -12,22 +12,22 @@ namespace MinimalApi.Features.Examples.GetExamples
                 .WithDocument(tag: Constants.ExamplesTag, desc: "Create a new example.");
         }
 
-        public override async Task<IResult> Handle(GetExamplesRequest r, CancellationToken c)
+        public override async Task Handle(GetExamplesRequest r, CancellationToken c)
         {   
             var results = await s.GetExamples();
 
-            return results.Match
+            results.Switch
             (
                 examples =>
                 {
                     Response = Map.FromEntity(examples);
                     Response.Message = "Examples retrieved successfully";
-                    return Send(Response);
+                    Send();
                 },
                 notFound =>
                 {
                     Logger.Log(LogLevel.Warning, "Examples not found");
-                    return SendNotFound(notFound.Message);
+                    SendProblem(notFound);
                 }
             );
         }

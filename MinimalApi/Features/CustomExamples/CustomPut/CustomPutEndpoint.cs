@@ -3,9 +3,34 @@
 namespace MinimalApi.Features.CustomExamples.CustomPut
 {
     /// <summary>
-    /// This endpoint shows minimal usage of RadEndpoint abstractions.  The framework stays out of the
-    /// way to allow you to use all native minimal API functionality. This will allow for very custom
-    /// use cases or scenarios that are not yet supported by the framework.
+    /// This endpoint shows minimal usage of the RadEndpoint abstractions without strong typing.
+    /// This will remove a lot of framework conveniences and shortcuts, but will allow for full control 
+    /// over the endpoint behavior.
+    /// 
+    /// Features you still get:
+    /// - Assembly scanned endpoint configuration
+    /// - Endpoint style class structure
+    /// - Endpoint class dependency injection with scoped lifetime
+    /// - Endpoint class property conveniences like ILogger, IWebHostEnvironment, IEndpointRouteBuilder, and IHttpContextAccessor
+    /// - RadEndpoint RouteBuilder shortcuts
+    /// - Optional Routeless integration testing (manually configured - as shown)
+    /// - ValidationFilter (manual configuration - as shown)
+    /// 
+    /// Drawbacks (or benefits?) of not using strong typed RadEndpoint<,,>
+    /// - Not available: Global endpoint configuration (for filters and other RouteBuilder functions)
+    /// - Not available: Declarative and strongly enforced typing (You could still use Net 8 Union / TypedResults if you prefer...)
+    /// - Not available: Send() and Send(TResponse) shortcuts
+    /// - Not available: Automatic RadProblem Results (see: RadEndpoint.Send.SendProblem())
+    /// - Not available: Assembly scanned Endpoint Model Mappers
+    /// - Not available: Assembly scanned  FluentValidators (manual configuration - as shown)
+    /// - More verbose (net 8 / out-of-the-box) endpoint configuration
+    /// - Loose opinion means you need to find other ways to add architectural guardrails, and automation to your application
+    /// 
+    /// This approach is only really recommended for an application that has strong
+    /// team coding standards and facilities to guardrail the application. You can
+    /// combine this approach with the RadEndpoint<,,> but it is recommended to 
+    /// only use it sparingly for custom or hard-to-reach use cases.  
+    /// 
     /// </summary>
     public class CustomPutEndpoint(ICustomPutMapper m) : RadEndpoint
     {
@@ -23,7 +48,7 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
                 .WithDocument
                 (
                     tag: "Custom", 
-                    desc: "This endpoint shows minimal usage of RadEndpoint abstractions.  The framework stays out of the way to allow you to use all native minimal API functionality. This will allow for very custom use cases or scenarios that are not yet supported by the framework."
+                    desc: "This endpoint shows minimal usage of RadEndpoint abstractions.  This will provide the basic framework for configuring your minimal endpoint.  You will have full control over the endpoint like a normal minimal api endpoint, but lose some framework shortcuts and conveniences."
                 );
         }
 
@@ -37,10 +62,10 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
                 {
                     var response = m.FromEntity(example);
                     response.Message = "Example updated successfully";
-                    return Send(response);
+                    return Results.Ok(response);
                 },
-                notFound => SendNotFound(notFound.Message),
-                conflict => SendConflict(conflict.Message)
+                notFound => Results.Problem(title: notFound.Message, statusCode: StatusCodes.Status404NotFound),
+                conflict => Results.Problem(title: conflict.Message, statusCode: StatusCodes.Status409Conflict)
             );
         }
     }

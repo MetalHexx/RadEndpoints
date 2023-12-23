@@ -13,22 +13,19 @@ namespace MinimalApi.Features.Examples.GetExampleChild
                 .WithDocument(tag: Constants.ExamplesTag, desc: "Given a parent, find children by first or last name");
         }
 
-        public override async Task<IResult> Handle(SearchChildExampleRequest r, CancellationToken ct)
+        public override async Task Handle(SearchChildExampleRequest r, CancellationToken ct)
         {
             var results = await s.SearchChildExample(r.ParentId, r.FirstName, r.LastName);
 
-            return results.Match
+            results.Switch
             (
                 children =>
                 {
                     Response = Map.FromEntity(children);
                     Response.Message = "Children found";
-                    return Send(Response);
+                    Send(Response);
                 },
-                notFound =>
-                {
-                    return SendNotFound(notFound.Message);
-                }
+                notFound => SendProblem(notFound)
             );
         }
     }

@@ -9,13 +9,12 @@
                 .WithDocument(tag: "Environment", desc: "Get information about the application environment.");
         }
 
-        public async override Task<IResult> Handle(GetEnvironmentRequest r, CancellationToken ct)
+        public async override Task Handle(GetEnvironmentRequest r, CancellationToken ct)
         {
             Response.EnvironmentName = Env.EnvironmentName;
             Response.ApplicationName = Env.ApplicationName;
             Response.Message = "Environment information retrieved successfully";
-
-            return Send(Response);
+            Send();
         }
     }
 }

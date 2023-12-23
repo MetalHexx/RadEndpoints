@@ -12,19 +12,19 @@ namespace MinimalApi.Features.Examples.CreateExample
                 .WithDocument(tag: Constants.ExamplesTag, desc: "Create a new example.");
         }
 
-        public override async Task<IResult> Handle(CreateExampleRequest r, CancellationToken ct)
+        public override async Task Handle(CreateExampleRequest r, CancellationToken ct)
         {
             var result = await s.InsertExample(Map.ToEntity(r));
 
-            return result.Match
+            result.Switch
             (
                 example =>
                 {
                     Response = Map.FromEntity(example);
                     Response.Message = "Example created successfully";
-                    return SendCreatedAt($"/examples/{example.Id}", Response);
+                    SendCreatedAt($"/examples/{example.Id}", Response);
                 },
-                conflict => SendConflict(conflict.Message)
+                conflict => SendProblem(conflict)
             );
         }
     }

@@ -6,7 +6,7 @@ namespace MinimalApi.Features.CustomExamples._common
         where TResponse : RadResponse, new()
         where TRequest : RadRequest
     {
-        protected override Ok<string> SendOk() => TypedResults.Ok("This is a different implementation of the Ok helper.");
-        protected override NotFound<string> SendNotFound(string message) => TypedResults.NotFound(message);
+        protected override void SendOk() => TypedResults.Ok("This is a different implementation of the Ok helper.");
+        protected override void SendNotFound(string message) => TypedResults.NotFound(message);
     }
 }
