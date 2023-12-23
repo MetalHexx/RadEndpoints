@@ -31,7 +31,7 @@ export default () => {
     // vus............................: 1      min = 1       max = 1
     // vus_max........................: 1      min = 1       max = 1
 
-    //let url = 'http://localhost:5039/custom-examples/1'; //custom endpoint
+    //let url = 'http://localhost:5039/lite/1'; //custom endpoint
     //data_received..................: 254 kB 25 kB / s
     // data_sent......................: 193 kB 19 kB / s
     // http_req_blocked...............: avg = 342.6µs  min = 0s      med = 287.7µs max = 6ms      p(90) = 521.1µs  p(95) = 732.16µs
