@@ -21,9 +21,9 @@ namespace MinimalApi.Features.Examples.SearchExamples
                 {
                     Response = Map.FromEntity(examples);
                     Response.Message = "Examples found successfully";
-                    return Ok(Response);
+                    return Send(Response);
                 },
-                notFound => NotFound(notFound.Message)
+                notFound => SendNotFound(notFound.Message)
             );
         }
     }

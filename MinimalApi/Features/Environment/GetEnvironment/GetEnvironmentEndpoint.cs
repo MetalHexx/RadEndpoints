@@ -15,7 +15,7 @@
             Response.ApplicationName = Env.ApplicationName;
             Response.Message = "Environment information retrieved successfully";
 
-            return Ok(Response);
+            return Send(Response);
         }
     }
 }

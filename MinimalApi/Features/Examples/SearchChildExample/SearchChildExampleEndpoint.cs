@@ -23,11 +23,11 @@ namespace MinimalApi.Features.Examples.GetExampleChild
                 {
                     Response = Map.FromEntity(children);
                     Response.Message = "Children found";
-                    return Ok(Response);
+                    return Send(Response);
                 },
                 notFound =>
                 {
-                    return NotFound(notFound.Message);
+                    return SendNotFound(notFound.Message);
                 }
             );
         }

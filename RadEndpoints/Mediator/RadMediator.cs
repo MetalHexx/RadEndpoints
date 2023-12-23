@@ -69,8 +69,7 @@ namespace RadEndpoints.Mediator
             endpoint.SetLogger(_provider.GetLogger(endpoint.GetType()));
             endpoint.SetContext(_httpContextAccessor);
             endpoint.SetEnvironment(_env);
-
-            endpoint.Response = new TResponse();
+            
             return await endpoint.Handle(request, cancellationToken);
         }
     }

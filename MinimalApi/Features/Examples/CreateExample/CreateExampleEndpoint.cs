@@ -22,9 +22,9 @@ namespace MinimalApi.Features.Examples.CreateExample
                 {
                     Response = Map.FromEntity(example);
                     Response.Message = "Example created successfully";
-                    return Created($"/examples/{example.Id}", Response);
+                    return SendCreatedAt($"/examples/{example.Id}", Response);
                 },
-                conflict => Conflict(conflict.Message)
+                conflict => SendConflict(conflict.Message)
             );
         }
     }

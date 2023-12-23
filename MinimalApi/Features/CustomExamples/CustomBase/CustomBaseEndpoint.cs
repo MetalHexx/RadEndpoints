@@ -16,7 +16,7 @@ namespace MinimalApi.Features.CustomExamples.CustomBase
         public override async Task<IResult> Handle(CustomBaseRequest r, CancellationToken ct)
         {
             await Task.Delay(1, ct);
-            return Ok();
+            return SendOk();
         }
     }
 

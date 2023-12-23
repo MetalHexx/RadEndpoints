@@ -23,9 +23,9 @@ namespace MinimalApi.Features.Examples.GetExample
                 {
                     Response = Map.FromEntity(example);
                     Response.Message = "Example retrieved successfully";
-                    return Ok(Response);
+                    return Send(Response);
                 },
-                notFound => NotFound(notFound.Message)
+                notFound => SendNotFound(notFound.Message)
             );
         }
     }

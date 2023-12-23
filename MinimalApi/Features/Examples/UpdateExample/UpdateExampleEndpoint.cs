@@ -24,10 +24,10 @@ namespace MinimalApi.Features.Examples.UpdateExample
                 {
                     var response = Map.FromEntity(example);
                     response.Message = "Example updated successfully";
-                    return Ok(response);
+                    return Send(response);
                 },
-                notFound => NotFound(notFound.Message),
-                conflict => Conflict(conflict.Message)
+                notFound => SendNotFound(notFound.Message),
+                conflict => SendConflict(conflict.Message)
             );
         }
     }

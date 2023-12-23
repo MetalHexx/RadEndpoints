@@ -20,9 +20,9 @@ namespace MinimalApi.Features.Examples.DeleteExample
                 none => 
                 {
                     Response.Message = "Example deleted successfully";
-                    return Ok(Response);
+                    return Send(Response);
                 },
-                notFound => NotFound(notFound.Message)
+                notFound => SendNotFound(notFound.Message)
             );
         }
     }

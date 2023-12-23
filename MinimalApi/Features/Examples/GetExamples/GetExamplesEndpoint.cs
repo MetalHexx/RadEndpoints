@@ -22,12 +22,12 @@ namespace MinimalApi.Features.Examples.GetExamples
                 {
                     Response = Map.FromEntity(examples);
                     Response.Message = "Examples retrieved successfully";
-                    return Ok(Response);
+                    return Send(Response);
                 },
                 notFound =>
                 {
                     Logger.Log(LogLevel.Warning, "Examples not found");
-                    return NotFound(notFound.Message);
+                    return SendNotFound(notFound.Message);
                 }
             );
         }

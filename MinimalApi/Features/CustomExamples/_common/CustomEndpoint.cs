@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity.Data;
 
 namespace MinimalApi.Features.CustomExamples._common
 {
@@ -7,7 +6,7 @@ namespace MinimalApi.Features.CustomExamples._common
         where TResponse : RadResponse, new()
         where TRequest : RadRequest
     {
-        protected override Ok<string> Ok() => TypedResults.Ok("This is a different implementation of the Ok helper.");
-        protected override NotFound<string> NotFound(string message) => TypedResults.NotFound(message);
+        protected override Ok<string> SendOk() => TypedResults.Ok("This is a different implementation of the Ok helper.");
+        protected override NotFound<string> SendNotFound(string message) => TypedResults.NotFound(message);
     }
 }

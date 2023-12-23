@@ -8,7 +8,7 @@ using RadEndpoints.Mediator;
 
 namespace RadEndpoints
 {
-    public abstract class RadEndpoint : IRadEndpoint
+    public abstract partial class RadEndpoint : IRadEndpoint
     {
         protected ILogger Logger { get; private set; } = null!;
         protected IEndpointRouteBuilder RouteBuilder { get; private set; } = null!;
@@ -16,15 +16,6 @@ namespace RadEndpoints
         private IHttpContextAccessor _httpContextAccessor = null!;
         protected IWebHostEnvironment Env { get; private set; } = null!;
         protected bool HasValidator;
-        protected virtual IResult Ok() => TypedResults.Ok();
-        protected virtual IResult Ok<TResponse>(TResponse responseData) => TypedResults.Ok(responseData);
-        protected virtual IResult Created(string uri) => TypedResults.Created(uri);
-        protected virtual IResult Created<TResponse>(string uri, TResponse response) => TypedResults.Created(uri, response);
-        protected virtual IResult ServerError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status500InternalServerError);
-        protected virtual IResult ValidationError(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status400BadRequest);
-        protected virtual IResult Conflict(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status409Conflict);
-        protected virtual IResult NotFound(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status404NotFound);
-        protected virtual IResult Forbidden(string title) => TypedResults.Problem(title: title, statusCode: StatusCodes.Status403Forbidden);
 
         public abstract void Configure();
 
