@@ -54,7 +54,7 @@ namespace MinimalApi.Features.Pure.UpdateExample
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
-            .WithDocument(tag: "Pure Minimal API", desc: "Update an example. \r\n\r\n This shows an example done in pure minimal api.  This is identical to UpdatedExampleEndpoint and CustomPutEndpoint.");
+            .WithDocument(tag: "Pure Minimal API", desc: "This shows an example done in pure minimal api.  This is identical to UpdatedExampleEndpoint and CustomPutEndpoint except much more verbose :).");
         }
     }
 }
