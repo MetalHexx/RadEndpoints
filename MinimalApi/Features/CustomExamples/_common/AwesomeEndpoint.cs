@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.CustomExamples._common
 {
-    public abstract class CustomEndpoint<TRequest, TResponse> : RadEndpoint<TRequest, TResponse>
+    public abstract class AwesomeEndpoint<TRequest, TResponse> : RadEndpoint<TRequest, TResponse>
         where TResponse : RadResponse, new()
         where TRequest : RadRequest
     {
