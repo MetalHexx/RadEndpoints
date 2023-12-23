@@ -1,6 +1,6 @@
 ﻿using MinimalApi.Domain.Examples;
 
-namespace MinimalApi.Features.CustomExamples.CustomPut
+namespace MinimalApi.Features.Lite.LightPut
 {
     /// <summary>
     /// This endpoint shows minimal usage of the RadEndpoint abstractions without strong typing.
@@ -32,11 +32,11 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
     /// only use it sparingly for custom or hard-to-reach use cases.  
     /// 
     /// </summary>
-    public class CustomPutEndpoint(ICustomPutMapper m) : RadEndpoint
+    public class LitePutEndpoint(ICustomPutMapper m) : RadEndpoint
     {
         public override void Configure()
         {
-            var route = SetRoute("/custom-put/{id}"); //This is optional but recommended for strongly typed "routeless" integration testing.
+            var route = SetRoute("/lite/{id}"); //This is optional but recommended for strongly typed "routeless" integration testing.
 
             RouteBuilder
                 .MapPut(route, ([AsParameters]CustomPutRequest r, IExampleService s, CancellationToken ct) => Handle(r, s, ct))
@@ -47,8 +47,8 @@ namespace MinimalApi.Features.CustomExamples.CustomPut
                 .ProducesValidationProblem(StatusCodes.Status400BadRequest)                
                 .WithDocument
                 (
-                    tag: "Custom", 
-                    desc: "This endpoint shows minimal usage of RadEndpoint abstractions.  This will provide the basic framework for configuring your minimal endpoint.  You will have full control over the endpoint like a normal minimal api endpoint, but lose some framework shortcuts and conveniences."
+                    tag: "Lite", 
+                    desc: "This endpoint shows minimal or (lite) usage of RadEndpoint abstractions.  It's quite a bit more verbose which makes it a bit ironic.  Using the non-generic RadEndpoint type will provide the basic features for configuring your minimal endpoint.  You will have full control over the endpoint like a normal minimal api endpoint, but lose some framework shortcuts and conveniences.  See comments on endpoint for more information."
                 );
         }
 

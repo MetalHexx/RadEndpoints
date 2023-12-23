@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Routing;
 using MinimalApi.Domain.Examples;
-using MinimalApi.Features.CustomExamples.CustomPut;
+using MinimalApi.Features.Lite.LightPut;
 using MinimalApi.Features.Pure.UpdateExample;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +12,7 @@ builder.Services.AddHttpContextAccessor();
 //builder.Services.AddHttpLogging(o => { });
 
 builder.Services.AddSingleton<IExampleService, ExampleService>();
-builder.Services.AddSingleton<ICustomPutMapper, CustomPutMapper>();
+builder.Services.AddSingleton<ICustomPutMapper, LitePutMapper>();
                 
 
 

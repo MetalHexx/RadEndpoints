@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-
-namespace MinimalApi.Features.CustomBase._common
+﻿namespace MinimalApi.Features.CustomBase._common
 {
     public abstract class AwesomeEndpoint<TRequest, TResponse> : RadEndpoint<TRequest, TResponse>
         where TResponse : RadResponse, new()

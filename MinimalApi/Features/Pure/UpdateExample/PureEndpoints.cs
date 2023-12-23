@@ -5,8 +5,7 @@ namespace MinimalApi.Features.Pure.UpdateExample
 {
     /// <summary>
     /// This shows an example done in pure minimal api with a static class. 
-    /// This is identical to UpdatedExampleEndpoint and CustomPutEndpoint. 
-    /// RadEndpoints looks a bit cleaner 
+    /// This is identical to UpdatedExampleEndpoint and LitePutEndpoint. 
     /// </summary>
     public static class PureEndpoints
     {

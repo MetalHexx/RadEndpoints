@@ -1,9 +1,9 @@
 ﻿using MinimalApi.Domain.Examples;
 
-namespace MinimalApi.Features.CustomExamples.CustomPut
+namespace MinimalApi.Features.Lite.LightPut
 {
     public interface ICustomPutMapper : IRadMapper<CustomPutRequest, CustomPutResponse, Example> { }
-    public class CustomPutMapper: ICustomPutMapper
+    public class LitePutMapper: ICustomPutMapper
     {
         public CustomPutResponse FromEntity(Example entity) => new()
         {

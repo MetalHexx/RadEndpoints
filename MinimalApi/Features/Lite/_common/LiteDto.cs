@@ -1,6 +1,6 @@
-﻿namespace MinimalApi.Features.CustomExamples._common
+﻿namespace MinimalApi.Features.Lite._common
 {
-    public class CustomExampleDto
+    public class LiteDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; } = string.Empty;

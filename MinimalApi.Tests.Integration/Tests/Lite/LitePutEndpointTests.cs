@@ -1,4 +1,4 @@
-﻿using MinimalApi.Features.CustomExamples.CustomPut;
+﻿using MinimalApi.Features.Lite.LightPut;
 using MinimalApi.Features.Examples.CreateExample;
 using MinimalApi.Features.Examples.GetExample;
 using MinimalApi.Features.Examples.UpdateExample;
@@ -6,7 +6,7 @@ using MinimalApi.Features.Examples.UpdateExample;
 namespace MinimalApi.Tests.Integration.Tests.CustomExamples
 {
     [Collection("Endpoint")]
-    public class CustomPutEndpointTests(RadEndpointFixture f): RadEndpointFixture
+    public class LitePutEndpointTests(RadEndpointFixture f): RadEndpointFixture
     {
         [Fact]
         public async Task Given_ExampleExists_When_RequestValid_ReturnsSuccess()
@@ -16,7 +16,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             updateRequest.Id = 1;
 
             //Act
-            var r = await f.Client.PutAsync<CustomPutEndpoint, CustomPutRequest, CustomPutResponse>(updateRequest);
+            var r = await f.Client.PutAsync<LitePutEndpoint, CustomPutRequest, CustomPutResponse>(updateRequest);
 
             //Assert
             r.Should().BeSuccessful<CustomPutResponse>()
@@ -33,7 +33,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             updateRequest.Id = 999;
 
             //Act
-            var r = await f.Client.PutAsync<CustomPutEndpoint, CustomPutRequest, ProblemDetails>(updateRequest);
+            var r = await f.Client.PutAsync<LitePutEndpoint, CustomPutRequest, ProblemDetails>(updateRequest);
 
             //Assert
             r.Should().BeProblem()
@@ -49,7 +49,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             updateRequest.Data.FirstName = string.Empty;
 
             //Act
-            var r = await f.Client.PutAsync<CustomPutEndpoint, CustomPutRequest, ValidationProblemDetails>(updateRequest);
+            var r = await f.Client.PutAsync<LitePutEndpoint, CustomPutRequest, ValidationProblemDetails>(updateRequest);
 
             //Assert
             r.Should().BeValidationProblem()
@@ -66,7 +66,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             updateRequest.Data.LastName = string.Empty;
 
             //Act
-            var r = await f.Client.PutAsync<CustomPutEndpoint, CustomPutRequest, ValidationProblemDetails>(updateRequest);
+            var r = await f.Client.PutAsync<LitePutEndpoint, CustomPutRequest, ValidationProblemDetails>(updateRequest);
 
             //Assert
             r.Should().BeValidationProblem()
@@ -84,7 +84,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             var createResponse = await f.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, CreateExampleResponse>(createRequest);
 
             //Act
-            var r = await f.Client.PutAsync<CustomPutEndpoint, CustomPutRequest, ProblemDetails>(new CustomPutRequest
+            var r = await f.Client.PutAsync<LitePutEndpoint, CustomPutRequest, ProblemDetails>(new CustomPutRequest
             {
                 Id = createResponse.Content.Data!.Id,
                 Data = new CustomPutDto 
