@@ -1,0 +1,12 @@
+GET http://localhost:5220/getusingminapi/
+Accept: application/json
+
+###
+
+GET http://localhost:5220/getusingcontroller/
+Accept: application/json
+
+###
+
+GET http://localhost:5220/getusingradendpoints/
+Accept: application/json
