@@ -15,3 +15,7 @@ app.MapRadEndpoints();
 app.MapGet("/getusingminapi", () => 1);
 
 app.Run();
+
+public partial class Program
+{
+}
