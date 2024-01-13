@@ -7,10 +7,11 @@ internal sealed class DummyRadEndpoint : RadEndpoint<DummyRequest, DummyResponse
         Get("/getusingradendpoints");
     }
 
-    public override Task Handle(DummyRequest r, CancellationToken ct)
+    public override async Task Handle(DummyRequest r, CancellationToken ct)
     {
+        // Simulate some artificial delay.
+        await Task.Delay(TimeSpan.FromMilliseconds(5), ct);
+        
         Response.Value = 1;
-
-        return Task.CompletedTask;
     }
 }

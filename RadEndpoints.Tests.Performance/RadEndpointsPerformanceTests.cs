@@ -32,11 +32,11 @@ public class RadEndpointsPerformanceTests
         var radEndpointsMean = benchmarkSummary
             .GetReportOrThrow(nameof(ApiBenchmark.InvokeRadEndpoint))
             .GetStatisticsOrThrow()
-            .Mean;;
+            .Mean;
         
         // Ensure that RadEndpoints mean is within X% from Minimal Api mean value.
         // It should be very close to each other, if RadEndpoints do not introduce additional overhead.
-        var tolerance = minApiMean / 100; // 1%.
+        var tolerance = 3000; // 3 microseconds.
         
         radEndpointsMean.Should().BeApproximately(minApiMean, precision: tolerance);
     }
