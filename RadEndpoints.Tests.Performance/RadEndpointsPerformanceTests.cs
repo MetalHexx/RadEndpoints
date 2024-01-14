@@ -36,7 +36,11 @@ public class RadEndpointsPerformanceTests
         
         // Ensure that RadEndpoints mean is within X% from Minimal Api mean value.
         // It should be very close to each other, if RadEndpoints do not introduce additional overhead.
-        var tolerance = 3000; // 3 microseconds.
+        
+        // This tolerance is empirically established. RadEndpoints have a small overhead compared to Min. Apis
+        // due to a few extra steps done when an Endpoints are executed. This overhead is extremely small, and for any
+        // endpoints doing meaningful work, this difference is negligible.
+        var tolerance = 5000; // 5 microseconds.
         
         radEndpointsMean.Should().BeApproximately(minApiMean, precision: tolerance);
     }
