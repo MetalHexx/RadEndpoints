@@ -5,6 +5,28 @@ namespace MinimalApi.Tests.Integration.Tests.Example
     [Collection("Endpoint")]
     public class GetExampleEndpointTests(RadEndpointFixture f)
     {
+        // This test is implemented only to demonstrate an issue, and it is not meant to stay part of the suite.
+        [Fact]
+        public async void When_EndpointDoesNotUseSend_ReturnsCorrectResponse()
+        {
+            //Act            
+
+            // GetExampleEndpoint has a 'special' part of the code, which returns "Rando" as a First Name
+            // when ID is in the request set to 99. 
+            var r = await f.Client.GetAsync<GetExampleEndpoint, GetExampleRequest, GetExampleResponse>(new()
+            {
+                Id = 99
+            });
+
+            //Assert
+            r.Should().BeSuccessful<GetExampleResponse>();            
+          
+            // This assertion tries to assert that the name is Rando, as expected, but
+            // it wont be. This happens when endpoint does not use Send to response back, but
+            // the current implementation will send the Response back anyway.
+            r.Content.Data!.FirstName.Should().Be("Rando");
+        }
+        
         [Fact]
         public async void When_RequestValid_ReturnsSuccess()
         {
