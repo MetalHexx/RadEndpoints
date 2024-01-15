@@ -10,6 +10,8 @@ internal sealed class DummyRadEndpoint : RadEndpoint<DummyRequest, DummyResponse
     public override Task Handle(DummyRequest r, CancellationToken ct)
     {
         Response.Value = 1;
+        
+        Send();
 
         return Task.CompletedTask;
     }
