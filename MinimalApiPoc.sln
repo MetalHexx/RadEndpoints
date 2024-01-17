@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PerfTests", "PerfTests", "{
 		RadEndpoints.Tests.Perf\BasicTest.js = RadEndpoints.Tests.Perf\BasicTest.js
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadEndpoints.Tests.Performance", "RadEndpoints.Tests.Performance\RadEndpoints.Tests.Performance.csproj", "{8291C9B4-2830-47E1-A435-FF6B7685B036}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadEndpoints.Tests.Performance.DemoApi", "RadEndpoints.Tests.Performance.DemoApi\RadEndpoints.Tests.Performance.DemoApi.csproj", "{EF9E3D18-61AE-4550-A449-240099ED7639}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +42,14 @@ Global
 		{0923E1D3-73F2-49F8-A30F-375FF5453C5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0923E1D3-73F2-49F8-A30F-375FF5453C5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0923E1D3-73F2-49F8-A30F-375FF5453C5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8291C9B4-2830-47E1-A435-FF6B7685B036}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8291C9B4-2830-47E1-A435-FF6B7685B036}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8291C9B4-2830-47E1-A435-FF6B7685B036}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8291C9B4-2830-47E1-A435-FF6B7685B036}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF9E3D18-61AE-4550-A449-240099ED7639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF9E3D18-61AE-4550-A449-240099ED7639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF9E3D18-61AE-4550-A449-240099ED7639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF9E3D18-61AE-4550-A449-240099ED7639}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
