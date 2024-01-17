@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
+using RadEndpoints.Endpoint;
 using RadEndpoints.Mediator;
 
 namespace RadEndpoints
@@ -47,8 +48,7 @@ namespace RadEndpoints
             {
                 return GetProblemResult(p);
             }
-
-            return TypedResults.Ok(Response);
+            throw new RadEndpointException("You must call one of the Send() methods before exiting endpoint Handle() method");
         }
 
         protected virtual IResult GetProblemResult(IRadProblem problem)
