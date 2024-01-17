@@ -11,11 +11,11 @@ namespace RadEndpoints.Mediator
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IWebHostEnvironment _env;
 
-        public RadMediator(IServiceProvider serviceProvider)
+        public RadMediator(IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment env)
         {
             _provider = serviceProvider;
-            _httpContextAccessor = _provider.GetRequiredService<IHttpContextAccessor>();
-            _env = _provider.GetRequiredService<IWebHostEnvironment>();
+            _httpContextAccessor = httpContextAccessor;
+            _env = env;
             RegisterEndpoints();
         }
 
