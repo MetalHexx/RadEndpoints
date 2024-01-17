@@ -29,7 +29,7 @@ namespace RadEndpoints.Mediator
             foreach (var endpoint in endpoints)
             {
                 var requestType = endpoint.GetRequestType();
-                var mappertype = endpoint.GetMapperType();
+                var mapperType = endpoint.GetMapperType();
 
                 if (requestType is null) continue;
 
@@ -39,7 +39,7 @@ namespace RadEndpoints.Mediator
                 {
                     EndpointType = endpointType,
                     RequestType = requestType,
-                    MapperType = mappertype,
+                    MapperType = mapperType,
                     LoggerType = endpointType.GetLoggerType()
                 });
             }
