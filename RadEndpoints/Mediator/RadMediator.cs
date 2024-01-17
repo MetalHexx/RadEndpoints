@@ -21,6 +21,8 @@ namespace RadEndpoints.Mediator
 
         private void RegisterEndpoints()
         {
+            if(_registrations.Count > 0) return;
+
             using var scope = _provider.CreateScope();
             var provider = scope.ServiceProvider;
 
