@@ -19,7 +19,7 @@ namespace RadEndpoints
 
         public abstract void Configure();
 
-        private static readonly Dictionary<Type, string> _routeCache = new();
+        private static readonly Dictionary<Type, string> _routeCache = [];
         protected string SetRoute(string route)
         {
             _routeCache.TryAdd(GetType(), route);
