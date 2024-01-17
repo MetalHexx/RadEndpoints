@@ -6,7 +6,7 @@ namespace RadEndpoints.Mediator
 {
     public class RadMediator : IRadMediator
     {
-        private static readonly Dictionary<Type, RadMediatorRegistration> _registrations = new();
+        private static readonly Dictionary<Type, RadMediatorRegistration> _registrations = [];
         private readonly IServiceProvider _provider;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IWebHostEnvironment _env;
