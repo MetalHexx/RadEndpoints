@@ -1,6 +1,6 @@
 ﻿using MinimalApi.Features.CustomBase._common;
 
-namespace MinimalApi.Features.CustomBase.GetAwesomeExample
+namespace MinimalApi.Features.CustomBase.CustomGet
 {
     public class CustomGetRequest : CustomBaseRequest
     {

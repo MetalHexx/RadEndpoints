@@ -1,6 +1,6 @@
 ﻿using MinimalApi.Features.CustomBase._common;
 
-namespace MinimalApi.Features.CustomBase.GetAwesomeExample
+namespace MinimalApi.Features.CustomBase.CustomGet
 {   
     /// <summary>
     /// This endpoint uses a custom base to demonstrate how you can custom 
