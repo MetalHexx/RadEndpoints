@@ -7,7 +7,7 @@ namespace MinimalApi.Features.TypedResults.TypedResultsPut
     /// This endpoint shows minimal usage of the RadEndpoint abstractions.
     /// This will remove a lot of framework conveniences and shortcuts, 
     /// but will allow for full control over the endpoint behavior.  In this 
-    /// example we should usage of Minimal API strongly typed union results.
+    /// example we show usage of Minimal API strongly typed union results.
     /// 
     /// Features you still get:
     /// - Assembly scanned endpoint configuration
