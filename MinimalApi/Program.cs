@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Routing;
 using MinimalApi.Domain.Examples;
-using MinimalApi.Features.Lite.LightPut;
+using MinimalApi.Features.TypedResults.TypedResultsPut;
 using MinimalApi.Features.Pure.UpdateExample;
 
 var builder = WebApplication.CreateBuilder(args);

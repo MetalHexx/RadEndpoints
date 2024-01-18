@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using MinimalApi.Domain.Examples;
-using NotFound = Microsoft.AspNetCore.Http.HttpResults.NotFound;
 
-namespace MinimalApi.Features.Lite.LightPut
+namespace MinimalApi.Features.TypedResults.TypedResultsPut
 {
     /// <summary>
     /// This endpoint shows minimal usage of the RadEndpoint abstractions.
@@ -60,13 +59,13 @@ namespace MinimalApi.Features.Lite.LightPut
                 {
                     var response = m.FromEntity(example);
                     response.Message = "Example updated successfully";
-                    return TypedResults.Ok(response);
+                    return Microsoft.AspNetCore.Http.TypedResults.Ok(response);
                 },
-                notFound => TypedResults.NotFound(new ProblemDetails
+                notFound => Microsoft.AspNetCore.Http.TypedResults.NotFound(new ProblemDetails
                 {
                     Title = notFound.Message
                 }),
-                conflict => TypedResults.Conflict(new ProblemDetails 
+                conflict => Microsoft.AspNetCore.Http.TypedResults.Conflict(new ProblemDetails
                 { 
                     Title = conflict.Message 
                 })

@@ -1,6 +1,6 @@
 ﻿using MinimalApi.Domain.Examples;
 
-namespace MinimalApi.Features.Lite.LightPut
+namespace MinimalApi.Features.TypedResults.TypedResultsPut
 {
     public interface ICustomPutMapper : IRadMapper<CustomPutRequest, CustomPutResponse, Example> { }
     public class TypedResultsPutMapper: ICustomPutMapper
