@@ -20,17 +20,19 @@ namespace MinimalApi.Features.TypedResults.TypedResultsPut
     /// 
     /// Drawbacks (or benefits?) of not using generic typed RadEndpoint<,,>
     /// - Not available: Global endpoint configuration (for filters and other RouteBuilder functions)
-    /// - Not available: Declarative and strongly enforced typing (You could still use Net 8 Union / TypedResults if you prefer...)
-    /// - Not available: Send() and Send(TResponse) shortcuts
+    /// - Not available: Declarative and strongly enforced typing (You could still use Net 8 Union / TypedResults as demonstrated here)
+    /// - Not available: Send() and Send(TResponse) shortcuts -- but you can make your own.  See: /CustomBase
     /// - Not available: Automatic RadProblem Results (see: RadEndpoint.Send.SendProblem())
-    /// - Not available: Assembly scanned Endpoint Model Mappers
-    /// - Not available: Assembly scanned  FluentValidators (manual configuration - as shown)
-    /// - More verbose (net 8 / out-of-the-box) endpoint configuration
+    /// - Not available: Built-in endpoint mappers
+    /// - Not available: Automatic FluentValidators (manual configuration - as shown)
+    /// - More verbose (net 8 / out-of-the-box) endpoint configuration -- but you can make your own.  See: /CustomBase
     /// - Loose opinion means you need to find other ways to add architectural guardrails, and automation to your application
     /// 
     /// This approach is only really recommended for an application that has strong
     /// team coding standards and facilities to guardrail the application. You can
     /// combine this approach with other endpoints that inherit from RadEndpoint<,,>.  
+    /// 
+    /// Also consider making your own base endpoint class for customization See: /CustomBase
     /// 
     /// </summary>
     public class TypedResultsPutEndpoint(ICustomPutMapper m) : RadEndpoint
