@@ -12,7 +12,7 @@ builder.Services.AddHttpContextAccessor();
 //builder.Services.AddHttpLogging(o => { });
 
 builder.Services.AddSingleton<IExampleService, ExampleService>();
-builder.Services.AddSingleton<ICustomPutMapper, LitePutMapper>();
+builder.Services.AddSingleton<ICustomPutMapper, TypedResultsPutMapper>();
                 
 
 

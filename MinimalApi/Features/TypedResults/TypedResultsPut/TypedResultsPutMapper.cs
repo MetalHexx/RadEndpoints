@@ -3,7 +3,7 @@
 namespace MinimalApi.Features.Lite.LightPut
 {
     public interface ICustomPutMapper : IRadMapper<CustomPutRequest, CustomPutResponse, Example> { }
-    public class LitePutMapper: ICustomPutMapper
+    public class TypedResultsPutMapper: ICustomPutMapper
     {
         public CustomPutResponse FromEntity(Example entity) => new()
         {
