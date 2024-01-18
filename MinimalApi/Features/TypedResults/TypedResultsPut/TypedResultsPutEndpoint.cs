@@ -18,7 +18,7 @@ namespace MinimalApi.Features.TypedResults.TypedResultsPut
     /// - Optional Routeless integration testing (manually configured - as shown)
     /// - ValidationFilter (manual configuration - as shown)
     /// 
-    /// Drawbacks (or benefits?) of not using strong typed RadEndpoint<,,>
+    /// Drawbacks (or benefits?) of not using generic typed RadEndpoint<,,>
     /// - Not available: Global endpoint configuration (for filters and other RouteBuilder functions)
     /// - Not available: Declarative and strongly enforced typing (You could still use Net 8 Union / TypedResults if you prefer...)
     /// - Not available: Send() and Send(TResponse) shortcuts
