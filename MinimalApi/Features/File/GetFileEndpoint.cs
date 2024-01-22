@@ -4,7 +4,7 @@ using System.Reflection;
 namespace MinimalApi.Features.Files
 {
     public class GetFileRequest : RadRequest { }
-    public class GetFileResponse : RadBytesResponse { }
+    public class GetFileResponse : RadResponseBytes { }
     public class GetFileEndpoint : RadEndpoint<GetFileRequest, GetFileResponse>
     {
         public override void Configure()

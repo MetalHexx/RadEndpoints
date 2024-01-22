@@ -10,7 +10,7 @@
         public T? Data { get; set; } = default!;
     }
 
-    public class RadBytesResponse : RadResponse
+    public class RadResponseBytes : RadResponse
     {
         public byte[] Bytes { get; set; } = default!;
         public string? ContentType { get; set; }
