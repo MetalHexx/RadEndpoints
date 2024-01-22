@@ -24,4 +24,10 @@
     <ProjectReference Include="..\RadEndpoints\RadEndpoints.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Features\File\RadEndpoints.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
