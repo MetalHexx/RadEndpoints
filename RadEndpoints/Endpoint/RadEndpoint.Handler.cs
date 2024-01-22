@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
 using RadEndpoints.Endpoint;
 using RadEndpoints.Mediator;
 
@@ -12,12 +11,6 @@ namespace RadEndpoints
         protected virtual void SendProblem(IRadProblem problem) => HttpContext.Items[RadConstants.Context_Key_RadProblem] = problem;
         protected virtual void Send() => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Ok(Response);
         protected virtual void Send(TResponse responseData) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Ok(responseData);
-        protected virtual void SendOk() => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Ok();
-        protected virtual void SendNoContent() => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.NoContent();
-        protected virtual void SendRedirect(string url, bool permanent = false, bool preserveMethod = false) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Redirect(url, permanent, preserveMethod);
-        protected virtual void SendToRoute(string? routeName = null, object? routeValues = null, bool permanent = false, bool preserveMethod = false, string? fragment = null) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.RedirectToRoute(routeName, routeValues, permanent, preserveMethod, fragment);
-        protected virtual void SendString(string body) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Ok(body);
-        protected virtual void SendCreatedAt(string uri) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Created(uri);
         protected virtual void SendCreatedAt(string uri, TResponse response) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Created(uri, response);
         protected virtual void SendInternalError(string title) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Problem(title: title, statusCode: StatusCodes.Status500InternalServerError);
         protected virtual void SendExternalError(string title) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Problem(title: title, statusCode: StatusCodes.Status502BadGateway);
@@ -27,9 +20,6 @@ namespace RadEndpoints
         protected virtual void SendNotFound(string title) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Problem(title: title, statusCode: StatusCodes.Status404NotFound);
         protected virtual void SendUnauthorized(string title) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Problem(title: title, statusCode: StatusCodes.Status401Unauthorized);
         protected virtual void SendForbidden(string title) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Problem(title: title, statusCode: StatusCodes.Status403Forbidden);
-        protected virtual void SendBytes(byte[] contents, string? contentType = null, string? fileDownloadName = null, bool enableRangeProcessing = false, DateTimeOffset? lastModified = null) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Bytes(contents, contentType, fileDownloadName, enableRangeProcessing, lastModified);
-        protected virtual void SendFile(byte[] fileContents, string? contentType = null, string? fileDownloadName = null, bool enableRangeProcessing = false, DateTimeOffset? lastModified = null, EntityTagHeaderValue? entityTag = null) =>HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.File(fileContents, contentType, fileDownloadName, enableRangeProcessing, lastModified, entityTag);
-        protected virtual void SendStream(Stream stream, string? contentType = null, string? fileDownloadName = null, DateTimeOffset? lastModified = null, EntityTagHeaderValue? entityTag = null, bool enableRangeProcessing = false) =>HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Stream(stream, contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing);
 
         async Task<IResult> IRadEndpoint<TRequest, TResponse>.ExecuteHandler(TRequest request, IRadMediator mediator, HttpContext context, CancellationToken ct)
         {
