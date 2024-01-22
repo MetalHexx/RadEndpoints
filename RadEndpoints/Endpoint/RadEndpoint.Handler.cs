@@ -31,17 +31,12 @@ namespace RadEndpoints
 
             context.Items.TryGetValue(RadConstants.Context_Key_Result, out var result);
 
-            if (result is IResult r)
-            {
-                return r;
-            }
+            if (result is IResult r) return r;
 
             context.Items.TryGetValue(RadConstants.Context_Key_RadProblem, out var problem);
 
-            if (problem is IRadProblem p)
-            {
-                return GetProblemResult(p);
-            }
+            if (problem is IRadProblem p) return GetProblemResult(p);
+
             throw new RadEndpointException("You must call one of the Send() methods before exiting endpoint Handle() method");
         }
 
