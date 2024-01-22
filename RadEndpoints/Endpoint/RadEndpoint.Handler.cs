@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
+using Microsoft.VisualBasic;
 using RadEndpoints.Endpoint;
 using RadEndpoints.Mediator;
+using System.Net.Mime;
 
 namespace RadEndpoints
 {
@@ -20,6 +23,7 @@ namespace RadEndpoints
         protected virtual void SendNotFound(string title) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Problem(title: title, statusCode: StatusCodes.Status404NotFound);
         protected virtual void SendUnauthorized(string title) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Problem(title: title, statusCode: StatusCodes.Status401Unauthorized);
         protected virtual void SendForbidden(string title) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Problem(title: title, statusCode: StatusCodes.Status403Forbidden);
+        protected virtual void SendBytes(RadBytesResponse response) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Bytes(response.Bytes, response.ContentType, response.FileDownloadName, response.EnableRangeProcessing, response.LastModified);
 
         async Task<IResult> IRadEndpoint<TRequest, TResponse>.ExecuteHandler(TRequest request, IRadMediator mediator, HttpContext context, CancellationToken ct)
         {
