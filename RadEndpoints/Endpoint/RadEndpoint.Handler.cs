@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
-using Microsoft.VisualBasic;
 using RadEndpoints.Endpoint;
 using RadEndpoints.Mediator;
-using System.Net.Mime;
 
 namespace RadEndpoints
 {
