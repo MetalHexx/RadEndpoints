@@ -31,4 +31,13 @@ namespace RadEndpoints
         public bool EnableRangeProcessing { get; set; }
         public DateTimeOffset? LastModified { get; set; }
     }
+
+    public class RadResponseFile : RadResponse
+    {
+        public string Path { get; set; } = null!;
+        public string? ContentType { get; set; }
+        public string? FileDownloadName { get; set; }
+        public DateTimeOffset? LastModified { get; set; }
+        public EntityTagHeaderValue? EntityTag { get; set; }
+    }
 }

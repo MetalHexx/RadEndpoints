@@ -25,10 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Features\Files\GetFileStream\RadEndpoints.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Features\Files\GetFileBytes\RadEndpoints.jpg">
+    <None Update="Features\Files\_common\RadEndpoints.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
