@@ -25,8 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Features\File\RadEndpoints.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="Features\Files\GetFileStream\RadEndpoints.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Features\Files\GetFileBytes\RadEndpoints.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
