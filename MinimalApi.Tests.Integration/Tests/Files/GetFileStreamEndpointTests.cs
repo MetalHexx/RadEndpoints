@@ -1,4 +1,5 @@
 ﻿using MinimalApi.Features.Files.GetFileStream;
+using System.Net.Mime;
 using System.Reflection;
 
 namespace MinimalApi.Tests.Integration.Tests.Files
@@ -7,10 +8,11 @@ namespace MinimalApi.Tests.Integration.Tests.Files
     public class GetFileStreamEndpointTests(RadEndpointFixture f)
     {
         [Fact]
-        public async void When_Called_ReturnsStream()
+        public async void When_Called_ReturnsFile()
         {
             //Arrange 
-            var expectedBytes = await GetFileBytes(@"Features\Files\GetFileStream\RadEndpoints.jpg");
+            var expectedFileName = "RadEndpoints.jpg";
+            var expectedBytes = await GetFileBytes(@$"Features\Files\_common\{expectedFileName}");
 
             //Act            
             var r = await f.Client.GetAsync<GetFileStreamEndpoint, GetFileStreamRequest>(new());
@@ -18,6 +20,8 @@ namespace MinimalApi.Tests.Integration.Tests.Files
 
             //Assert
             r.StatusCode.Should().Be(HttpStatusCode.OK);
+            r.Content.Headers.ContentType!.MediaType.Should().Be(MediaTypeNames.Image.Jpeg);
+            r.Content.Headers.ContentDisposition!.FileName.Should().Be(expectedFileName);
             actualBytes.Should().BeEquivalentTo(expectedBytes);
         }
 
