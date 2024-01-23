@@ -1,28 +1,24 @@
 ﻿using System.Net.Mime;
 using System.Reflection;
 
-namespace MinimalApi.Features.Files
+namespace MinimalApi.Features.Files.GetFileBytes
 {
-    public class GetFileRequest : RadRequest { }
-    public class GetFileResponse : RadResponseBytes { }
-    public class GetFileEndpoint : RadEndpoint<GetFileRequest, GetFileResponse>
+    public class GetFileBytesEndpoint : RadEndpoint<GetFileBytesRequest, GetFileBytesResponse>
     {
         public override void Configure()
         {
             Get("/files")
-                .Produces<GetFileResponse>(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status404NotFound)
-                .Produces(StatusCodes.Status400BadRequest)
+                .Produces<byte[]>(StatusCodes.Status200OK)
                 .WithDocument(tag: "Files", desc: "Example of how to send file bytes");
         }
 
-        public async override Task Handle(GetFileRequest r, CancellationToken ct)
+        public async override Task Handle(GetFileBytesRequest r, CancellationToken ct)
         {
             var fileName = "RadEndpoints.jpg";
 
-            Response = new GetFileResponse
+            Response = new GetFileBytesResponse
             {
-                Bytes = await GetFileBytes(@$"Features\File\{fileName}"),
+                Bytes = await GetFileBytes(@$"Features\Files\GetFileBytes\{fileName}"),
                 ContentType = MediaTypeNames.Image.Jpeg,
                 FileDownloadName = fileName,
                 EnableRangeProcessing = false,

@@ -1,19 +1,19 @@
-﻿using MinimalApi.Features.Files;
+﻿using MinimalApi.Features.Files.GetFileBytes;
 using System.Reflection;
 
 namespace MinimalApi.Tests.Integration.Tests.Files
 {
     [Collection("Endpoint")]
-    public class GetFileEndpointTests(RadEndpointFixture f)
+    public class GetFileBytesEndpointTests(RadEndpointFixture f)
     {
         [Fact]
-        public async void When_RequestValid_ReturnsSuccess()
+        public async void When_Called_ReturnsBytes()
         {
             //Arrange 
-            var expectedBytes = await GetFileBytes(@"Features\File\RadEndpoints.jpg");
+            var expectedBytes = await GetFileBytes(@"Features\Files\GetFileBytes\RadEndpoints.jpg");
 
             //Act            
-            var r = await f.Client.GetAsync<GetFileEndpoint, GetFileRequest>(new());
+            var r = await f.Client.GetAsync<GetFileBytesEndpoint, GetFileBytesRequest>(new());
             var actualBytes = await r.Content.ReadAsByteArrayAsync();
 
             //Assert
