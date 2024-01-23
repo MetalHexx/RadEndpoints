@@ -28,7 +28,7 @@
         }
         public async Task<OneOf<IEnumerable<Example>, NotFoundError>> GetExamples()
         {
-            await Task.Delay(1);
+            await Task.CompletedTask;
 
             return _examples.Count == 0
                 ? Problem.NotFound("No examples found")
@@ -36,7 +36,8 @@
         }
         public async Task<OneOf<Example, NotFoundError>> GetExample(int id)
         {
-            await Task.Delay(1);            
+            await Task.CompletedTask;
+
             var example = _examples.FirstOrDefault(e => e.Id == id);
 
             return example is null
@@ -46,7 +47,7 @@
 
         public async Task<OneOf<Example, ConflictError>> InsertExample(Example example)
         {
-            await Task.Delay(1);
+            await Task.CompletedTask;
 
             var id = _examples.Max(e => e.Id) + 1;
 
@@ -67,7 +68,7 @@
 
         public async Task<OneOf<Example, NotFoundError, ConflictError>> UpdateExample(Example example)
         {
-            await Task.Delay(1);
+            await Task.CompletedTask;
 
             var existingExample = _examples.FirstOrDefault(e => e.Id == example.Id);
 
@@ -82,7 +83,7 @@
 
         public async Task<OneOf<None, NotFoundError>> DeleteExample(int id)
         {
-            await Task.Delay(1);
+            await Task.CompletedTask;
 
             var exampleToDelete = _examples.FirstOrDefault(e => e.Id == id);
 
@@ -96,7 +97,7 @@
 
         public async Task<OneOf<IEnumerable<Example>, NotFoundError>> FindExamples(string? firstName, string? lastName)
         {
-            await Task.Delay(1);
+            await Task.CompletedTask;
 
             var results = _examples.AsEnumerable();
 
@@ -116,7 +117,7 @@
 
         public async Task<OneOf<IEnumerable<Example>, NotFoundError>> SearchChildExample(int parentId, string? firstName, string? lastName)
         {
-            await Task.Delay(1);
+            await Task.CompletedTask;
 
             var results = _examples.Where(e => e.ParentId == parentId);
 
