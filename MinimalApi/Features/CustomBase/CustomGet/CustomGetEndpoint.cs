@@ -17,7 +17,7 @@ namespace MinimalApi.Features.CustomBase.CustomGet
 
         public override async Task<CustomGetResponse> Handle(CustomGetRequest r, CancellationToken ct)
         {
-            await Task.Delay(1, ct);
+            await Task.CompletedTask;
 
             if(r.Id == 1)
             {
