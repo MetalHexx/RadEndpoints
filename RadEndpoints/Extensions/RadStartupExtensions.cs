@@ -14,6 +14,7 @@ namespace RadEndpoints
         /// <param name="assemblyType">Assembly to scan</param>
         public static void AddRadEndpoints(this IServiceCollection services, Type assemblyType)
         {
+            services.AddHttpContextAccessor();
             services.AddScopedAsSelfAndTypeOf<IRadEndpoint>(assemblyType.Assembly);
             services.AddScopedAsSelfAndTypeOf<IRadMapper>(assemblyType.Assembly);
             services.AddScoped<IRadMediator, RadMediator>();
