@@ -4,6 +4,19 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<IsPackable>true</IsPackable>
+	<PackageId>RadEndpoints.Testing</PackageId>
+	<Version>1.0.0-alpha.1</Version>
+	<Authors>William Pereira</Authors>
+	<Description>Make testing easier with RadEndpoints</Description>
+	<PackageTags>http, rest, rest-api, web-api, webapi, aspnet, aspnetcore, dotnet8, minimal-api, vertical-slice-architecture, repr-pattern</PackageTags>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<OutputType>Library</OutputType>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<PackageProjectUrl>https://github.com/MetalHexx/RadEndpoints</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/MetalHexx/RadEndpoints</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+	<None Include="..\README.md" Pack="true" PackagePath="\" Visible="false"/>
+	<None Include="..\LICENSE" Pack="true" PackagePath="\"/>
     <ProjectReference Include="..\RadEndpoints\RadEndpoints.csproj" />
   </ItemGroup>
 
