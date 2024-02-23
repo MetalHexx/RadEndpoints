@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
 	<IsPackable>true</IsPackable>
 	<PackageId>RadEndpoints.Testing</PackageId>
-	<Version>1.0.0-alpha.2</Version>
+	<Version>1.0.0-alpha.3</Version>
 	<Authors>William Pereira</Authors>
 	<Description>Make testing easier with RadEndpoints</Description>
 	<PackageTags>http, rest, rest-api, web-api, webapi, aspnet, aspnetcore, dotnet8, minimal-api, vertical-slice-architecture, repr-pattern</PackageTags>
