@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<IsPackable>true</IsPackable>
 		<PackageId>RadEndpoints</PackageId>
-		<Version>1.0.0-alpha.3</Version>
+		<Version>{{Version}}</Version>
 		<Authors>William Pereira</Authors>
 		<Description>A lightweight API framework that embraces the power of Net Core Minimal APIs using a well-defined REPR Style (Request-Endpoint-Response) pattern.</Description>
 		<PackageTags>http, rest, rest-api, web-api, webapi, aspnet, aspnetcore, dotnet8, minimal-api, vertical-slice-architecture, repr-pattern</PackageTags>
