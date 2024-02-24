@@ -1,9 +1,9 @@
 name: RadEndpoints Publish
 
-on: workflow_dispatch
-  # push:
-  #   tags:
-  #     - '*.*.**'
+on: #workflow_dispatch
+  push:
+    tags:
+      - '*.*.**'
 
 jobs:
   publish_nuget:
