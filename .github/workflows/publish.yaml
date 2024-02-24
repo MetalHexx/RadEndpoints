@@ -1,4 +1,4 @@
-name: TeensyROM UI WPF
+name: RadEndpoints Publish
 
 on: workflow_dispatch
   # push:
