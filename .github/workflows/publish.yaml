@@ -1,6 +1,6 @@
-name: RadEndpoints Publish
+name: RadEndpoints NuGet Publish
 
-on: #workflow_dispatch
+on:
   push:
     tags:
       - '*.*.**'
@@ -24,9 +24,7 @@ jobs:
         run: |
           dotnet pack -c Release -o ./artifacts
 
-      # - name: Publish
-      #   env: 
-      #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      #   run: |
-      #     dotnet nuget push ./artifacts/*.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+      - name: Publish to NuGet
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
       
