@@ -8,8 +8,8 @@ namespace MinimalApi.Features.Examples.GetExample
         {
             Get("/examples/{id}")
                 .Produces<GetExampleResponse>(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status404NotFound)
-                .Produces(StatusCodes.Status400BadRequest)
+                .ProducesProblem(StatusCodes.Status404NotFound)
+                .ProducesProblem(StatusCodes.Status400BadRequest)
                 .WithDocument(tag: Constants.ExamplesTag, desc: "Get an example by id");
         }
 
