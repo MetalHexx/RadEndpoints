@@ -1,0 +1,21 @@
+﻿using RadEndpoints;
+
+namespace {1}.{0}
+{
+    public class {0}Endpoint : RadEndpoint<{0}Request, {0}Response, {0}Mapper>
+    {
+        public override void Configure()
+        {
+            {3}("{2}")
+                .Produces<{0}Response>(StatusCodes.Status200OK)
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .WithDocument(tag: "{4}", desc: "{5}");
+        }
+
+        public override async Task Handle({0}Request r, CancellationToken ct)
+        {
+            Response = new();
+            Send();
+        }
+    }
+}

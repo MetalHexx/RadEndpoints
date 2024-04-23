@@ -16,9 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PerfTests", "PerfTests", "{
 		RadEndpoints.Tests.Perf\BasicTest.js = RadEndpoints.Tests.Perf\BasicTest.js
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadEndpoints.Tests.Performance", "RadEndpoints.Tests.Performance\RadEndpoints.Tests.Performance.csproj", "{8291C9B4-2830-47E1-A435-FF6B7685B036}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadEndpoints.Tests.Performance", "RadEndpoints.Tests.Performance\RadEndpoints.Tests.Performance.csproj", "{8291C9B4-2830-47E1-A435-FF6B7685B036}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadEndpoints.Tests.Performance.DemoApi", "RadEndpoints.Tests.Performance.DemoApi\RadEndpoints.Tests.Performance.DemoApi.csproj", "{EF9E3D18-61AE-4550-A449-240099ED7639}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadEndpoints.Tests.Performance.DemoApi", "RadEndpoints.Tests.Performance.DemoApi\RadEndpoints.Tests.Performance.DemoApi.csproj", "{EF9E3D18-61AE-4550-A449-240099ED7639}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadEndpoints.Cli", "RadEndpoints.Cli\RadEndpoints.Cli.csproj", "{80A759EF-18CA-45D6-B36E-5813F2EDD849}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{EF9E3D18-61AE-4550-A449-240099ED7639}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF9E3D18-61AE-4550-A449-240099ED7639}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF9E3D18-61AE-4550-A449-240099ED7639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80A759EF-18CA-45D6-B36E-5813F2EDD849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A759EF-18CA-45D6-B36E-5813F2EDD849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A759EF-18CA-45D6-B36E-5813F2EDD849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A759EF-18CA-45D6-B36E-5813F2EDD849}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

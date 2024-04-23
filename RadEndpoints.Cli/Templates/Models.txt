@@ -1,0 +1,16 @@
+﻿using RadEndpoints;
+
+namespace {1}.{0}
+{
+    public class {0}Request : RadRequest {}
+
+    public class {0}RequestValidator : AbstractValidator<{0}Request>
+    {
+        public {0}RequestValidator()
+        {
+            //TODO: Add validation rules here
+        }
+    }
+
+    public class {0}Response : RadResponse<ResponseDataType> { }
+}

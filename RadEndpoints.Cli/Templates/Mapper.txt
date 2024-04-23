@@ -1,0 +1,11 @@
+﻿using RadEndpoints;
+
+namespace {1}{0}
+{
+    public class {0}Mapper : IRadMapper<{0}Request, {0}Response, EntityType>
+    {
+        public {0}Response FromEntity(EntityType e) => throw new NotImplementedException();
+
+        public EntityType ToEntity({0}Request r) => throw new NotImplementedException();
+    }
+}
