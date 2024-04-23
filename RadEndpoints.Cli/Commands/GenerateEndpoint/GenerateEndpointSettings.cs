@@ -44,6 +44,13 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
         [DefaultValue(true)]
         public bool WithMapper { get; set; }
 
+        [Description("Import endpoint creation from file")]
+        [CommandOption("-i|--import")]
+        public string? ImportPath { get; set; }
+
+
+
+
         public override ValidationResult Validate()
         {
             var baseResult = base.Validate();
