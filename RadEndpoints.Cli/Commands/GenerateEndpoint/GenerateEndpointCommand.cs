@@ -14,6 +14,11 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
                 AnsiConsole.WriteLine();
                 return 0;
             }
+            if (settings.QuickMode) 
+            {
+                DoQuickMode(settings);
+                return 0;
+            }
             RadHelper.WriteTitle("Endpoint Generator");
             AnsiConsole.WriteLine();
 
@@ -33,6 +38,32 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
             MaybeDumpSettings(generatedFileSettings);
             AnsiConsole.WriteLine();
             return 0;
+        }
+
+        private void DoQuickMode(GenerateEndpointSettings s) 
+        {   
+            s.ResourceName = s.ResourceName.UpperFirstCharOnly();
+
+            s.Path = s.Path == GenerateEndpointSettings.Defaults.Path
+                ? GetDefaultPath(s)
+                : s.Path;
+
+            s.EndpointName = s.EndpointName == GenerateEndpointSettings.Defaults.EndpointName 
+                ? GetDefaultEndpointName(s)
+                : s.EndpointName;
+
+            s.Tag = s.Tag == GenerateEndpointSettings.Defaults.Tag 
+                ? s.ResourceName 
+                : s.Tag;
+
+            s.Description =  s.Description == GenerateEndpointSettings.Defaults.Description 
+                ? GetDefaultDescription(s)
+                : s.Description;
+
+            CreateEndpointFiles(s);
+            AnsiConsole.WriteLine();
+            RadHelper.WriteTitle("Code Generated");
+            RenderFileTable(s);
         }
 
         private void DoBulkImport(string importPath) 
@@ -78,20 +109,42 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
         private static void RunWizard(GenerateEndpointSettings s)
         {
             s.BaseNamepace = PromptHelper.DefaultValueTextPrompt("Base Namespace", 3, s.BaseNamepace);
+            s.ResourceName = PromptHelper.DefaultValueTextPrompt("Resource Name", 3, s.ResourceName);
+            s.ResourceName = s.ResourceName.UpperFirstCharOnly();
+            s.Verb = PromptHelper.ChoicePrompt("HTTP Verb", ["Get", "Post", "Put", "Patch", "Delete"]);
+            s.Path = PromptHelper.DefaultValueTextPrompt("Path", 3, GetDefaultPath(s));
+            s.EndpointName = PromptHelper.DefaultValueTextPrompt("Endpoint Name", 3, GetDefaultEndpointName(s));
+            s.Tag = PromptHelper.DefaultValueTextPrompt("OpenAPI Doc Tag", 3, s.ResourceName);
+            s.Description = PromptHelper.DefaultValueTextPrompt("OpenAPI Doc Description", 3, GetDefaultDescription(s));
+            s.WithMapper = PromptHelper.Confirm("Generate Mapper?", true);
+        }
 
-            s.ResourceName = PromptHelper.DefaultValueTextPrompt("Resource Name", 3, s.ResourceName); 
-            
-            s.ResourceName = s.ResourceName.UpperFirstCharOnly();            
-            
-            s.Verb = PromptHelper.ChoicePrompt("HTTP Verb", ["Get", "Post", "Put", "Patch", "Delete"]);            
-
-            s.Path = s.Verb switch
-            {   
-                "Post" => PromptHelper.DefaultValueTextPrompt("Path", 3, $"/{s.ResourceName.ToLower()}s"),
-                _ => PromptHelper.DefaultValueTextPrompt("Path", 3, $"/{s.ResourceName.ToLower()}s/{{id}}"),
+        private static string GetDefaultDescription(GenerateEndpointSettings s)
+        {
+            return s.Verb switch
+            {
+                "Post" => $"Create a new {s.ResourceName}",
+                "Put" => $"Update a {s.ResourceName} by ID",
+                "Patch" => $"Patch a {s.ResourceName} by ID",
+                "Delete" => $"Delete a {s.ResourceName} by ID",
+                _ => s.Path.Contains("{id}")
+                    ? $"Get {s.ResourceName} by ID"
+                    : $"Get all {s.ResourceName}s"
             };
+        }
 
-            var defaultEndpointName = s.Verb switch
+        private static string GetDefaultPath(GenerateEndpointSettings s)
+        {
+            return s.Verb switch
+            {
+                "Post" => $"/{s.ResourceName.ToLower()}s",
+                _ => $"/{s.ResourceName.ToLower()}s/{{id}}"
+            };
+        }
+
+        private static string GetDefaultEndpointName(GenerateEndpointSettings s)
+        {
+            return s.Verb switch
             {
                 "Post" => $"Create{s.ResourceName}",
                 "Put" => $"Update{s.ResourceName}",
@@ -101,24 +154,6 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
                     ? $"Get{s.ResourceName}"
                     : $"GetAll{s.ResourceName}s"
             };
-
-            s.EndpointName = PromptHelper.DefaultValueTextPrompt("Endpoint Name", 3, defaultEndpointName);
-
-            s.Tag = PromptHelper.DefaultValueTextPrompt("OpenAPI Doc Tag", 3, s.ResourceName);
-
-            var defaultDescription = s.Verb switch
-            {   
-                "Post" => $"Create a new {s.ResourceName}",
-                "Put" => $"Update a {s.ResourceName} by ID",
-                "Patch" => $"Patch a {s.ResourceName} by ID",
-                "Delete" => $"Delete a {s.ResourceName} by ID",
-                _ => s.Path.Contains("{id}")
-                    ? $"Get {s.ResourceName} by ID"
-                    : $"Get all {s.ResourceName}s"
-            };
-
-            s.Description = PromptHelper.DefaultValueTextPrompt("OpenAPI Doc Description", 3, defaultDescription);
-            s.WithMapper = PromptHelper.Confirm("Generate Mapper?", true);
         }
 
         private static void RenderFileTable(params GenerateEndpointSettings[] multipleSettings)
