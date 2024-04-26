@@ -1,6 +1,6 @@
 ﻿using RadEndpoints;
 
-namespace {1}{0}
+namespace {1}.{0}
 {
     public class {0}Mapper : IRadMapper<{0}Request, {0}Response, EntityType>
     {
