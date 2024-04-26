@@ -7,6 +7,7 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
     {
         [Description("The base namespace used for your generated classes.  The endpoint name will be added to this later.")]
         [CommandOption("--namespace <NAMESPACE>")]
+        [DefaultValue("Your.Project.Namespace.Endpoints")]
         public string BaseNamepace { get; set; } = string.Empty;
 
         [Description("The name of the resource or feature -- specify as singular! (Ex: User, Product, Order)")]
@@ -44,8 +45,8 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
         [DefaultValue(true)]
         public bool WithMapper { get; set; }
 
-        [Description("Import endpoint creation from file")]
-        [CommandOption("-i|--import")]
+        [Description("Endpoint creation from file")]
+        [CommandOption("-f|--file")]
         public string? ImportPath { get; set; }
 
 

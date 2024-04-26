@@ -10,5 +10,11 @@ namespace RadEndpoints.Cli.Helpers
             var assemblyPath = Path.GetDirectoryName(assemblyLoc) ?? string.Empty;
             return Path.Combine(assemblyPath, path);
         }
+
+        public static string GetCwdRootedPath(this string path)
+        {
+            var cwd = Directory.GetCurrentDirectory();
+            return Path.Combine(cwd, path);
+        }
     }
 }

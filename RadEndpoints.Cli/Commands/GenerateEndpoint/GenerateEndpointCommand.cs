@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using RadEndpoints.Cli.Helpers;
+﻿using RadEndpoints.Cli.Helpers;
 using Spectre.Console.Cli;
+using System.Text.Json;
 
 namespace RadEndpoints.Cli.Commands.GenerateEndpoint
 {
@@ -8,56 +8,59 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
     {
         public override int Execute(CommandContext context, GenerateEndpointSettings settings)
         {            
-            AnsiConsole.WriteLine();
-
             if(File.Exists(settings.ImportPath))
             {
-                var json = File.ReadAllText(settings.ImportPath);
-                var importedSettings = JsonConvert.DeserializeObject<List<GenerateEndpointSettings>>(json)!;
-
-                RadHelper.WriteTitle("Files To Import");
-                RenderFileTable([.. importedSettings]);
-
-                var proceed = PromptHelper.Confirm("Proceed with import?", true);
-
-                if (!proceed) 
-                {
-                    RadHelper.WriteHorizonalRule("Import Cancelled", Justify.Left);
-                    return 0;
-                }
-                RadHelper.WriteHorizonalRule("Starting Import", Justify.Left);
-
-                foreach (var s in importedSettings)
-                {
-                    CreateEndpointFiles(s);
-                }
+                DoBulkImport(settings.ImportPath);
                 AnsiConsole.WriteLine();
-                RadHelper.WriteHorizonalRule("Import Completed", Justify.Left);
                 return 0;
             }
-
-
-
-            MultipleManualCreation(settings);
-
-            return 0;
-        }
-
-        private void MultipleManualCreation(GenerateEndpointSettings settings)
-        {
             RadHelper.WriteTitle("Endpoint Generator");
+            AnsiConsole.WriteLine();
 
             List<GenerateEndpointSettings> generatedFileSettings = [];
             do
             {
                 RunWizard(settings);
                 CreateEndpointFiles(settings);
-                
+                AnsiConsole.WriteLine();
+                RadHelper.WriteTitle("Code Generated");
+                RenderFileTable(settings);
+
                 generatedFileSettings.Add(settings.Clone());
 
             } while (ShouldCreateAnother(settings));
 
             MaybeDumpSettings(generatedFileSettings);
+            AnsiConsole.WriteLine();
+            return 0;
+        }
+
+        private void DoBulkImport(string importPath) 
+        {
+            var json = File.ReadAllText(importPath);
+            var importedSettings = JsonSerializer.Deserialize<List<GenerateEndpointSettings>>(json);
+
+            if(importedSettings is null || importedSettings.Count == 0)
+            {
+                RadHelper.WriteTitle($"Import Cancelled - No endpoint definitions found in {importPath}");
+                return;
+            }
+            RadHelper.WriteTitle($"Definitions Found in {importPath}");
+            RenderFileTable([.. importedSettings]);
+
+            var proceed = PromptHelper.Confirm("Proceed with generation?", true);
+
+            if (!proceed)
+            {
+                RadHelper.WriteTitle("Import Cancelled");
+                return;
+            }
+            foreach (var s in importedSettings)
+            {
+                CreateEndpointFiles(s);
+            }
+            AnsiConsole.WriteLine();
+            RadHelper.WriteTitle("Code Generation Complete");
         }
 
         private void CreateEndpointFiles(GenerateEndpointSettings s)
@@ -69,40 +72,14 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
             if (s.WithMapper)
             {
                 GenerateMapper(s);
-            }
-            OutputResults(s);
-        }
-
-        private static void MaybeDumpSettings(List<GenerateEndpointSettings> s)
-        {
-            AnsiConsole.WriteLine();
-            var shouldDump = PromptHelper.Confirm("Output JSON for later use?  You can later import a JSON file for bulk endpoint generation tasks.", false);
-
-            if (!shouldDump) return;
-
-            var json = JsonConvert.SerializeObject(s, Formatting.Indented);
-            var path = Path.Combine($"{s.First().ResourceName}Endpoints.json".GetAssemblyRootedPath());
-            File.WriteAllText(path, json);
-        }
-
-        private static bool ShouldCreateAnother(GenerateEndpointSettings settings)
-        {
-            AnsiConsole.WriteLine();
-            bool createAnother = PromptHelper.Confirm("Create another?", true);
-            return createAnother;
+            }             
         }
 
         private static void RunWizard(GenerateEndpointSettings s)
         {
-            s.BaseNamepace = PromptHelper.DefaultValueTextPrompt("Base Namespace", 3, 
-                string.IsNullOrEmpty(s.BaseNamepace) 
-                    ? "Your.Project.Namespace" 
-                    : s.BaseNamepace);
+            s.BaseNamepace = PromptHelper.DefaultValueTextPrompt("Base Namespace", 3, s.BaseNamepace);
 
-            s.ResourceName = PromptHelper.DefaultValueTextPrompt("Resource Name", 3, 
-                string.IsNullOrEmpty(s.ResourceName) 
-                    ? "Resource"
-                    : s.ResourceName);
+            s.ResourceName = PromptHelper.DefaultValueTextPrompt("Resource Name", 3, s.ResourceName); 
             
             s.ResourceName = s.ResourceName.UpperFirstCharOnly();            
             
@@ -111,9 +88,6 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
             s.Path = s.Verb switch
             {   
                 "Post" => PromptHelper.DefaultValueTextPrompt("Path", 3, $"/{s.ResourceName.ToLower()}s"),
-                "Put" => PromptHelper.DefaultValueTextPrompt("Path", 3, $"/{s.ResourceName.ToLower()}s/{{id}}"),
-                "Patch" => PromptHelper.DefaultValueTextPrompt("Path", 3, $"/{s.ResourceName.ToLower()}s/{{id}}"),
-                "Delete" => PromptHelper.DefaultValueTextPrompt("Path", 3, $"/{s.ResourceName.ToLower()}s/{{id}}"),
                 _ => PromptHelper.DefaultValueTextPrompt("Path", 3, $"/{s.ResourceName.ToLower()}s/{{id}}"),
             };
 
@@ -139,19 +113,12 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
                 "Patch" => $"Patch a {s.ResourceName} by ID",
                 "Delete" => $"Delete a {s.ResourceName} by ID",
                 _ => s.Path.Contains("{id}")
-                    ? $"Get a {s.ResourceName} by ID"
+                    ? $"Get {s.ResourceName} by ID"
                     : $"Get all {s.ResourceName}s"
             };
 
             s.Description = PromptHelper.DefaultValueTextPrompt("OpenAPI Doc Description", 3, defaultDescription);
             s.WithMapper = PromptHelper.Confirm("Generate Mapper?", true);
-        }
-
-        private static void OutputResults(GenerateEndpointSettings s)
-        {
-            AnsiConsole.WriteLine();
-            RadHelper.WriteTitle($"Files Generated");
-            RenderFileTable(s);
         }
 
         private static void RenderFileTable(params GenerateEndpointSettings[] multipleSettings)
@@ -168,7 +135,7 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
                     RadHelper.AddHighlights($"{s.EndpointName}Endpoint"))
                 .AddRow(
                     RadHelper.AddHighlights($"{s.EndpointName}Models.cs"),
-                    RadHelper.AddHighlights($"{s.EndpointName}Request * {s.EndpointName}Response * {s.EndpointName}RequestValidator"));
+                    RadHelper.AddHighlights($"{s.EndpointName}Request -- {s.EndpointName}Response -- {s.EndpointName}Validator"));
 
                 if (s.WithMapper)
                 {
@@ -189,58 +156,81 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
         {
             var templatePath = @"Templates\Endpoint.txt".GetAssemblyRootedPath();
 
-            var classString =  FileHelper
+            var formattedCode =  FileHelper
                 .GetFileAsString(templatePath)
                 .EscapeNonPlaceholderBraces()
                 .FormatTemplate(s.EndpointName, s.BaseNamepace, s.Path, s.Verb, s.Tag, s.Description);
 
-            var path = Path
+            var outputPath = Path
                 .Combine(s.EndpointName, $"{s.EndpointName}Endpoint.cs")
-                .GetAssemblyRootedPath();
+                .GetCwdRootedPath();
 
-            File.WriteAllText(path, classString);
+            File.WriteAllText(outputPath, formattedCode);
         }
 
         private static void GenerateModels(GenerateEndpointSettings s)
         {
             var templatePath = @"Templates\Models.txt".GetAssemblyRootedPath();
 
-            var classString =  FileHelper
+            var formattedCode =  FileHelper
                 .GetFileAsString(templatePath)
                 .EscapeNonPlaceholderBraces()
                 .FormatTemplate(s.EndpointName, s.BaseNamepace);
 
-            var path = Path
+            var outputPath = Path
                 .Combine(s.EndpointName, $"{s.EndpointName}Models.cs")
-                .GetAssemblyRootedPath();
+                .GetCwdRootedPath();
 
-            File.WriteAllText(path, classString);
+            File.WriteAllText(outputPath, formattedCode);
         }
 
         private static void GenerateMapper(GenerateEndpointSettings s)
         {
             var templatePath = @"Templates\Mapper.txt".GetAssemblyRootedPath();
 
-            var classString = FileHelper
+            string formattedCode = FileHelper
                 .GetFileAsString(templatePath)
                 .EscapeNonPlaceholderBraces()
                 .FormatTemplate(s.EndpointName, s.BaseNamepace);
 
-            var path = Path
+            var outputPath = Path
                 .Combine(s.EndpointName, $"{s.EndpointName}Mapper.cs")
-                .GetAssemblyRootedPath();
+                .GetCwdRootedPath();
 
-            File.WriteAllText(path, classString);
+            File.WriteAllText(outputPath, formattedCode);
         }
 
         private void EnsureEndpointDirectory(string featureNamespace)
         {
-            var path = Path.Combine(featureNamespace.GetAssemblyRootedPath());
+            var path = Path.Combine(featureNamespace.GetCwdRootedPath());
 
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
+        }
+
+        private static bool ShouldCreateAnother(GenerateEndpointSettings settings)
+        {
+            AnsiConsole.WriteLine();
+            bool createAnother = PromptHelper.Confirm("Create another?", true);
+            return createAnother;
+        }
+
+        private static void MaybeDumpSettings(List<GenerateEndpointSettings> s)
+        {            
+            AnsiConsole.WriteLine();
+            var shouldDump = PromptHelper.Confirm("Save endpoint definitions to disk for later import?", false);
+
+            if (!shouldDump) return;
+
+            var json = JsonSerializer.Serialize(s, new JsonSerializerOptions { WriteIndented = true });
+            var fileName = $"{s.First().ResourceName}Endpoints.json";
+            var path = Path.Combine(fileName.GetCwdRootedPath());
+
+            File.WriteAllText(path, json);
+            AnsiConsole.WriteLine(); 
+            RadHelper.WriteTitle($"Settings saved to {fileName}");
         }
     }
 }
