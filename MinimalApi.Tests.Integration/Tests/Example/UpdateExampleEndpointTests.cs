@@ -19,9 +19,9 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 
             //Assert
             r.Should().BeSuccessful<UpdateExampleResponse>()
-                .WithStatusCode(HttpStatusCode.OK)
-                .WithMessage("Example updated successfully");
-            
+                .WithStatusCode(HttpStatusCode.OK);
+
+            r.Content.Message.Should().Be("Example updated successfully");
             r.Content.Data!.Id.Should().Be(updateRequest.Id);
             r.Content.Data.FirstName.Should().Be(updateRequest.Data.FirstName);
             r.Content.Data.LastName.Should().Be(updateRequest.Data.LastName);
@@ -57,7 +57,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Assert
             r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
-                .WithMessage("Validation Error")
+                .WithTitle("Validation Error")
                 .WithKey("Data.FirstName");
         }
 
@@ -74,7 +74,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Assert
             r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
-                .WithMessage("Validation Error")
+                .WithTitle("Validation Error")
                 .WithKey("Data.LastName");
         }
 

@@ -14,9 +14,9 @@ namespace MinimalApi.Tests.Integration.Tests.Environment
             //Assert
             r.Should().BeSuccessful<GetEnvironmentResponse>()
                 .WithStatusCode(HttpStatusCode.OK)
-                .WithMessage("Environment information retrieved successfully")
                 .WithContentNotNull();
 
+            r.Content.Message.Should().Be("Environment information retrieved successfully");
             r.Content.ApplicationName.Should().NotBeEmpty();
             r.Content.EnvironmentName.Should().NotBeEmpty();
         }

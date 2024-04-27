@@ -48,8 +48,8 @@ namespace RadEndpoints.Mediator
         }
 
         public Task CallHandlerAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken)
-            where TRequest : RadRequest
-            where TResponse : RadResponse, new()
+            where TRequest : class
+            where TResponse : new()
         {
             if (!_registrations.TryGetValue(typeof(TRequest), out var registration))
             {

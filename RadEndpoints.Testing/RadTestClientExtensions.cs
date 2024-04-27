@@ -7,77 +7,66 @@ namespace RadEndpoints.Testing
     {
         public async static Task<RadTestResult<TResponse>> GetAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             return await client.SendAsync<TEndpoint, TRequest, TResponse>(request, HttpMethod.Get);
         }
 
         public async static Task<HttpResponseMessage> GetAsync<TEndpoint, TRequest>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Get);
         }
 
         public async static Task<RadTestResult<TResponse>> DeleteAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             return await client.SendAsync<TEndpoint, TRequest, TResponse>(request, HttpMethod.Delete);
         }
 
         public async static Task<HttpResponseMessage> DeleteAsync<TEndpoint, TRequest>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Delete);
         }
 
         public async static Task<RadTestResult<TResponse>> PostAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             return await client.SendAsync<TEndpoint, TRequest, TResponse>(request, HttpMethod.Post);
         }
 
         public async static Task<HttpResponseMessage> PostAsync<TEndpoint, TRequest>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Post);
         }
 
         public async static Task<RadTestResult<TResponse>> PutAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             return await client.SendAsync<TEndpoint, TRequest, TResponse>(request, HttpMethod.Put);
         }
 
         public async static Task<HttpResponseMessage> PutAsync<TEndpoint, TRequest>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Put);
         }
 
         public async static Task<RadTestResult<TResponse>> PatchAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             return await client.SendAsync<TEndpoint, TRequest, TResponse>(request, HttpMethod.Patch);
         }
 
         public async static Task<HttpResponseMessage> PatchAsync<TEndpoint, TRequest>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Patch);
         }
 
         public async static Task<RadTestResult<TResponse>> SendAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request, HttpMethod method)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, method);
 
@@ -89,7 +78,6 @@ namespace RadEndpoints.Testing
 
         public async static Task<HttpResponseMessage> SendAsync<TEndpoint, TRequest>(this HttpClient client, TRequest request, HttpMethod method)
             where TEndpoint : RadEndpoint
-            where TRequest : RadRequest
         {
             var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, method);
 

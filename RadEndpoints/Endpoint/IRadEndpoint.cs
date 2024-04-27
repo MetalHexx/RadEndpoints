@@ -19,8 +19,8 @@ namespace RadEndpoints
     }
 
     public interface IRadEndpoint<TRequest, TResponse> : IRadEndpoint
-        where TRequest : RadRequest
-        where TResponse : RadResponse, new()
+        where TRequest : class
+        where TResponse : new()
     {
         TResponse Response { get; set; }
         RouteHandlerBuilder Get(string route);

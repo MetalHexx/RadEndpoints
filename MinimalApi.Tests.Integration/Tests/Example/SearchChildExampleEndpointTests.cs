@@ -19,9 +19,9 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Assert
 
             r.Should().BeSuccessful<SearchChildExampleResponse>()
-                .WithStatusCode(HttpStatusCode.OK)
-                .WithMessage("Children found");
+                .WithStatusCode(HttpStatusCode.OK);
 
+            r.Content.Message.Should().Be("Children found");
             r.Content.Data.Should().Contain(e => e.FirstName == "Luke" && e.LastName == "Skywalker");
         }
 

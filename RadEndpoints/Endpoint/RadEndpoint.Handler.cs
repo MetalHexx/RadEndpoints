@@ -6,8 +6,8 @@ using RadEndpoints.Mediator;
 namespace RadEndpoints
 {
     public abstract partial class RadEndpoint<TRequest, TResponse> : RadEndpoint, IRadEndpoint<TRequest, TResponse>
-        where TRequest : RadRequest
-        where TResponse : RadResponse, new()
+        where TRequest : class
+        where TResponse : new()
     {
         protected virtual void SendProblem(IRadProblem problem) => HttpContext.Items[RadConstants.Context_Key_RadProblem] = problem;
         protected virtual void Send() => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Ok(Response);

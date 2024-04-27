@@ -20,13 +20,13 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             };
 
             //Act
-            var r = await f.Client.GetAsync<SearchExamplesEndpoint, SearchExamplesRequest, SearchExamplesResponse>(request); 
+            var r = await f.Client.GetAsync<SearchExamplesEndpoint, SearchExamplesRequest, SearchExamplesResponse>(request);
 
             //Assert
             r.Should().BeSuccessful<SearchExamplesResponse>()
-                .WithStatusCode(HttpStatusCode.OK)
-                .WithMessage("Examples found successfully");
+                .WithStatusCode(HttpStatusCode.OK);
 
+            r.Content.Message.Should().Be("Examples found successfully");
             r.Content.Data.Should().Contain(e => e.FirstName == "Luke" && e.LastName == "Skywalker");
             r.Content.Data!.First().LastName.Should().Be("Skywalker");
         }
@@ -47,7 +47,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Assert
             r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
-                .WithMessage("Validation Error")
+                .WithTitle("Validation Error")
                 .WithKey("FirstName")
                 .WithKey("LastName");
         }

@@ -15,13 +15,14 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             var r = await f.Client.PostAsync<CreateExampleEndpoint, CreateExampleRequest, CreateExampleResponse>(createRequest);
 
             //Assert
-            r.Should().BeSuccessful<CreateExampleResponse>()
-                .WithStatusCode(HttpStatusCode.Created)
-                .WithMessage("Example created successfully");
+            r.Should()
+                .BeSuccessful<CreateExampleResponse>()
+                .WithStatusCode(HttpStatusCode.Created);
 
+            r.Content.Message.Should().Be("Example created successfully");
             r.Content.Data!.Id.Should().BeGreaterThan(0);
             r.Content.Data.FirstName.Should().Be(createRequest.FirstName);
-            r.Content.Data.LastName.Should().Be(createRequest.LastName);
+            r.Content.Data.LastName.Should().Be(createRequest.LastName);            
         }
 
         [Fact]
@@ -53,7 +54,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Assert
             r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
-                .WithMessage("Validation Error")
+                .WithTitle("Validation Error")
                 .WithKey("FirstName");
         }
 
@@ -70,7 +71,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Assert
             r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
-                .WithMessage("Validation Error")
+                .WithTitle("Validation Error")
                 .WithKey("LastName");
         }
     }

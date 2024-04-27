@@ -68,8 +68,8 @@ namespace RadEndpoints
         }
     }
     public abstract partial class RadEndpoint<TRequest, TResponse> : RadEndpoint, IRadEndpoint<TRequest, TResponse>
-        where TRequest : RadRequest
-        where TResponse : RadResponse, new()
+        where TRequest : class
+        where TResponse : new()
     {
         public TResponse Response { get; set; } = new();
         public abstract Task Handle(TRequest r, CancellationToken ct);        
@@ -118,9 +118,9 @@ namespace RadEndpoints
         private IRadEndpoint<TRequest, TResponse> SelfInterface => this;
     }
     public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>, IRadEndpointWithMapper
-    where TResponse : RadResponse, new()
-    where TRequest : RadRequest
-    where TMapper : class, IRadMapper
+        where TRequest : class
+        where TResponse : new()    
+        where TMapper : class, IRadMapper
     {
         protected TMapper Map { get; private set; } = default!;
         void IRadEndpointWithMapper.SetMapper(IRadMapper mapper)

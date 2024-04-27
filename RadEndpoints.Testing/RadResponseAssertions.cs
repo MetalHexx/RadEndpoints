@@ -55,14 +55,24 @@ namespace RadEndpoints.Testing
         }
     }
 
-    public class RadTestResultAssertion<TResponse>(RadTestResult<TResponse> result) where TResponse : RadResponse
+    public class RadResponseAssertion<TResponse> where TResponse : RadResponse
     {
-        public RadTestResultAssertion<TResponse> WithMessage(string expectedMessage)
+        private readonly TResponse _response;
+
+        public RadResponseAssertion(TResponse response)
         {
-            result.Content.Message.Should().Be(expectedMessage, "the message in the response content should match");
-            return this;
+            _response = response;
         }
 
+        public RadResponseAssertion<TResponse> WithMessage(string expectedMessage)
+        {
+            _response.Message.Should().Be(expectedMessage, "the message in the response should match");
+            return this;
+        }
+    }
+
+    public class RadTestResultAssertion<TResponse>(RadTestResult<TResponse> result)
+    {
         public RadTestResultAssertion<TResponse> WithStatusCode(HttpStatusCode statusCode)
         {
             result.Http.StatusCode.Should().Be(statusCode, $"the status code should be {statusCode}");
@@ -125,7 +135,7 @@ namespace RadEndpoints.Testing
 
     public class RadTestResultValidationProblemAssertion(RadTestResult<ValidationProblemDetails> result)
     {
-        public RadTestResultValidationProblemAssertion WithMessage(string expectedTitle)
+        public RadTestResultValidationProblemAssertion WithTitle(string expectedTitle)
         {
             result.Content.Title.Should().Be(expectedTitle, "the message in the response content should match");
             return this;

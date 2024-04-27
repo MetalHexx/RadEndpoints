@@ -14,8 +14,9 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Arrange
             r.Should().BeSuccessful<GetExamplesResponse>()
                 .WithStatusCode(HttpStatusCode.OK)
-                .WithMessage("Examples retrieved successfully")
                 .WithContentNotNull();
+
+            r.Content.Message.Should().Be("Examples retrieved successfully");
         }
     }
 }

@@ -20,8 +20,9 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             //Assert
             r.Should().BeSuccessful<CustomPutResponse>()
                 .WithStatusCode(HttpStatusCode.OK)
-                .WithMessage("Example updated successfully")
                 .WithContentNotNull();
+
+            r.Content.Message.Should().Be("Example updated successfully");
         }
 
         [Fact]
@@ -51,7 +52,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             //Assert
             r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
-                .WithMessage("Validation Error")
+                .WithTitle("Validation Error")
                 .WithKey("Data.FirstName");
         }
 
@@ -68,7 +69,7 @@ namespace MinimalApi.Tests.Integration.Tests.CustomExamples
             //Assert
             r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
-                .WithMessage("Validation Error")
+                .WithTitle("Validation Error")
                 .WithKey("Data.LastName");
         }
 

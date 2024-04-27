@@ -25,8 +25,9 @@ namespace MinimalApi.Tests.Integration.Tests.Example
 
             //Assert
             deleteResult.Should().BeSuccessful<DeleteExampleResponse>()
-                .WithStatusCode(HttpStatusCode.OK)
-                .WithMessage("Example deleted successfully");
+                .WithStatusCode(HttpStatusCode.OK);
+
+            deleteResult.Content.Message.Should().Be("Example deleted successfully");
 
             getResult.Should().BeProblem()
                 .WithStatusCode(HttpStatusCode.NotFound)
