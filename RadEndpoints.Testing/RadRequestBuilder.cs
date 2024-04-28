@@ -10,6 +10,21 @@ namespace RadEndpoints.Testing
 {
     public static class RadRequestBuilder
     {
+        public static HttpRequestMessage BuildRequest<TEndpoint>(this HttpClient client, HttpMethod method)
+            where TEndpoint : RadEndpoint
+        {
+            var routeTemplate = RadEndpoint.GetRoute<TEndpoint>();
+            if (routeTemplate.HasParameterPlaceholders())
+            {
+                throw new RadTestException($"\r\nProblem executing: ({method}) {routeTemplate} \r\nThe route has parameter placeholders but there is no request model for this endpoint");
+            }
+            return new()
+            {
+                Method = method,
+                RequestUri = client.BaseAddress!.Combine(routeTemplate)
+            };
+        }
+
         public static HttpRequestMessage BuildRequest<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method)
             where TEndpoint : RadEndpoint
         {

@@ -5,5 +5,8 @@
         Task CallHandlerAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken)
             where TRequest : class
             where TResponse : new();
+
+        Task CallHandlerAsync<TResponse>(CancellationToken cancellationToken)
+            where TResponse : new();
     }
 }

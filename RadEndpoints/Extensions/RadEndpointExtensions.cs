@@ -27,10 +27,25 @@ namespace RadEndpoints
             return null;
         }
 
-        
+        public static Type? GetResponseType(this IRadEndpoint endpoint)
+        {
+            Type endpointType = endpoint.GetType();
 
+            Type? interfaceType = endpointType
+                .GetInterfaces()
+                .FirstOrDefault(t => t.IsGenericType
+                    && t.GetGenericTypeDefinition() == typeof(IRadEndpointWithoutRequest<>));
 
+            if (interfaceType is null) return null;
 
+            Type[] typeArguments = interfaceType.GetGenericArguments();
+
+            if (typeArguments.Length > 0)
+            {
+                return typeArguments[0];
+            }
+            return null;
+        }
 
         public static Type? GetGenericTypeArgument(this IRadEndpoint endpoint, Type targetType)
         {

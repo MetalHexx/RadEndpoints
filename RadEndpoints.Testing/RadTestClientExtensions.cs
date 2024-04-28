@@ -5,6 +5,11 @@ namespace RadEndpoints.Testing
 {
     public static class RadTestClientExtensions
     {
+        public async static Task<RadTestResult<TResponse>> GetAsync<TEndpoint, TResponse>(this HttpClient client)
+            where TEndpoint : RadEndpoint
+        {
+            return await client.SendAsync<TEndpoint, TResponse>(HttpMethod.Get);
+        }
         public async static Task<RadTestResult<TResponse>> GetAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
         {
@@ -65,6 +70,17 @@ namespace RadEndpoints.Testing
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Patch);
         }
 
+        public async static Task<RadTestResult<TResponse>> SendAsync<TEndpoint, TResponse>(this HttpClient client, HttpMethod method)
+            where TEndpoint : RadEndpoint
+        {
+            var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint>(client, method);
+
+            var httpResponse = await client.SendAsync(httpRequest);
+            client.Dispose();
+
+            return new(httpResponse, await httpResponse.DeserializeJson<TResponse>());
+        }
+
         public async static Task<RadTestResult<TResponse>> SendAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request, HttpMethod method)
             where TEndpoint : RadEndpoint
         {
@@ -76,7 +92,7 @@ namespace RadEndpoints.Testing
             return new(httpResponse, await httpResponse.DeserializeJson<TResponse>());
         }
 
-        public async static Task<HttpResponseMessage> SendAsync<TEndpoint, TRequest>(this HttpClient client, TRequest request, HttpMethod method)
+        private async static Task<HttpResponseMessage> SendAsync<TEndpoint, TRequest>(this HttpClient client, TRequest request, HttpMethod method)
             where TEndpoint : RadEndpoint
         {
             var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, method);
