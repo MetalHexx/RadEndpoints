@@ -1,4 +1,4 @@
-﻿namespace RadEndpoints.Endpoint
+﻿namespace RadEndpoints
 {
     internal class RadEndpointException(string message) : Exception(message) { }
 }

@@ -8,7 +8,7 @@ using RadEndpoints.Mediator;
 
 namespace RadEndpoints
 {
-    public abstract partial class RadEndpoint : IRadEndpoint
+    public abstract class RadEndpoint : IRadEndpoint
     {
         protected ILogger Logger { get; private set; } = null!;
         protected IEndpointRouteBuilder RouteBuilder { get; private set; } = null!;
@@ -80,118 +80,5 @@ namespace RadEndpoints
                 _ => TypedResults.Problem(title: "Unknown error", statusCode: StatusCodes.Status500InternalServerError)
             };
         }
-    }
-    public abstract partial class RadEndpoint<TRequest, TResponse> : RadEndpoint, IRadEndpoint<TRequest, TResponse>
-        where TRequest : class
-        where TResponse : new()
-    {
-        public TResponse Response { get; set; } = new();
-        public abstract Task Handle(TRequest r, CancellationToken ct);        
-
-        public RouteHandlerBuilder Get(string route)
-        {
-            SetRoute(route);
-            var builder = RouteBuilder!.MapGet(route, async ([AsParameters] TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
-            return TryAddEndpointFilter(builder);
-        }
-
-        public RouteHandlerBuilder Post(string route)
-        {
-            SetRoute(route);
-            var builder = RouteBuilder!.MapPost(route, async (TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
-            return TryAddEndpointFilter(builder);
-        }
-
-        public RouteHandlerBuilder Put(string route)
-        {
-            SetRoute(route);
-            var builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
-            return TryAddEndpointFilter(builder);
-        }
-
-        public RouteHandlerBuilder Patch(string route)
-        {
-            var builder = RouteBuilder!.MapPatch(route, async (TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
-            SetRoute(route);
-            return TryAddEndpointFilter(builder);
-        }
-
-        public RouteHandlerBuilder Delete(string route)
-        {
-            var builder = RouteBuilder!.MapDelete(route, async ([AsParameters] TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
-            SetRoute(route);
-            return TryAddEndpointFilter(builder);
-        }
-
-        private RouteHandlerBuilder TryAddEndpointFilter(RouteHandlerBuilder builder)
-        {
-            if (HasValidator) builder.AddEndpointFilter<RadValidationFilter<TRequest>>();
-            return builder;
-        }
-
-        private IRadEndpoint<TRequest, TResponse> SelfInterface => this;
-    }
-
-    public abstract class RadEndpoint<TRequest, TResponse, TMapper> : RadEndpoint<TRequest, TResponse>, IRadEndpointWithMapper
-        where TRequest : class
-        where TResponse : new()
-        where TMapper : class, IRadMapper
-    {
-        protected TMapper Map { get; private set; } = default!;
-        void IRadEndpointWithMapper.SetMapper(IRadMapper mapper)
-        {
-            Map = mapper as TMapper ?? throw new InvalidOperationException("Invalid mapper type.");
-        }
-    }
-
-    public abstract partial class RadEndpointWithoutRequest<TResponse> : RadEndpoint, IRadEndpointWithoutRequest<TResponse>
-        where TResponse : new()
-    {
-        public TResponse Response { get; set; } = new();
-        public abstract Task Handle(CancellationToken ct);
-
-        public RouteHandlerBuilder Get(string route)
-        {
-            SetRoute(route);
-            return RouteBuilder!.MapGet(route, async (IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(m, c, ct));
-        }
-
-        public RouteHandlerBuilder Post(string route)
-        {
-            SetRoute(route);
-            return RouteBuilder!.MapPost(route, async (IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(m, c, ct));
-        }
-
-        public RouteHandlerBuilder Put(string route)
-        {
-            SetRoute(route);
-            return RouteBuilder!.MapPut(route, async (IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(m, c, ct));
-        }
-
-        public RouteHandlerBuilder Patch(string route)
-        {
-            SetRoute(route);
-            return RouteBuilder!.MapPatch(route, async (IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(m, c, ct));
-            
-        }
-
-        public RouteHandlerBuilder Delete(string route)
-        {
-            SetRoute(route);
-            return RouteBuilder!.MapDelete(route, async (IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(m, c, ct));
-        }
-
-        private IRadEndpointWithoutRequest<TResponse> SelfInterface => this;
-    }
-
-    public abstract class RadEndpointWithoutRequest<TResponse, TMapper> : RadEndpointWithoutRequest<TResponse>, IRadEndpointWithMapper
-        where TResponse : new()
-        where TMapper : class, IRadMapper
-    {
-        protected TMapper Map { get; private set; } = default!;
-        void IRadEndpointWithMapper.SetMapper(IRadMapper mapper)
-        {
-            Map = mapper as TMapper ?? throw new InvalidOperationException("Invalid mapper type.");
-        }
-    }
+    }    
 }
