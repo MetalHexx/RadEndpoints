@@ -2,11 +2,6 @@
 
 namespace RadEndpoints.Mediator
 {
-    internal interface IRadMediatorRegistry
-    {
-        RadMediatorRegistration GetRegistration(Type endpointType);
-        void RegisterEndpoints();
-    }
 
     internal class RadMediatorRegistry(IServiceProvider _serviceProvider) : IRadMediatorRegistry
     {
