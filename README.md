@@ -1,7 +1,7 @@
 # RadEndpoints
-A lightweight API framework that embraces the power of Net Core [Minimal APIs](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-8.0&tabs=visual-studio) using a well-defined [REPR](https://www.apitemplatepack.com/docs/introduction/repr-pattern/) Style (Request-Endpoint-Response) pattern.  The framework aims to sprinkle syntactical sugar over Minimal Apis to facilitate a consistent endpoint building / testing / delivery workflow. A fast and easy developer experience is the #1 goal of this project.
+A lightweight API library that embraces the power of Net Core [Minimal APIs](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-8.0&tabs=visual-studio) using a well-defined [REPR](https://www.apitemplatepack.com/docs/introduction/repr-pattern/) Style (Request-Endpoint-Response) pattern.  The framework aims to sprinkle syntactical sugar over Minimal Apis to facilitate a consistent endpoint building / testing / delivery workflow. A fast and easy developer experience is the #1 goal of this project.
 
-While the framework appears to have strong opinions on endpoint structure on the surface, all of the helper/conveniences are virtually optional. Full Minimal Api functionality is preserved for more uncommon edge case or custom use case scenarios.  As of now, this code is for experimental and educational purposes only. 
+While the library does come with some strong opinions on endpoint structure on the surface, all of the helper/conveniences are virtually optional. Full Minimal Api functionality is preserved for more uncommon edge case or custom use case scenarios.  As of now, this code is for experimental and educational purposes only. 
 
 ### Features:
 #### Convenient Structured Endpoint Classes
