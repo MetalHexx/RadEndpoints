@@ -1,5 +1,5 @@
 ﻿namespace MinimalApi.Features.Files.GetFile
 {
     public class GetFileRequest : RadRequest { }
-    public class GetFileResponse : RadResponseFile { }
+    public class GetFileResponse : RadFile { }
 }

@@ -1,43 +1,14 @@
-﻿using Microsoft.Net.Http.Headers;
-
-namespace RadEndpoints
+﻿namespace RadEndpoints
 {
+    [Obsolete("Replace with a response wrapper in your api project.")]
     public class RadResponse
     {
         public string Message { get; set; } = string.Empty;
     }
 
+    [Obsolete("Replace with a response wrapper in your api project.")]
     public class RadResponse<T> : RadResponse
     {
         public T? Data { get; set; } = default!;
-    }
-
-    public class RadResponseStream
-    {
-        public Stream Stream { get; set; } = default!;
-        public string? ContentType { get; set; }
-        public string? FileDownloadName { get; set; }
-        public DateTimeOffset? LastModified { get; set; }
-        public EntityTagHeaderValue? EntityTag { get; set; }
-        public bool EnableRangeProcessing { get; set; }
-        
-    }
-
-    public class RadResponseBytes
-    {
-        public byte[] Bytes { get; set; } = default!;
-        public string? ContentType { get; set; }
-        public string? FileDownloadName { get; set; }
-        public bool EnableRangeProcessing { get; set; }
-        public DateTimeOffset? LastModified { get; set; }
-    }
-
-    public class RadResponseFile
-    {
-        public string Path { get; set; } = null!;
-        public string? ContentType { get; set; }
-        public string? FileDownloadName { get; set; }
-        public DateTimeOffset? LastModified { get; set; }
-        public EntityTagHeaderValue? EntityTag { get; set; }
     }
 }
