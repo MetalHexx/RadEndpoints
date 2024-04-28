@@ -59,6 +59,9 @@ namespace RadEndpoints
                 endpoint.SetBuilder(app);
                 endpoint.Configure();
             }
+            TriggerMediatorRegistrations(provider);
         }
+
+        private static void TriggerMediatorRegistrations(IServiceProvider provider) => provider.GetRequiredService<IRadMediator>();
     }
 }
