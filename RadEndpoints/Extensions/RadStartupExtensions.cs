@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using RadEndpoints.Mediator;
 using System.Reflection;
@@ -19,6 +20,7 @@ namespace RadEndpoints
             services.AddScopedAsSelfAndTypeOf<IRadMapper>(assemblyType.Assembly);
             services.AddScoped<IRadMediatorRegistry, RadMediatorRegistry>();
             services.AddScoped<IRadMediator, RadMediator>();
+            services.AddValidatorsFromAssemblyContaining(assemblyType, lifetime: ServiceLifetime.Scoped);
         }
 
         /// <summary>
