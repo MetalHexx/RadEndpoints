@@ -2,21 +2,21 @@
 
 namespace RadEndpoints.Mediator
 {
-    public interface IRadMediatorRegistry
+    internal interface IRadMediatorRegistry
     {
-        RadMediatorRegistration GetRegistration<T>();
+        RadMediatorRegistration GetRegistration(Type endpointType);
         void RegisterEndpoints();
     }
 
-    public class RadMediatorRegistry(IServiceProvider _serviceProvider) : IRadMediatorRegistry
+    internal class RadMediatorRegistry(IServiceProvider _serviceProvider) : IRadMediatorRegistry
     {
         private static readonly Dictionary<Type, RadMediatorRegistration> _registrations = [];
 
-        public RadMediatorRegistration GetRegistration<T>()
+        public RadMediatorRegistration GetRegistration(Type endpointType)
         {
-            if (!_registrations.TryGetValue(typeof(T), out var registration))
+            if (!_registrations.TryGetValue(endpointType, out var registration))
             {
-                throw new InvalidOperationException($"No endpoint found for request type {typeof(T).Name}.");
+                throw new InvalidOperationException($"No endpoint found for request type {endpointType.Name}.");
             }
             return registration;
         }
@@ -29,39 +29,22 @@ namespace RadEndpoints.Mediator
 
             foreach (var endpoint in endpoints)
             {
-                Type? endpointKey = GetEndpointKey(endpoint);
-
-                if (endpointKey is null) continue;
-
-                TryRegisteringEndpoint(endpoint, endpointKey);
+                TryRegisteringEndpoint(endpoint);
             }
         }
 
-        private static Type? GetEndpointKey(IRadEndpoint endpoint)
-        {
-            var hasRequest = !endpoint.IsAssignableToGenericType(typeof(IRadEndpointWithoutRequest<>));
-
-            var endpointKey = hasRequest
-                ? endpoint.GetRequestType()
-                : endpoint.GetResponseType();
-
-            return endpointKey;
-        }
-
-        private static void TryRegisteringEndpoint(IRadEndpoint endpoint, Type endpointKey)
+        private static void TryRegisteringEndpoint(IRadEndpoint endpoint)
         {
             var endpointType = endpoint.GetType();
 
-            var alreadyExists = _registrations.TryGetValue(endpointKey, out var _);
+            var alreadyExists = _registrations.TryGetValue(endpointType, out var _);
 
             if (alreadyExists)
             {
-                throw new InvalidOperationException($"Endpoint with request or response type {endpointKey.Name} is already registered. Ensure your endpoints have a unique request and response model.");
+                throw new InvalidOperationException($"Endpoint with request or response type {endpointType.Name} is already registered. Ensure your endpoints have a unique request and response model.");
             }
-            _registrations.TryAdd(endpointKey, new RadMediatorRegistration
+            _registrations.TryAdd(endpointType, new RadMediatorRegistration
             {
-                EndpointType = endpointType,
-                EndpointKey = endpointKey,
                 MapperType = endpoint.GetMapperType(),
                 LoggerType = endpointType.GetLoggerType()
             });
@@ -75,6 +58,5 @@ namespace RadEndpoints.Mediator
 
             return provider.GetServices<IRadEndpoint>();
         }
-
     }
 }

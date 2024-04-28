@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace RadEndpoints.Mediator
 {
-    public class RadMediator : IRadMediator
+    internal class RadMediator : IRadMediator
     {        
         private readonly IServiceProvider _serviceProvider;
         private readonly IRadMediatorRegistry _registry;
@@ -19,28 +21,39 @@ namespace RadEndpoints.Mediator
             _registry.RegisterEndpoints();
         }
 
-        public Task CallHandlerAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken)
+        public Task CallHandler<TRequest, TResponse>(Type endpointType, TRequest request, CancellationToken cancellationToken)
             where TRequest : class
             where TResponse : new()
         {
-            var registration = _registry.GetRegistration<TRequest>();
-            var endpoint = GetEndpointAs<IRadEndpoint<TRequest, TResponse>>(registration.EndpointType);
+            var registration = _registry.GetRegistration(endpointType);
+            var endpoint = _serviceProvider.GetService(endpointType) as IRadEndpoint<TRequest, TResponse>;
+
+            if (endpoint is null)
+            {
+                throw new InvalidOperationException($"Endpoint for {endpointType.Name} not found.");
+            }
             ConfigureEndpoint(registration, endpoint);
             return endpoint.Handle(request, cancellationToken);
         }
 
-        public Task CallHandlerAsync<TResponse>(CancellationToken cancellationToken) 
+        public Task CallHandler<TResponse>(Type endpointType, CancellationToken cancellationToken) 
             where TResponse : new()
         {
-            var registration = _registry.GetRegistration<TResponse>();
-            var endpoint = GetEndpointAs<IRadEndpointWithoutRequest<TResponse>>(registration.EndpointType);
+            var registration = _registry.GetRegistration(endpointType);
+            var endpoint = _serviceProvider.GetService(endpointType) as IRadEndpointWithoutRequest<TResponse>;
+
+            if (endpoint is null)
+            {
+                throw new InvalidOperationException($"Endpoint for {endpointType.Name} not found.");
+            }
             ConfigureEndpoint(registration, endpoint);
             return endpoint.Handle(cancellationToken);
         }
 
         private void ConfigureEndpoint(RadMediatorRegistration registration, IRadEndpoint endpoint)
         {
-            endpoint.SetLogger(_serviceProvider.GetLogger(endpoint.GetType()));
+            var logger = (ILogger)_serviceProvider.GetRequiredService(registration.LoggerType);
+            endpoint.SetLogger(logger);
             endpoint.SetContext(_httpContextAccessor);
             endpoint.SetEnvironment(_env);
 
@@ -53,12 +66,6 @@ namespace RadEndpoints.Mediator
                 ?? throw new InvalidOperationException($"Endpoint for {endpoint.GetType().Name} does not support mappers.");
 
             endpointWithMapper.SetMapper(mapper);
-        }
-
-        private T GetEndpointAs<T>(Type endpointType) where T: class
-        {
-            return _serviceProvider.GetService(endpointType) as T
-                ?? throw new InvalidOperationException($"Endpoint for {endpointType.Name} not found.");
         }
     }
 }

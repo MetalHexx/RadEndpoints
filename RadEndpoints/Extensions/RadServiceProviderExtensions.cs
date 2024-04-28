@@ -6,12 +6,6 @@ namespace RadEndpoints
 {
     public static class RadServiceProviderExtensions
     {
-        public static ILogger GetLogger(this IServiceProvider serviceProvider, Type endpointType)
-        {
-            var loggerType = endpointType.GetLoggerType();
-            var logger = (ILogger)serviceProvider.GetRequiredService(loggerType);
-            return logger;
-        }
         public static bool IsValidatorRegistered(this IServiceProvider serviceProvider, IRadEndpoint endpoint)
         {
             var requestType = endpoint.GetRequestType();

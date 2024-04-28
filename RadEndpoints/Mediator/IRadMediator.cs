@@ -2,11 +2,11 @@
 {
     public interface IRadMediator
     {
-        Task CallHandlerAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken)
+        Task CallHandler<TRequest, TResponse>(Type endpointType, TRequest request, CancellationToken cancellationToken)
             where TRequest : class
             where TResponse : new();
 
-        Task CallHandlerAsync<TResponse>(CancellationToken cancellationToken)
+        Task CallHandler<TResponse>(Type endpointType, CancellationToken cancellationToken)
             where TResponse : new();
     }
 }

@@ -26,7 +26,7 @@ namespace RadEndpoints
 
         async Task<IResult> IRadEndpoint<TRequest, TResponse>.ExecuteHandler(TRequest request, IRadMediator mediator, HttpContext context, CancellationToken ct)
         {
-            await mediator.CallHandlerAsync<TRequest, TResponse>(request, ct);
+            await mediator.CallHandler<TRequest, TResponse>(GetType(), request, ct);
 
             context.Items.TryGetValue(RadConstants.Context_Key_Result, out var result);
 
@@ -61,7 +61,7 @@ namespace RadEndpoints
 
         async Task<IResult> IRadEndpointWithoutRequest<TResponse>.ExecuteHandler(IRadMediator mediator, HttpContext context, CancellationToken ct)
         {
-            await mediator.CallHandlerAsync<TResponse>(ct);
+            await mediator.CallHandler<TResponse>(GetType(), ct);
 
             context.Items.TryGetValue(RadConstants.Context_Key_Result, out var result);
 
