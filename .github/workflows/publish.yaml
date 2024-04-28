@@ -16,8 +16,8 @@ jobs:
       
       - name: Set Version
         run: |
-          sed -i -e 's/{{Version}}/${{ github.ref_name }}/' ./RadEndpoints/RadEndpoints.csproj
-          sed -i -e 's/{{Version}}/${{ github.ref_name }}/' ./RadEndpoints.Testing/RadEndpoints.Testing.csproj
+          sed -i -e 's/<Version>1.0.0</Version>/<Version>${{ github.ref_name }}</Version>/' ./RadEndpoints/RadEndpoints.csproj
+          sed -i -e 's/<Version>1.0.0</Version>/<Version>${{ github.ref_name }}</Version>/' ./RadEndpoints.Testing/RadEndpoints.Testing.csproj
           cat ./RadEndpoints/RadEndpoints.csproj
 
       - name: Pack
