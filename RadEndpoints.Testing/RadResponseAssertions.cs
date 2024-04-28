@@ -9,7 +9,6 @@ namespace RadEndpoints.Testing
     public static class RadTestResultAssertions
     {
         public static RadTestResultAssertion<TResponse> BeSuccessful<TResponse>(this ObjectAssertions assertions)
-        where TResponse : RadResponse
         {
             var testResult = assertions.Subject as RadTestResult<TResponse>;
 
@@ -52,22 +51,6 @@ namespace RadEndpoints.Testing
                 .FailWith("Expected HTTP response to be a problem (4xx), but found {0}.", testResult.Http.StatusCode);
 
             return new RadTestResultValidationProblemAssertion(testResult);
-        }
-    }
-
-    public class RadResponseAssertion<TResponse> where TResponse : RadResponse
-    {
-        private readonly TResponse _response;
-
-        public RadResponseAssertion(TResponse response)
-        {
-            _response = response;
-        }
-
-        public RadResponseAssertion<TResponse> WithMessage(string expectedMessage)
-        {
-            _response.Message.Should().Be(expectedMessage, "the message in the response should match");
-            return this;
         }
     }
 
