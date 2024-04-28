@@ -2,7 +2,7 @@
 
 namespace {1}.{0}
 {
-    public class {0}Request : RadRequest {}
+    public class {0}Request
 
     public class {0}RequestValidator : AbstractValidator<{0}Request>
     {
@@ -12,5 +12,8 @@ namespace {1}.{0}
         }
     }
 
-    public class {0}Response : RadResponse<ResponseDataType> { }
+    public class {0}Response
+    {
+        public string Message { get; set; } = "Success!"  
+    }
 }
