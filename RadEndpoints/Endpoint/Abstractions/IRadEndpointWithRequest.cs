@@ -8,7 +8,7 @@ namespace RadEndpoints
         where TRequest : class
         where TResponse : new()
     {
-        TResponse Response { get; set; }
+        TResponse? Response { get; set; }
         RouteHandlerBuilder Get(string route);
         RouteHandlerBuilder Post(string route);
         RouteHandlerBuilder Put(string route);

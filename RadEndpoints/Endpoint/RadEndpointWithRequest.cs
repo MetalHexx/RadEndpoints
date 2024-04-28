@@ -8,7 +8,7 @@ namespace RadEndpoints
         where TRequest : class
         where TResponse : new()
     {
-        public TResponse Response { get; set; } = new();
+        public TResponse? Response { get; set; }
         public abstract Task Handle(TRequest r, CancellationToken ct);
 
         public RouteHandlerBuilder Get(string route)

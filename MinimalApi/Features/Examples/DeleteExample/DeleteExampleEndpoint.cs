@@ -19,7 +19,10 @@ namespace MinimalApi.Features.Examples.DeleteExample
             (
                 none => 
                 {
-                    Response.Message = "Example deleted successfully";
+                    Response = new()
+                    {
+                        Message = "Example deleted successfully"
+                    };
                     Send();
                 },
                 notFound => SendProblem(notFound)
