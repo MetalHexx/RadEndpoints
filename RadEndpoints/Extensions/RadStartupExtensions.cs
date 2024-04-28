@@ -17,6 +17,7 @@ namespace RadEndpoints
             services.AddHttpContextAccessor();
             services.AddScopedAsSelfAndTypeOf<IRadEndpoint>(assemblyType.Assembly);
             services.AddScopedAsSelfAndTypeOf<IRadMapper>(assemblyType.Assembly);
+            services.AddScoped<IRadMediatorRegistry, RadMediatorRegistry>();
             services.AddScoped<IRadMediator, RadMediator>();
         }
 
@@ -59,9 +60,8 @@ namespace RadEndpoints
                 endpoint.SetBuilder(app);
                 endpoint.Configure();
             }
-            TriggerMediatorRegistrations(provider);
+            var mediatorRegistry = provider.GetRequiredService<IRadMediatorRegistry>();
+            mediatorRegistry.RegisterEndpoints();
         }
-
-        private static void TriggerMediatorRegistrations(IServiceProvider provider) => provider.GetRequiredService<IRadMediator>();
     }
 }
