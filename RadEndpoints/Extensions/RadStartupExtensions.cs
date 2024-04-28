@@ -53,7 +53,7 @@ namespace RadEndpoints
 
             foreach (var endpoint in endpoints)
             {
-                if (provider.IsValidatorRegistered(endpoint))
+                if (endpoint.IsValidatorRegistered(provider))
                 {
                     endpoint.EnableValidation();
                 }

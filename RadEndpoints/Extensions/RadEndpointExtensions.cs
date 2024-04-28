@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace RadEndpoints
 {
     public static class RadEndpointExtensions
-    {
-        public static Type GetLoggerType(this Type endpointType) => typeof(ILogger<>).MakeGenericType(endpointType); 
+    {        
         public static Type? GetMapperType(this IRadEndpoint endpoint) => endpoint.GetGenericTypeArgument(typeof(IRadMapper));
 
         public static Type? GetRequestType(this IRadEndpoint endpoint) 
@@ -68,6 +68,27 @@ namespace RadEndpoints
             }
 
             return null;
+        }
+
+        public static bool IsValidatorRegistered(this IRadEndpoint endpoint, IServiceProvider serviceProvider)
+        {
+            var requestType = endpoint.GetRequestType();
+
+            if (requestType is null) return false;
+
+            var validatorType = typeof(IValidator<>).MakeGenericType(requestType);
+            var services = serviceProvider.GetServices(validatorType);
+
+            foreach (var service in services)
+            {
+                if (service is null) continue;
+
+                if (validatorType.IsAssignableFrom(service.GetType()))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
