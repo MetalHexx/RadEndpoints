@@ -19,7 +19,7 @@ _The RadEndpoints CLI tool will help scaffold endpoints very rapidly with a sing
 - Manual Instructions:
   - `dotnet tool uninstall -g RadEndpoints.Cli`
 
-### Generating Endpoints With Wizard
+## Generating Endpoints
 
 - Navigate to the project folder where you want to generate the endpoints
 
