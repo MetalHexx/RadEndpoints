@@ -105,7 +105,37 @@ public class GetSampleResponse
 ```
 #### CLI For Scaffolding
 - Scaffold multiple new endpoints very quickly
-- Bulk endpoint scaffolding with JSON definition
+<img src="https://github.com/MetalHexx/RadEndpoints/assets/9291740/8782c1e9-ef40-4c0b-9b1c-dc9f96ae3826" width="60%" height="60%" alt="Description of Image"/>
+
+- Define and import endpoints with JSON definition file
+```javascript
+[
+  {
+    "BaseNamepace": "Demo.Api.Endpoints",
+    "ResourceName": "User",
+    "Verb": "Get",
+    "EndpointName": "GetUser",
+    "Path": "/users/{id}",
+    "Entity": "User",
+    "Tag": "User",
+    "Description": "Get User by ID",
+    "WithMapper": true
+  },
+  {
+    "BaseNamepace": "Demo.Api.Endpoints",
+    "ResourceName": "User",
+    "Verb": "Post",
+    "EndpointName": "CreateUser",
+    "Path": "/users",
+    "Entity": "User",
+    "Tag": "User",
+    "Description": "Create a new User",
+    "WithMapper": true
+  }
+]
+```
+
+
   
 ### Coming Soon:
 - Project templates
