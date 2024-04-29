@@ -1,47 +1,117 @@
 # RadEndpoints
-A lightweight API library that embraces the power of Net Core [Minimal APIs](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-8.0&tabs=visual-studio) using a well-defined [REPR](https://www.apitemplatepack.com/docs/introduction/repr-pattern/) Style (Request-Endpoint-Response) pattern.  The framework aims to sprinkle syntactical sugar over Minimal Apis to facilitate a consistent endpoint building / testing / delivery workflow. A fast and easy developer experience is the #1 goal of this project.
+An API library bringing a [REPR](https://www.apitemplatepack.com/docs/introduction/repr-pattern/) Style (Request-Endpoint-Response) endpoint classes to .NET [Minimal API](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-8.0&tabs=visual-studio).
 
-While the library does come with some strong opinions on endpoint structure on the surface, all of the helper/conveniences are virtually optional. Full Minimal Api functionality is preserved for more uncommon edge case or custom use case scenarios.  As of now, this code is for experimental and educational purposes only. 
+### Library Goals
+_Should be:_
+- Lightweight -- and easy to work with or without.
+- Junior Developer Friendly -- without impeding more experienced engineers.
+- Fully Minimal API compatible.
+- [Configurable](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/route-handlers?view=aspnetcore-8.0#route-handlers) using a MinimalApi [RouteHandlerBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.routehandlerbuilder).
+- Well structured -- for common tasks such as validation, mapping and error handling.
+- Extensible -- to allow for custom alternate endpoint implmentations.
+- Fast and Easy -- to rapidly scaffold projects, endpoints and tests.
+- Low Maintenance -- for testing.
 
 ### Features:
-#### Convenient Structured Endpoint Classes
-- Less noisy configuration than original minimal api endpoints
-- Override or extend endpoint abstractions to fit app specific conventions/contracts
+#### REPR Endpoint Classes
+- Reduced configuration noise over minimal api endpoints
 - Constructor dependency injection
 - Scoped lifetime
-- Built-in HttpContext
-- Built-in ILogger<EndpointName>
-- Built-in IWebHostEnvironment
-- Built in Response Object
-- Built in Entity / Response Mapper (optional)
-- IResult/TypedResult helpers
-  
-#### Assembly Scanning for Automatic Configuration of
-- Endpoint classes
-- Mapping classes
-- Endpoint Filter Validators [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
+- Assembly scanned and configured request validator and model mapper
+- Built-in Endpoint Class Conveniences
+  - HttpContext
+  - Logger
+  - Environment Info
+  - Response Object
+  - Model Mapper 
+  - TypedResult Shortcuts
 
-#### Integration Testing
-- [WebApplicationFactory](https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0) In-Memory Approach
-- Strongly typed "Routeless" Test Helpers very convenient test development, maintanence and durability
-- Clean and convenient response assertions for RadResponse / HttpResponse / [ProblemDetails](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-8.0) using [FluentAssertions](https://fluentassertions.com/introduction)
-- Detailed exception messages so you dig less to find test issues.
+```csharp
+public class GetSampleEndpoint(ISampleService sampleService) : RadEndpoint<GetSampleRequest, GetSampleResponse, GetSampleMapper>
+{
+    public override void Configure()
+    {
+        Get("/samples/{id}")
+            .Produces<GetSampleResponse>(StatusCodes.Status200OK)            
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesValidationProblem()
+            .WithDocument(tag: "Sample", desc: "Get Sample by ID");
+
+            //Any NET minimal api (RouteHandlerBuilder) configuration works here.
+    }
+
+    public override async Task Handle(GetSampleRequest r, CancellationToken ct)
+    {
+        var sample = await sampleService.GetSampleById(r.Id, ct);
+
+        if(sample is null)
+        {
+            SendNotFound("Sample not found.");
+            return;
+        }
+        Response = Map.FromEntity(sample);
+        Send();
+    }
+}
+```
   
-#### Example Api
-- Lightweight api to demonstrate framework usage
-- Includes example endpoints and integration tests
-- Using feature based "vertical slice" style architecture (optional approach)
+#### Integration Testing
+- Strongly typed "Routeless" HttpClient extensions
+- Reduced maintenance with automatic endpoint route discovery and request model binding
+- Easy to navigate to endpoint code from test
+- Consistent and convenient response assertions for HttpResponse and [ProblemDetails](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-8.0) using [FluentAssertions](https://fluentassertions.com/introduction)
+- Detailed exception messages so you dig less to find test issues.
+
+```csharp
+[Fact]
+public async void When_RequestValid_ReturnsSuccess()
+{
+    //Arrange
+    var request = new GetSampleRequest { Id = 1 };
+
+    //Act       
+    var r = await f.Client.GetAsync<GetSampleEndpoint, GetSampleRequest, GetSampleResponse>(request);
+
+    //Assert
+    r.Should()
+        .BeSuccessful<GetSampleResponse>()
+        .WithStatusCode(HttpStatusCode.OK);
+}
+```
+
+#### Request Model Binding and Validation
+- Automatic request model binding from route, query, header, and body using [AsParameters].
+- Automatic request model validation execution using [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
+```csharp
+public class GetSampleRequest
+{
+    [FromRoute]
+    public int Id { get; set; }
+}
+
+public class GetSampleRequestValidator : AbstractValidator<GetSampleRequest>
+{
+    public GetSampleRequestValidator()
+    {
+        RuleFor(e => e.Id).GreaterThan(0);
+    }
+}
+
+public class GetSampleResponse
+{
+    public SampleDto Data { get; set; } = null!;
+    public string Message { get; set; } = "Sample retrieved successfully";
+}
+```
+#### CLI For Scaffolding
+- Scaffold multiple new endpoints very quickly
+- Bulk endpoint scaffolding with JSON definition
   
 ### Coming Soon:
-- Open Telemetry Endpoint Filters (Logging, Metrics, Traces)
-- Unit test coverage for framework code
-- Project item and api project templates
-- CLI Tool w/[Spectre.Console](https://spectreconsole.net/)
-- Nuget package
-- Demo for Example API: observability infrastructure using Grafana / Prometheus / Zipkin / Kibana
-- Demo for Example API: Bogus oriented test mocking service
-- Demo Ephemeral Test Environment w/[TestContainers](https://testcontainers.com/) 
+- Project templates
+- Observability Tooling
+- Additional code coverage
 - Documentation / How Tos
 
 ### Credits
-This framework pays humble tribute to the [FastEndpoints](https://fast-endpoints.com/) as it borrows many syntactical and developer experience concepts from it.  Unless you're dead set on using Minimal APIs, I would highly recommend taking a look at that superior project which is actively maintained by a large community of contributors.
+- [FastEndpoints](https://fast-endpoints.com/) -- as many of the ideas from that project inspired this one.
