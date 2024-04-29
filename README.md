@@ -1,13 +1,13 @@
 # RadEndpoints
-An API library bringing a [REPR](https://www.apitemplatepack.com/docs/introduction/repr-pattern/) Style (Request-Endpoint-Response) endpoint classes to .NET [Minimal API](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-8.0&tabs=visual-studio).
+An API library bringing [REPR](https://www.apitemplatepack.com/docs/introduction/repr-pattern/)-style endpoint classes to .NET [Minimal API](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-8.0&tabs=visual-studio).
 
 ### Library Goals
 _Should be:_
 - Lightweight -- and easy to work with or without.
 - Junior Developer Friendly -- without impeding more experienced engineers.
-- Fully Minimal API compatible.
-- [Configurable](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/route-handlers?view=aspnetcore-8.0#route-handlers) using a MinimalApi [RouteHandlerBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.routehandlerbuilder).
-- Well structured -- for common tasks such as validation, mapping and error handling.
+- Backward Compatible -- with Minimal API configuration and features.
+- Configurable -- using MinimalApi [RouteHandlerBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.routehandlerbuilder).
+- Well Structured -- for common tasks such as validation, mapping and error handling.
 - Extensible -- to allow for custom alternate endpoint implmentations.
 - Fast and Easy -- to rapidly scaffold projects, endpoints and tests.
 - Low Maintenance -- for testing.
