@@ -54,30 +54,6 @@ public class GetSampleEndpoint(ISampleService sampleService) : RadEndpoint<GetSa
     }
 }
 ```
-  
-#### Integration Testing
-- Strongly typed "Routeless" HttpClient extensions
-- Reduced maintenance with automatic endpoint route discovery and request model binding
-- Easy to navigate to endpoint code from test
-- Consistent and convenient response assertions for HttpResponse and [ProblemDetails](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-8.0) using [FluentAssertions](https://fluentassertions.com/introduction)
-- Detailed exception messages so you dig less to find test issues.
-
-```csharp
-[Fact]
-public async void When_RequestValid_ReturnsSuccess()
-{
-    //Arrange
-    var request = new GetSampleRequest { Id = 1 };
-
-    //Act       
-    var r = await f.Client.GetAsync<GetSampleEndpoint, GetSampleRequest, GetSampleResponse>(request);
-
-    //Assert
-    r.Should()
-        .BeSuccessful<GetSampleResponse>()
-        .WithStatusCode(HttpStatusCode.OK);
-}
-```
 
 #### Request Model Binding and Validation
 - Automatic request model binding from route, query, header, and body using [AsParameters].
@@ -103,6 +79,51 @@ public class GetSampleResponse
     public string Message { get; set; } = "Sample retrieved successfully";
 }
 ```
+
+#### Endpoint Model Mapper
+- Assign mappers for conventient access from endpoint
+- Makes mapping a first class citizen with the endpoint configuration
+- Map manually or with a mapping tool like AutoMapper or Mapster
+```csharp
+public class GetExampleMapper : IRadMapper<GetExampleRequest, GetExampleResponse, Example>
+{
+    public GetExampleResponse FromEntity(Example e) => new()
+    {
+        Data = new()
+        {
+            Id = e.Id,
+            FirstName = e.FirstName,
+            LastName = e.LastName
+        }
+    };
+    public Example ToEntity(GetExampleRequest r) => throw new NotImplementedException();
+}
+```
+  
+#### Integration Testing
+- Strongly typed "Routeless" HttpClient extensions
+- Reduced maintenance with automatic endpoint route discovery and request model binding
+- Easy to navigate to endpoint code from test
+- Consistent and convenient response assertions for HttpResponse and [ProblemDetails](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-8.0) using [FluentAssertions](https://fluentassertions.com/introduction)
+- Detailed exception messages so you dig less to find test issues.
+
+```csharp
+[Fact]
+public async void When_RequestValid_ReturnsSuccess()
+{
+    //Arrange
+    var request = new GetSampleRequest { Id = 1 };
+
+    //Act       
+    var r = await f.Client.GetAsync<GetSampleEndpoint, GetSampleRequest, GetSampleResponse>(request);
+
+    //Assert
+    r.Should()
+        .BeSuccessful<GetSampleResponse>()
+        .WithStatusCode(HttpStatusCode.OK);
+}
+```
+
 #### CLI For Scaffolding
 - Scaffold multiple new endpoints very quickly
 <img src="https://github.com/MetalHexx/RadEndpoints/assets/9291740/8782c1e9-ef40-4c0b-9b1c-dc9f96ae3826" width="60%" height="60%" alt="Description of Image"/>
@@ -135,7 +156,14 @@ public class GetSampleResponse
 ]
 ```
 
+#### Flexibility and Alternate Base Endpoint Class
+- Don't like the endpoint base classes?  Make your own using the included abstractions.
+- Want to use a bare minimum REPR endpoint with Open Union Types?  Go for it.
+- Need to create a super specialized edge case endpoint with pure minimal api endpoint?  No problem.
 
+```csharp
+  //Code samples coming soon
+```
   
 ### Coming Soon:
 - Project templates
