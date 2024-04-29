@@ -9,6 +9,7 @@ namespace MinimalApi.Features.Examples.CreateExample
             Post("/examples")
                 .Produces<CreateExampleResponse>(StatusCodes.Status201Created)
                 .ProducesProblem(StatusCodes.Status409Conflict)
+                .ProducesValidationProblem()
                 .WithDocument(tag: Constants.ExamplesTag, desc: "Create a new example.");
         }
 

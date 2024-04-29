@@ -2,7 +2,7 @@
 
 namespace MinimalApi.Features.Examples.GetExample
 {
-    public class GetExampleRequest : RadRequest
+    public class GetExampleRequest
     {
         [FromRoute]
         public int Id { get; set; }
@@ -16,5 +16,9 @@ namespace MinimalApi.Features.Examples.GetExample
         }
     }
 
-    public class GetExampleResponse : RadResponse<ExampleDto> { }
+    public class GetExampleResponse
+    {
+        public ExampleDto Data { get; set; } = null!;
+        public string Message { get; set; } = "Example retrieved successfully";
+    }
 }
