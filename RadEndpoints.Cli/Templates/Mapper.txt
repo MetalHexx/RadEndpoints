@@ -2,10 +2,10 @@
 
 namespace {1}.{0}
 {
-    public class {0}Mapper : IRadMapper<{0}Request, {0}Response, EntityType>
+    public class {0}Mapper : IRadMapper<{0}Request, {0}Response, {2}>
     {
-        public {0}Response FromEntity(EntityType e) => throw new NotImplementedException();
+        public {0}Response FromEntity({2} e) => throw new NotImplementedException();
 
-        public EntityType ToEntity({0}Request r) => throw new NotImplementedException();
+        public {2} ToEntity({0}Request r) => throw new NotImplementedException();
     }
 }

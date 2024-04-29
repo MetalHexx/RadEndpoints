@@ -117,6 +117,10 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
             s.Tag = PromptHelper.DefaultValueTextPrompt("OpenAPI Doc Tag", 3, s.ResourceName);
             s.Description = PromptHelper.DefaultValueTextPrompt("OpenAPI Doc Description", 3, GetDefaultDescription(s));
             s.WithMapper = PromptHelper.Confirm("Generate Mapper?", true);
+            if (s.WithMapper) 
+            {
+                s.Entity = PromptHelper.DefaultValueTextPrompt("Domain/Entity Type To Map", 3, s.Entity);
+            }
         }
 
         private static string GetDefaultDescription(GenerateEndpointSettings s)
@@ -226,7 +230,7 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
             string formattedCode = FileHelper
                 .GetFileAsString(templatePath)
                 .EscapeNonPlaceholderBraces()
-                .FormatTemplate(s.EndpointName, s.BaseNamepace);
+                .FormatTemplate(s.EndpointName, s.BaseNamepace, s.Entity);
 
             var outputPath = Path
                 .Combine(s.EndpointName, $"{s.EndpointName}Mapper.cs")

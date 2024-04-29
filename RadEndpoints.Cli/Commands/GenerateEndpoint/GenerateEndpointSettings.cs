@@ -1,4 +1,5 @@
-﻿using Spectre.Console.Cli;
+﻿using RadEndpoints.Cli.Helpers;
+using Spectre.Console.Cli;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
@@ -13,6 +14,7 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
             public const string Verb = "Get";
             public const string EndpointName = "GetResource";
             public const string Path = "/path/to/endpoint";
+            public const string Entity = "Entity";
             public const string Tag = "Resource";
             public const string Description = "Add OpenApi Description Here";
         }
@@ -39,8 +41,13 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
 
         [Description("The endpoint path. Ex: /user/{id}.")]
         [CommandOption("-p|--path <PATH>")]
-        [DefaultValue("/path/to/endpoint")]
-        public string Path { get; set; } = string.Empty;        
+        [DefaultValue(Defaults.Path)]
+        public string Path { get; set; } = string.Empty;
+
+        [Description("The domain/entity type to use in the mapper. Ex: UserEntity")]
+        [CommandOption("--entity <ENTITYTYPE>")]
+        [DefaultValue(Defaults.Entity)]
+        public string Entity { get; set; } = string.Empty;
 
         [Description("The OpenApi tag to use Ex: \"Users\"")]
         [CommandOption("-t|--tag <TAG>")]
@@ -49,7 +56,7 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
 
         [Description("The OpenApi description to use Ex: \"Get all users\"")]
         [CommandOption("-d|--desc <DESCRIPTION>")]
-        [DefaultValue("Add OpenApi Description Here")]
+        [DefaultValue(Defaults.Description)]
         public string Description { get; set; } = string.Empty;
 
         [Description("Generate a mapping class")]
@@ -73,17 +80,13 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
             var baseResult = base.Validate();
             if (!baseResult.Successful) return baseResult;
             
-            Verb = EnsureBeginsWithUppercase(Verb);
-            EndpointName = EnsureBeginsWithUppercase(EndpointName);
-            ResourceName = EnsureBeginsWithUppercase(ResourceName);
-            Tag = EnsureBeginsWithUppercase(Tag);
+            Verb = Verb.UpperFirstCharOnly();
+            EndpointName = Verb.UpperFirstCharOnly();
+            ResourceName = ResourceName.UpperFirstCharOnly();
+            Entity = Entity.UpperFirstCharOnly();
+            Tag = Tag.UpperFirstCharOnly();
 
             return ValidateVerb();
-        }
-
-        private string EnsureBeginsWithUppercase(string value)
-        {
-            return value[..1].ToUpper() + value[1..];
         }
 
         private ValidationResult ValidateVerb() 
@@ -102,7 +105,8 @@ namespace RadEndpoints.Cli.Commands.GenerateEndpoint
             ResourceName = ResourceName,
             Verb = Verb,
             EndpointName = EndpointName,
-            Path = Path,
+            Path = Path,            
+            Entity = Entity,
             Tag = Tag,
             Description = Description,
             WithMapper = WithMapper
