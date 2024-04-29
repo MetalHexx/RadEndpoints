@@ -99,6 +99,14 @@ public class GetExampleMapper : IRadMapper<GetExampleRequest, GetExampleResponse
     public Example ToEntity(GetExampleRequest r) => throw new NotImplementedException();
 }
 ```
+#### Flexibility and Alternate Base Endpoint Class
+- Don't like the endpoint base classes?  Make your own using the included abstractions.
+- Want to use a bare minimum REPR endpoint with Open Union Types?  Go for it.
+- Need to create a super specialized edge case endpoint with pure minimal api endpoint?  No problem.
+
+```csharp
+  //Code samples coming soon
+```
   
 #### Integration Testing
 - Strongly typed "Routeless" HttpClient extensions
@@ -124,11 +132,15 @@ public async void When_RequestValid_ReturnsSuccess()
 }
 ```
 
-#### CLI For Scaffolding
-- Scaffold multiple new endpoints very quickly
+### CLI For Scaffolding
+- Scaffold multiple new endpoints very quickly.
+- Import a set of endoints using a JSON definition.
+- Full parameter support for 1 line endpoint creation.
+
+#### Endpoint Wizard
 <img src="https://github.com/MetalHexx/RadEndpoints/assets/9291740/8782c1e9-ef40-4c0b-9b1c-dc9f96ae3826" width="60%" height="60%" alt="Description of Image"/>
 
-- Define and import endpoints with JSON definition file
+#### JSON definition
 ```javascript
 [
   {
@@ -153,17 +165,12 @@ public async void When_RequestValid_ReturnsSuccess()
     "Description": "Create a new User",
     "WithMapper": true
   }
+  ...other endpoints.
 ]
 ```
+#### Bulk JSON Import
+<img src="https://github.com/MetalHexx/RadEndpoints/assets/9291740/eafc6050-9afd-4c4b-a844-a6b1033b9f98" width="60%" height="60%" alt="Description of Image"/>
 
-#### Flexibility and Alternate Base Endpoint Class
-- Don't like the endpoint base classes?  Make your own using the included abstractions.
-- Want to use a bare minimum REPR endpoint with Open Union Types?  Go for it.
-- Need to create a super specialized edge case endpoint with pure minimal api endpoint?  No problem.
-
-```csharp
-  //Code samples coming soon
-```
   
 ### Coming Soon:
 - Project templates
