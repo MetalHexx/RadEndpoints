@@ -1,12 +1,20 @@
-﻿### Installing RadEndpoints CLI
+﻿# RadEndpoints CLI
+_The RadEndpoints CLI tool will help scaffold endpoints very rapidly with a single command, guided wizard or in bulk with a JSON definition._
 
+## Installing RadEndpoints CLI
+
+#### Installing from NuGet
+- **From the command line run:** `dotnet tool install -g RadEndpoints.Cli`
+
+
+#### Installing from Source
 - **From the /RadEndpoint.Cli folder run:** `install.bat` 
 - Manual Instructions:
   - If installed, unintall it: `dotnet tool uninstall -g RadEndpoints.Cli`
   - Rebuild the CLI code and package it: `dotnet pack`
   - Install: `dotnet tool install --global --add-source .\nupkg RadEndpoints.Cli`
 
-### Uninstalling RadEndpoints CLI
+#### Uninstalling RadEndpoints CLI
 - **From the /RadEndpoint.Cli folder run:** `uninstall.bat` 
 - Manual Instructions:
   - `dotnet tool uninstall -g RadEndpoints.Cli`
