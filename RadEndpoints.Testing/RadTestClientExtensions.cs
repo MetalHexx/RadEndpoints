@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.AspNetCore.Identity.Data;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace RadEndpoints.Testing
@@ -10,6 +11,7 @@ namespace RadEndpoints.Testing
         {
             return await client.SendAsync<TEndpoint, TResponse>(HttpMethod.Get);
         }
+        
         public async static Task<RadTestResult<TResponse>> GetAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
         {
@@ -20,6 +22,12 @@ namespace RadEndpoints.Testing
             where TEndpoint : RadEndpoint
         {
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Get);
+        }
+        
+        public async static Task<HttpResponseMessage> GetAsync<TEndpoint>(this HttpClient client)
+            where TEndpoint : RadEndpoint
+        {
+            return await client.SendAsync<TEndpoint>(HttpMethod.Get);
         }
 
         public async static Task<RadTestResult<TResponse>> DeleteAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
@@ -34,6 +42,12 @@ namespace RadEndpoints.Testing
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Delete);
         }
 
+        public async static Task<HttpResponseMessage> DeleteAsync<TEndpoint>(this HttpClient client)
+            where TEndpoint : RadEndpoint
+        {
+            return await client.SendAsync<TEndpoint>(HttpMethod.Delete);
+        }
+
         public async static Task<RadTestResult<TResponse>> PostAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
         {
@@ -44,6 +58,12 @@ namespace RadEndpoints.Testing
             where TEndpoint : RadEndpoint
         {
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Post);
+        }
+
+        public async static Task<HttpResponseMessage> PostAsync<TEndpoint>(this HttpClient client)
+            where TEndpoint : RadEndpoint
+        {
+            return await client.SendAsync<TEndpoint>(HttpMethod.Post);
         }
 
         public async static Task<RadTestResult<TResponse>> PutAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
@@ -58,6 +78,12 @@ namespace RadEndpoints.Testing
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Put);
         }
 
+        public async static Task<HttpResponseMessage> PutAsync<TEndpoint>(this HttpClient client)
+            where TEndpoint : RadEndpoint
+        {
+            return await client.SendAsync<TEndpoint>(HttpMethod.Put);
+        }
+
         public async static Task<RadTestResult<TResponse>> PatchAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request)
             where TEndpoint : RadEndpoint
         {
@@ -68,6 +94,12 @@ namespace RadEndpoints.Testing
             where TEndpoint : RadEndpoint
         {
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Patch);
+        }
+
+        public async static Task<HttpResponseMessage> PatchAsync<TEndpoint>(this HttpClient client)
+            where TEndpoint : RadEndpoint
+        {
+            return await client.SendAsync<TEndpoint>(HttpMethod.Patch);
         }
 
         public async static Task<RadTestResult<TResponse>> SendAsync<TEndpoint, TResponse>(this HttpClient client, HttpMethod method)
@@ -100,6 +132,15 @@ namespace RadEndpoints.Testing
             var httpResponse = await client.SendAsync(httpRequest);
             client.Dispose();
 
+            return httpResponse;
+        }
+
+        private async static Task<HttpResponseMessage> SendAsync<TEndpoint>(this HttpClient client, HttpMethod method)
+            where TEndpoint : RadEndpoint
+        {
+            var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint>(client, method);
+            var httpResponse = await client.SendAsync(httpRequest);
+            client.Dispose();
             return httpResponse;
         }
 

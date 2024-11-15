@@ -1,4 +1,4 @@
-﻿using MinimalApi.Features.TypedResults.TypedResultsPut;
+﻿using MinimalApi.Features.WithTypedResults.TypedResultsPut;
 using MinimalApi.Features.Examples.CreateExample;
 using MinimalApi.Features.Examples.GetExample;
 

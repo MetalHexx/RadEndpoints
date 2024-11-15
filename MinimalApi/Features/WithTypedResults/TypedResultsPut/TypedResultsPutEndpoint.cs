@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using MinimalApi.Domain.Examples;
 
-namespace MinimalApi.Features.TypedResults.TypedResultsPut
+namespace MinimalApi.Features.WithTypedResults.TypedResultsPut
 {
     /// <summary>
     /// This endpoint shows minimal usage of the RadEndpoint abstractions.

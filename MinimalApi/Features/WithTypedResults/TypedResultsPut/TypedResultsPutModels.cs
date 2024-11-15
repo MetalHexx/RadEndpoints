@@ -1,6 +1,6 @@
 ﻿using MinimalApi.Features.Examples._common;
 
-namespace MinimalApi.Features.TypedResults.TypedResultsPut
+namespace MinimalApi.Features.WithTypedResults.TypedResultsPut
 {
     public class CustomPutRequest : RadRequest<CustomPutDto>
     {
