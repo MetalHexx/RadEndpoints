@@ -10,6 +10,7 @@
         Task<OneOf<Example, ConflictError>> InsertExample(Example example);
         Task<OneOf<Example, NotFoundError, ConflictError>> UpdateExample(Example example);
         Task<OneOf<IEnumerable<Example>, NotFoundError>> SearchChildExample(int parentId, string? firstName, string? lastName);
+        Task<OneOf<Example, NotFoundError, ConflictError>> PatchExample(int id, Example example);
     }
 
     public class ExampleService : IExampleService
@@ -25,6 +26,7 @@
             _examples.Add(new Example("Anakin", "Skywalker", Id: 4, ParentId: 2));
             _examples.Add(new Example("Michael", "Brown", Id: 5, ParentId: 3));
             _examples.Add(new Example("Luke", "Skywalker", Id: 6, ParentId: 4));
+            _examples.Add(new Example("Leia", "Skywalker", Id: 7, ParentId: 4));
         }
         public async Task<OneOf<IEnumerable<Example>, NotFoundError>> GetExamples()
         {
@@ -75,6 +77,29 @@
             if (existingExample is null) return Problem.NotFound("Example not found");
 
             if (IsDuplicateName(example)) return Problem.Conflict("Example with the same first and last name already exists");
+
+            var index = _examples.IndexOf(existingExample);
+            _examples[index] = example;
+            return example;
+        }
+
+        public async Task<OneOf<Example, NotFoundError, ConflictError>> PatchExample(int id, Example example)
+        {
+            await Task.CompletedTask;
+
+            var existingExample = _examples.FirstOrDefault(e => e.Id == id);
+
+            if (existingExample is null) return Problem.NotFound("Example not found");
+
+            var update = string.IsNullOrWhiteSpace(example.FirstName)
+                ? existingExample
+                : existingExample with { FirstName = example.FirstName };
+
+            update = string.IsNullOrWhiteSpace(example.LastName)
+                ? existingExample
+                : existingExample with { LastName = example.LastName };                
+
+            if (IsDuplicateName(update)) return Problem.Conflict("Example with the same first and last name already exists");
 
             var index = _examples.IndexOf(existingExample);
             _examples[index] = example;
