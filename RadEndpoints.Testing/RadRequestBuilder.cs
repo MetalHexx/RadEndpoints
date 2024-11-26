@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 
 namespace RadEndpoints.Testing
 {
@@ -77,7 +78,13 @@ namespace RadEndpoints.Testing
                         headers.Add(property.Name, propertyValue);
                         break;
                     case FromFormAttribute:
-                        formContent.Add(new StringContent(propertyValue), property.Name);
+                        formContent ??= [];
+                        var stringContent = new StringContent(propertyValue);
+                        stringContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                        {
+                            Name = $"\"{property.Name}\""
+                        };
+                        formContent.Add(stringContent);
                         break;
                     case FromBodyAttribute:
                         body = property.GetValue(requestModel)!.ToStringContent();
@@ -90,9 +97,18 @@ namespace RadEndpoints.Testing
                 RequestUri = client.BaseAddress!.Combine(routeTemplate, queryValues)
             };
 
-            if (body is not null || formContent is not null)
+            if (body is not null && formContent is not null)
             {
-                httpRequest.Content = body ?? formContent as HttpContent;
+                throw new RadTestException("Cannot have both [FromBody] and [FromForm] in the same request model.");
+            }
+
+            if (body is not null)
+            {
+                httpRequest.Content = body;
+            }
+            if (formContent is not null)
+            {
+                httpRequest.Content = formContent;
             }
             httpRequest.AddHeaders(headers);
             return httpRequest;
