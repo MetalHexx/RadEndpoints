@@ -18,6 +18,7 @@ namespace MinimalApi.Features.Forms.PostForm
 
     public class PostFormResponse
     {
+        public string? HeaderValue { get; set; }
         public string Message { get; set; } = "Success!";
     }
 }

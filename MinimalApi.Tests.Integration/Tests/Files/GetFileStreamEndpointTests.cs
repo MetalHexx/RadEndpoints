@@ -15,7 +15,7 @@ namespace MinimalApi.Tests.Integration.Tests.Files
             var expectedBytes = await GetFileBytes(@$"Features\Files\_common\{expectedFileName}");
 
             //Act            
-            var r = await f.Client.GetAsync<GetFileStreamEndpoint, GetFileStreamRequest>(new());
+            var r = await f.Client.GetAsync<GetFileStreamEndpoint, GetFileStreamRequest>(new GetFileStreamRequest());
             var actualBytes = await r.Content.ReadAsByteArrayAsync();
 
             //Assert

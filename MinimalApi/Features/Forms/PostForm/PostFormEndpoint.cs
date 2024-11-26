@@ -17,7 +17,10 @@ namespace MinimalApi.Features.Forms.PostForm
 
         public override async Task Handle(PostFormRequest r, CancellationToken ct)
         {
-            Response = new();
+            Response = new()
+            {
+                HeaderValue = HttpContext.Request.Headers.Referer
+            };
             Send();
         }
     }

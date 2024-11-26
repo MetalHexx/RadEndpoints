@@ -11,7 +11,7 @@ namespace RadEndpoints.Testing
 {
     public static class RadRequestBuilder
     {
-        public static HttpRequestMessage BuildRequest<TEndpoint>(this HttpClient client, HttpMethod method)
+        public static HttpRequestMessage BuildRequest<TEndpoint>(this HttpClient client, HttpMethod method, RadHttpClientOptions? options = null)
             where TEndpoint : RadEndpoint
         {
             var routeTemplate = RadEndpoint.GetRoute<TEndpoint>();
@@ -19,41 +19,52 @@ namespace RadEndpoints.Testing
             {
                 throw new RadTestException($"\r\nProblem executing: ({method}) {routeTemplate} \r\nThe route has parameter placeholders but there is no request model for this endpoint");
             }
-            return new()
+            HttpRequestMessage httpRequestMessage = new()
             {
                 Method = method,
                 RequestUri = client.BaseAddress!.Combine(routeTemplate)
             };
+            
+            if(options?.Headers is not null)
+            {
+                httpRequestMessage.AddHeaders(options.Headers);
+            }
+            return httpRequestMessage;
         }
 
-        public static HttpRequestMessage BuildRequest<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method)
+        public static HttpRequestMessage BuildRequest<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method, RadHttpClientOptions? options = null)
             where TEndpoint : RadEndpoint
         {
             return HasRequestModelAttributes<TRequest>()
-                ? client.BuildRequestFromAttributes<TEndpoint, TRequest>(requestModel, method)
-                : client.BuildRequestWithoutAttributes<TEndpoint, TRequest>(requestModel, method);
+                ? client.BuildRequestFromAttributes<TEndpoint, TRequest>(requestModel, method, options)
+                : client.BuildRequestWithoutAttributes<TEndpoint, TRequest>(requestModel, method, options);
         }
 
-        private static HttpRequestMessage BuildRequestWithoutAttributes<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method)
+        private static HttpRequestMessage BuildRequestWithoutAttributes<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method, RadHttpClientOptions? options = null)
         {
             var routeTemplate = RadEndpoint.GetRoute<TEndpoint>();
             if(routeTemplate.HasParameterPlaceholders())
             {
                 throw new RadTestException($"\r\nProblem executing {requestModel?.GetType().Name}: ({method}) {routeTemplate} \r\nThe route has parameter placeholders but the {requestModel?.GetType().Name} is missing attributes.  \r\nEnsure you have attributes if you have route or query params.  \r\nPossible attributes: [FromRoute] [FromQuery] [FromBody] [FromForm] [FromHeader]");
             }
-            return new()
+            HttpRequestMessage httpRequestMessage = new()
             {
                 Method = method,
                 RequestUri = client.BaseAddress!.Combine(routeTemplate),
                 Content = requestModel!.ToStringContent()
             };
+            if (options?.Headers is not null)
+            {
+                httpRequestMessage.AddHeaders(options.Headers);
+            }
+            return httpRequestMessage;
         }
 
-        private static HttpRequestMessage BuildRequestFromAttributes<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method) where TEndpoint : RadEndpoint
+        private static HttpRequestMessage BuildRequestFromAttributes<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method, RadHttpClientOptions? options = null) where TEndpoint : RadEndpoint
         {
             var routeTemplate = RadEndpoint.GetRoute<TEndpoint>();
-            var queryValues = HttpUtility.ParseQueryString(string.Empty);
-            var headers = new HeaderDictionary();
+            var queryFromAttribs = HttpUtility.ParseQueryString(string.Empty);
+            var headersFromAttribs = new HeaderDictionary();
             MultipartFormDataContent formContent = null!;
             StringContent body = null!;
 
@@ -72,10 +83,10 @@ namespace RadEndpoints.Testing
                         routeTemplate = routeTemplate.MapRouteParam(property.Name, propertyValue);
                         break;
                     case FromQueryAttribute:
-                        queryValues[property.Name] = propertyValue;
+                        queryFromAttribs[property.Name] = propertyValue;
                         break;
                     case FromHeaderAttribute:
-                        headers.Add(property.Name, propertyValue);
+                        headersFromAttribs.Add(property.Name, propertyValue);
                         break;
                     case FromFormAttribute:
                         formContent ??= [];
@@ -91,17 +102,24 @@ namespace RadEndpoints.Testing
                         break;
                 }
             }            
-            var httpRequest = new HttpRequestMessage
+            HttpRequestMessage httpRequest = new()
             {
                 Method = method,
-                RequestUri = client.BaseAddress!.Combine(routeTemplate, queryValues)
+                RequestUri = client.BaseAddress!.Combine(routeTemplate, queryFromAttribs)
             };
 
+            if (options?.Headers is not null)
+            {
+                httpRequest.AddHeaders(options.Headers);
+            }
+            if (headersFromAttribs.Count != 0) 
+            {
+                httpRequest.AddHeaders(headersFromAttribs);
+            }
             if (body is not null && formContent is not null)
             {
                 throw new RadTestException("Cannot have both [FromBody] and [FromForm] in the same request model.");
             }
-
             if (body is not null)
             {
                 httpRequest.Content = body;
@@ -110,7 +128,6 @@ namespace RadEndpoints.Testing
             {
                 httpRequest.Content = formContent;
             }
-            httpRequest.AddHeaders(headers);
             return httpRequest;
         }
 
@@ -125,19 +142,6 @@ namespace RadEndpoints.Testing
             foreach (var header in headers)
             {
                 requestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value.ToString());
-            }
-        }
-
-        private static void AddContent(this HttpRequestMessage httpRequest, StringContent? body, MultipartFormDataContent formContent)
-        {
-            if (body is not null)
-            {
-                httpRequest.Content = body;
-                return;
-            }
-            if (formContent.Any())
-            {
-                httpRequest.Content = formContent;
             }
         }
 
