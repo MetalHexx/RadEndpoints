@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using RadEndpoints.Mediator;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace RadEndpoints
 {
@@ -21,21 +23,48 @@ namespace RadEndpoints
 
         public RouteHandlerBuilder Post(string route)
         {
+            RouteHandlerBuilder builder;
+
+            if (HasRequestModelAttributes())
+            {
+                builder = RouteBuilder!.MapPost(route, async ([AsParameters] TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
+            }
+            else
+            {
+                builder = RouteBuilder!.MapPost(route, async (TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
+            }
             SetRoute(route);
-            var builder = RouteBuilder!.MapPost(route, async (TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Put(string route)
         {
+            RouteHandlerBuilder builder;
+
+            if (HasRequestModelAttributes())
+            {
+                builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
+            }
+            else
+            {
+                builder = RouteBuilder!.MapPut(route, async (TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
+            }
             SetRoute(route);
-            var builder = RouteBuilder!.MapPut(route, async ([AsParameters] TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
             return TryAddEndpointFilter(builder);
         }
 
         public RouteHandlerBuilder Patch(string route)
         {
-            var builder = RouteBuilder!.MapPatch(route, async (TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
+            RouteHandlerBuilder builder;
+
+            if(HasRequestModelAttributes())
+            {
+                builder = RouteBuilder!.MapPatch(route, async ([AsParameters] TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
+            }
+            else
+            {
+                builder = RouteBuilder!.MapPatch(route, async (TRequest r, IRadMediator m, HttpContext c, CancellationToken ct) => await SelfInterface.ExecuteHandler(r, m, c, ct));
+            }
             SetRoute(route);
             return TryAddEndpointFilter(builder);
         }
@@ -84,6 +113,17 @@ namespace RadEndpoints
             if (problem is IRadProblem p) return GetProblemResult(p);
 
             throw new RadEndpointException("You must call one of the Send() methods before exiting endpoint Handle() method");
+        }
+        private static bool HasRequestModelAttributes()
+        {
+            return typeof(TRequest)
+                .GetProperties()
+                .SelectMany(property => property.GetCustomAttributes())
+                .Any(attribute => attribute is FromRouteAttribute ||
+                                  attribute is FromQueryAttribute ||
+                                  attribute is FromHeaderAttribute ||
+                                  attribute is FromFormAttribute ||
+                                  attribute is FromBodyAttribute);
         }
 
         private IRadEndpoint<TRequest, TResponse> SelfInterface => this;
