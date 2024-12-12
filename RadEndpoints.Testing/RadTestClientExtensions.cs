@@ -65,6 +65,12 @@ namespace RadEndpoints.Testing
             return await client.SendAsync<TEndpoint, TRequest>(request, HttpMethod.Post, options);
         }
 
+        public async static Task<RadTestResult<TResponse>> PostAsync<TEndpoint, TResponse>(this HttpClient client, RadHttpClientOptions? options = null)
+            where TEndpoint : RadEndpoint
+        {
+            return await client.SendAsync<TEndpoint, TResponse>(HttpMethod.Post, options);
+        }
+
         public async static Task<HttpResponseMessage> PostAsync<TEndpoint>(this HttpClient client, RadHttpClientOptions? options = null)
             where TEndpoint : RadEndpoint
         {
