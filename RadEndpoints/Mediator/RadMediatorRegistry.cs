@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Concurrent;
 
 namespace RadEndpoints.Mediator
 {
 
     internal class RadMediatorRegistry(IServiceProvider _serviceProvider) : IRadMediatorRegistry
     {
-        private static readonly Dictionary<Type, RadMediatorRegistration> _registrations = [];
+        private readonly ConcurrentDictionary<Type, RadMediatorRegistration> _registrations = new();
 
         public RadMediatorRegistration GetRegistration(Type endpointType)
         {
@@ -28,21 +29,22 @@ namespace RadEndpoints.Mediator
             }
         }
 
-        private static void TryRegisteringEndpoint(IRadEndpoint endpoint)
+        private void TryRegisteringEndpoint(IRadEndpoint endpoint)
         {
             var endpointType = endpoint.GetType();
 
-            var alreadyExists = _registrations.TryGetValue(endpointType, out var _);
-
-            if (alreadyExists)
-            {
-                throw new InvalidOperationException($"Endpoint with request or response type {endpointType.Name} is already registered. Ensure your endpoints have a unique request and response model.");
-            }
-            _registrations.TryAdd(endpointType, new RadMediatorRegistration
+            var added = _registrations.TryAdd(endpointType, new RadMediatorRegistration
             {
                 MapperType = endpoint.GetMapperType(),
                 LoggerType = endpointType.GetLoggerType()
             });
+
+            if (!added)
+            {
+                throw new InvalidOperationException(
+                    $"Endpoint with request or response type {endpointType.Name} is already registered. " +
+                    "Ensure your endpoints have a unique request and response model.");
+            }
         }
 
         private IEnumerable<IRadEndpoint> GetScopedEndpoints()
