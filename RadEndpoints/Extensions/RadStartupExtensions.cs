@@ -18,7 +18,7 @@ namespace RadEndpoints
             services.AddHttpContextAccessor();
             services.AddScopedAsSelfAndTypeOf<IRadEndpoint>(assemblyType.Assembly);
             services.AddScopedAsSelfAndTypeOf<IRadMapper>(assemblyType.Assembly);
-            services.AddScoped<IRadMediatorRegistry, RadMediatorRegistry>();
+            services.AddSingleton<IRadMediatorRegistry, RadMediatorRegistry>();
             services.AddScoped<IRadMediator, RadMediator>();
             services.AddValidatorsFromAssemblyContaining(assemblyType, lifetime: ServiceLifetime.Scoped);
         }
