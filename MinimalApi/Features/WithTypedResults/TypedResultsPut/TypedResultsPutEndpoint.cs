@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using MinimalApi.Domain.Examples;
+using RadEndpoints.Validation;
 
 namespace MinimalApi.Features.WithTypedResults.TypedResultsPut
 {
@@ -43,7 +44,7 @@ namespace MinimalApi.Features.WithTypedResults.TypedResultsPut
 
             RouteBuilder
                 .MapPut(route, ([AsParameters]CustomPutRequest r, IExampleService s) => Handle(r, s))
-                .AddEndpointFilter<RadValidationFilter<CustomPutRequest>>()              
+                .WithRadValidation<CustomPutRequest>()            
                 .WithDocument
                 (
                     tag: "Minimal Api Style Typed Results", 

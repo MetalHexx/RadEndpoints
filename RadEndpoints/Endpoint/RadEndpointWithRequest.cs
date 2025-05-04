@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using RadEndpoints.Mediator;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -78,7 +80,36 @@ namespace RadEndpoints
 
         private RouteHandlerBuilder TryAddEndpointFilter(RouteHandlerBuilder builder)
         {
-            if (HasValidator) builder.AddEndpointFilter<RadValidationFilter<TRequest>>();
+            if (!HasValidator) return builder;
+            
+            builder.AddEndpointFilter(async (ctx, next) =>
+            {
+                var request = ctx.Arguments.OfType<TRequest>().FirstOrDefault();
+
+                if (request is null)
+                {
+                    return TypedResults.Problem
+                    (
+                        title: "Request body cannot be null", 
+                        statusCode: StatusCodes.Status400BadRequest
+                    );
+                }
+                var validator = ctx.HttpContext.RequestServices.GetService<IValidator<TRequest>>();
+                
+                if (validator is null)
+                {
+                    return TypedResults.Problem($"No validator registered for {typeof(TRequest).Name}", statusCode: 500);
+                }
+
+                var result = await validator.ValidateAsync(request);
+
+                if (!result.IsValid)
+                {
+                    return TypedResults.ValidationProblem(result.ToDictionary(), title: "Validation Error");
+                }
+
+                return await next(ctx);
+            });
             return builder;
         }
 
