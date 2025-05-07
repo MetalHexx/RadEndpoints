@@ -54,6 +54,7 @@ namespace MinimalApi.Tests.Integration.Tests.Example
             //Assert
             r.Should().BeValidationProblem()
                 .WithStatusCode(HttpStatusCode.BadRequest)
+                .WithKeyAndValue("FirstName", "First name cannot be empty")                
                 .WithTitle("Validation Error")
                 .WithKey("FirstName");
         }

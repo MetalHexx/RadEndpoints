@@ -140,7 +140,7 @@ namespace RadEndpoints.Testing
         public RadTestResultValidationProblemAssertion WithKeyAndValue(string expectedKey, string expectedValue)
         {
             result.Content.Errors.Should().ContainKey(expectedKey)
-                .WhoseValue!.ToString().Should().Be(expectedValue);
+                .WhoseValue.Should().Contain(expectedValue);
             return this;
         }
 

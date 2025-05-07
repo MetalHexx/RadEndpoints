@@ -12,9 +12,9 @@ namespace MinimalApi.Features.Examples.CreateExample
     {
         public CreateExampleValidator()
         {
-            RuleFor(e => e).NotNull();
-            RuleFor(e => e.FirstName).NotEmpty();
-            RuleFor(e => e.LastName).NotEmpty();
+            RuleFor(e => e).NotNull().WithMessage("Request cannot be null");
+            RuleFor(e => e.FirstName).NotEmpty().WithMessage("First name cannot be empty");
+            RuleFor(e => e.LastName).NotEmpty().WithMessage("Last name cannot be empty");
         }
     }
     public class CreateExampleResponse : RadResponse<ExampleDto> { }    
