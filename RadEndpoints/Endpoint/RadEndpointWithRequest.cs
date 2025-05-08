@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using RadEndpoints.Mediator;
@@ -113,6 +114,8 @@ namespace RadEndpoints
             return builder;
         }
 
+        public virtual void SendProblem(ProblemHttpResult problem) => HttpContext.Items[RadConstants.Context_Key_RadProblem] = problem;
+        public virtual void SendProblem(ValidationProblem problem) => HttpContext.Items[RadConstants.Context_Key_RadProblem] = problem;
         public virtual void SendProblem(IRadProblem problem) => HttpContext.Items[RadConstants.Context_Key_RadProblem] = problem;
         public virtual void Send() => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Ok(Response);
         public virtual void Send(TResponse responseData) => HttpContext.Items[RadConstants.Context_Key_Result] = TypedResults.Ok(responseData);
@@ -142,6 +145,10 @@ namespace RadEndpoints
             context.Items.TryGetValue(RadConstants.Context_Key_RadProblem, out var problem);
 
             if (problem is IRadProblem p) return GetProblemResult(p);
+
+            if(problem is ProblemHttpResult problemResult) return problemResult;
+
+            if(problem is ValidationProblem validationProblem) return validationProblem;
 
             throw new RadEndpointException("You must call one of the Send() methods before exiting endpoint Handle() method");
         }
