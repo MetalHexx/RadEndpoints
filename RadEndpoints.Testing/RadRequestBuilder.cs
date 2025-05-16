@@ -60,49 +60,89 @@ namespace RadEndpoints.Testing
             return httpRequestMessage;
         }
 
-        private static HttpRequestMessage BuildRequestFromAttributes<TEndpoint, TRequest>(this HttpClient client, TRequest requestModel, HttpMethod method, RadHttpClientOptions? options = null) where TEndpoint : RadEndpoint
+        private static HttpRequestMessage BuildRequestFromAttributes<TEndpoint, TRequest>(
+            this HttpClient client,
+            TRequest requestModel,
+            HttpMethod method,
+            RadHttpClientOptions? options = null
+        ) where TEndpoint : RadEndpoint
         {
             var routeTemplate = RadEndpoint.GetRoute<TEndpoint>();
             var queryFromAttribs = HttpUtility.ParseQueryString(string.Empty);
             var headersFromAttribs = new HeaderDictionary();
-            MultipartFormDataContent formContent = null!;
-            StringContent body = null!;
+            MultipartFormDataContent? formContent = null;
+            StringContent? body = null;
 
             foreach (var property in typeof(TRequest).GetProperties())
             {
-                var propertyValue = property.GetValue(requestModel)?.ToString();
+                var attribute = property
+                    .GetCustomAttributes(inherit: true)
+                    .FirstOrDefault(a =>
+                        a is FromRouteAttribute
+                        || a is FromQueryAttribute
+                        || a is FromHeaderAttribute
+                        || a is FromFormAttribute
+                        || a is FromBodyAttribute
+                    ) ?? throw new RadTestException(
+                        $"Missing binding attribute on property '{property.Name}'. Expected one of: [FromRoute], [FromQuery], [FromBody], [FromForm], [FromHeader]."
+                    );
 
-                if (string.IsNullOrEmpty(propertyValue)) continue;
+                var rawValue = property.GetValue(requestModel);
 
-                var attribute = property.GetCustomAttributes().FirstOrDefault() 
-                    ?? throw new RadTestException("Make sure you add binding attributes to every property on your request model.  Possible attributes you can use include: [FromRoute] [FromQuery] [FromBody] [FromForm] [FromHeader]");
-
-                switch (attribute)
+                if (rawValue is null &&
+                    attribute is not FromBodyAttribute
+                    && attribute is not FromQueryAttribute
+                    && attribute is not FromHeaderAttribute
+                    && attribute is not FromFormAttribute)
                 {
-                    case FromRouteAttribute:
-                        routeTemplate = routeTemplate.MapRouteParam(property.Name, propertyValue);
-                        break;
-                    case FromQueryAttribute:
+                    continue;
+                }
+
+                var propertyValue = rawValue?.ToString();
+
+                if (attribute is FromRouteAttribute)
+                {
+                    if (string.IsNullOrEmpty(propertyValue))
+                    {
+                        throw new RadTestException($"Route parameter '{property.Name}' must not be null or empty.");
+                    }
+
+                    routeTemplate = routeTemplate.MapRouteParam(property.Name, propertyValue);
+                }
+                else if (attribute is FromQueryAttribute)
+                {
+                    if (!string.IsNullOrEmpty(propertyValue))
+                    {
                         queryFromAttribs[property.Name] = propertyValue;
-                        break;
-                    case FromHeaderAttribute:
+                    }
+                }
+                else if (attribute is FromHeaderAttribute)
+                {
+                    if (!string.IsNullOrEmpty(propertyValue))
+                    {
                         headersFromAttribs.Add(property.Name, propertyValue);
-                        break;
-                    case FromFormAttribute:
-                        formContent ??= [];
+                    }
+                }
+                else if (attribute is FromFormAttribute)
+                {
+                    if (!string.IsNullOrEmpty(propertyValue))
+                    {
+                        formContent ??= new MultipartFormDataContent();
                         var stringContent = new StringContent(propertyValue);
                         stringContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
                         {
                             Name = $"\"{property.Name}\""
                         };
                         formContent.Add(stringContent);
-                        break;
-                    case FromBodyAttribute:
-                        body = property.GetValue(requestModel)!.ToStringContent();
-                        break;
+                    }
                 }
-            }            
-            HttpRequestMessage httpRequest = new()
+                else if (attribute is FromBodyAttribute)
+                {
+                    body = rawValue?.ToStringContent() ?? string.Empty.ToStringContent();
+                }
+            }
+
+            var httpRequest = new HttpRequestMessage
             {
                 Method = method,
                 RequestUri = client.BaseAddress!.Combine(routeTemplate, queryFromAttribs)
@@ -112,22 +152,27 @@ namespace RadEndpoints.Testing
             {
                 httpRequest.AddHeaders(options.Headers);
             }
-            if (headersFromAttribs.Count != 0) 
+
+            if (headersFromAttribs.Count != 0)
             {
                 httpRequest.AddHeaders(headersFromAttribs);
             }
+
             if (body is not null && formContent is not null)
             {
                 throw new RadTestException("Cannot have both [FromBody] and [FromForm] in the same request model.");
             }
+
             if (body is not null)
             {
                 httpRequest.Content = body;
             }
+
             if (formContent is not null)
             {
                 httpRequest.Content = formContent;
             }
+
             return httpRequest;
         }
 
