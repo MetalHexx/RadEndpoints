@@ -10,7 +10,6 @@ _Should be:_
 - Well Structured -- for common tasks such as validation, mapping and error handling.
 - Extensible -- to allow for custom alternate endpoint implmentations.
 - Fast and Easy -- to rapidly scaffold projects, endpoints and tests.
-- Low Maintenance -- for testing.
 
 ### Features:
 #### REPR Endpoint Classes
@@ -58,6 +57,7 @@ public class GetSampleEndpoint(ISampleService sampleService) : RadEndpoint<GetSa
 #### Request Model Binding and Validation
 - Automatic request model binding from route, query, header, and body using [AsParameters].
 - Automatic request model validation execution using [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
+- Simply add your AbstractValidator class that targets your request model type. 
 ```csharp
 public class GetSampleRequest
 {
@@ -131,6 +131,38 @@ public async void When_RequestValid_ReturnsSuccess()
         .WithStatusCode(HttpStatusCode.OK);
 }
 ```
+#### Unit Testing
+_In many cases, I recommend Integration testing as you can get more value from the test.  However, in some tricky situations, unit testing could be the better choice._
+- EndpointFactory class designed to created a unit testable Endpoint instance. (Install the 
+- Ability to mock the built-in ILogger, IHttpContextProvider, and IWebHostBuilders
+- Ability to unit test endpoints with mappers
+- _Note: Use Integration tests if you want to test with your abstract fluent validators._
+- Example: [FactoryTestEndpoint](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi/Features/FactoryTestEndpoints/FactoryTestingEndpoint.cs) and [UnitTestFactoryTests](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi.Tests.Unit/UnitTestFactoryTests.cs)
+
+```csharp
+[Fact]
+        public async Task When_CreateEndpoint_WithCustomLogger_ShouldUseProvidedLogger()
+        {
+            // Arrange
+            var request = new TestRequest { TestProperty = 10 };
+            var mockLogger = Substitute.For<ILogger<TestEndpoint>>();
+            
+            var endpoint = EndpointFactory.CreateEndpoint(
+                logger: mockLogger,
+                constructorArgs: []);
+
+            // Act
+            await endpoint.Handle(request, CancellationToken.None);
+            
+            // Assert
+            mockLogger.Received(1).Log(
+                LogLevel.Information,
+                Arg.Any<EventId>(),
+                Arg.Is<object>(o => o.ToString().Contains("TestProperty:10")),
+                Arg.Any<Exception>(),
+                Arg.Any<Func<object, Exception?, string>>());
+        }
+```
 
 ### CLI For Scaffolding
 - Scaffold multiple new endpoints very quickly.
@@ -171,6 +203,21 @@ public async void When_RequestValid_ReturnsSuccess()
 #### Bulk JSON Import
 <img src="https://github.com/MetalHexx/RadEndpoints/assets/9291740/eafc6050-9afd-4c4b-a844-a6b1033b9f98" width="60%" height="60%" alt="Description of Image"/>
 
+### 📦 Installation
+
+You can install the RadEndpoints packages from NuGet:
+
+- [RadEndpoints](https://www.nuget.org/packages/RadEndpoints/)
+- [RadEndpoints.Cli](https://www.nuget.org/packages/RadEndpoints.Cli/)
+- [RadEndpoints.Testing](https://www.nuget.org/packages/RadEndpoints.Testing/)
+
+#### Install via .NET CLI:
+
+```bash
+dotnet add package RadEndpoints
+dotnet add package RadEndpoints.Cli
+dotnet add package RadEndpoints.Testing
+```
   
 ### Coming Soon:
 - Project templates
