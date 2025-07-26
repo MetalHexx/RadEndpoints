@@ -10,7 +10,6 @@ _Should be:_
 - Well Structured -- for common tasks such as validation, mapping and error handling.
 - Extensible -- to allow for custom alternate endpoint implmentations.
 - Fast and Easy -- to rapidly scaffold projects, endpoints and tests.
-- Low Maintenance -- for testing.
 
 ### Features:
 #### REPR Endpoint Classes
@@ -130,6 +129,38 @@ public async void When_RequestValid_ReturnsSuccess()
         .BeSuccessful<GetSampleResponse>()
         .WithStatusCode(HttpStatusCode.OK);
 }
+```
+#### Unit Testing
+_In many cases, I generally recommend Integration testing.  But in some tricky situations, unit testing could be the better choice._
+- EndpointFactory class designed to created a unit testable Endpoint instance.
+- Ability to mock the built-in ILogger, IHttpContextProvider, and IWebHostBuilders
+- Ability to unit test endpoints with mappers
+- _Note: Use Integration tests if you want to test with your abstract fluent validators._
+- Example: [FactoryTestEndpoint](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi/Features/FactoryTestEndpoints/FactoryTestingEndpoint.cs) and [UnitTestFactoryTests](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi.Tests.Unit/UnitTestFactoryTests.cs)
+
+```csharp
+[Fact]
+        public async Task When_CreateEndpoint_WithCustomLogger_ShouldUseProvidedLogger()
+        {
+            // Arrange
+            var request = new TestRequest { TestProperty = 10 };
+            var mockLogger = Substitute.For<ILogger<TestEndpoint>>();
+            
+            var endpoint = EndpointFactory.CreateEndpoint(
+                logger: mockLogger,
+                constructorArgs: []);
+
+            // Act
+            await endpoint.Handle(request, CancellationToken.None);
+            
+            // Assert
+            mockLogger.Received(1).Log(
+                LogLevel.Information,
+                Arg.Any<EventId>(),
+                Arg.Is<object>(o => o.ToString().Contains("TestProperty:10")),
+                Arg.Any<Exception>(),
+                Arg.Any<Func<object, Exception?, string>>());
+        }
 ```
 
 ### CLI For Scaffolding
