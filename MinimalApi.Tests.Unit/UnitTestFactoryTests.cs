@@ -41,7 +41,7 @@ namespace MinimalApi.Tests.Unit
             mockLogger.Received(1).Log(
                 LogLevel.Information,
                 Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString().Contains("TestProperty:10")),
+                Arg.Is<object>(o => o.ToString()!.Contains("TestProperty:10")),
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>());
         }
@@ -66,7 +66,7 @@ namespace MinimalApi.Tests.Unit
             mockLogger.Received(1).Log(
                 LogLevel.Critical,
                 Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString().Contains("AspNetEnvironment:Production")),
+                Arg.Is<object>(o => o.ToString()!.Contains("AspNetEnvironment:Production")),
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>());
         }
@@ -95,7 +95,7 @@ namespace MinimalApi.Tests.Unit
             mockLogger.Received(1).Log(
                 LogLevel.Debug,
                 Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString().Contains("HttpVerb:POST")),
+                Arg.Is<object>(o => o.ToString()!.Contains("HttpVerb:POST")),
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>());
         }
@@ -131,14 +131,14 @@ namespace MinimalApi.Tests.Unit
             mockLogger.Received(1).Log(
                 LogLevel.Debug,
                 Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString().Contains("HttpVerb:PUT")),
+                Arg.Is<object>(o => o.ToString()!.Contains("HttpVerb:PUT")),
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>());
                 
             mockLogger.Received(1).Log(
                 LogLevel.Critical,
                 Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString().Contains("AspNetEnvironment:Staging")),
+                Arg.Is<object>(o => o.ToString()!.Contains("AspNetEnvironment:Staging")),
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>());
         }
