@@ -36,14 +36,14 @@ namespace MinimalApi.Features.WithTypedResults.TypedResultsPut
     /// Also consider making your own base endpoint class for customization See: /CustomBase
     /// 
     /// </summary>
-    public class TypedResultsPutEndpoint(ICustomPutMapper m) : RadEndpoint
+    public class TypedResultsPutEndpoint(ICustomPutMapper m, IExampleService s) : RadEndpoint
     {
         public override void Configure()
         {
             var route = SetRoute("/typed-results/{id}"); //This is optional but recommended for strongly typed "routeless" integration testing.
 
             RouteBuilder
-                .MapPut(route, ([AsParameters]CustomPutRequest r, IExampleService s) => Handle(r, s))
+                .MapPut(route, ([AsParameters]CustomPutRequest r) => Handle(r, s))
                 .WithRadValidation<CustomPutRequest>()            
                 .WithDocument
                 (
@@ -52,7 +52,12 @@ namespace MinimalApi.Features.WithTypedResults.TypedResultsPut
                 );
         }
 
-        public async Task<Results<Ok<CustomPutResponse>, NotFound<ProblemDetails>, Conflict<ProblemDetails>, BadRequest<ValidationProblemDetails>>> Handle(CustomPutRequest r, IExampleService s)
+        public async Task<Results<
+            Ok<CustomPutResponse>, 
+            NotFound<ProblemDetails>, 
+            Conflict<ProblemDetails>, 
+            BadRequest<ValidationProblemDetails>>> 
+        Handle(CustomPutRequest r, IExampleService s)
         {
             var result = await s.UpdateExample(m.ToEntity(r));
 
