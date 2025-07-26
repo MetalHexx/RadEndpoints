@@ -9,10 +9,9 @@ using NSubstitute;
 namespace RadEndpoints.Testing
 {
     public static class EndpointFactory
-
     {
         /// <summary>
-        /// Creates a testable RadEndpoint instance with mocked dependencies.
+        /// Creates a testable RadEndpoint instance with default mocked dependencies.
         /// Supports endpoints with or without a mapper.
         /// </summary>
         /// <typeparam name="T">The type of the RadEndpoint to create.</typeparam>
@@ -20,33 +19,77 @@ namespace RadEndpoints.Testing
         /// <returns>A mockable instance of the endpoint.</returns>
         public static T CreateEndpoint<T>(params object[] constructorArgs) where T : RadEndpoint
         {
+            return CreateEndpoint<T>(
+                logger: null,
+                httpContextAccessor: null,
+                webHostEnvironment: null,
+                constructorArgs);
+        }
+
+        /// <summary>
+        /// Creates a testable RadEndpoint instance with customizable mocked dependencies.
+        /// Supports endpoints with or without a mapper.
+        /// </summary>
+        /// <typeparam name="T">The type of the RadEndpoint to create.</typeparam>
+        /// <param name="logger">Optional custom logger. If null, a default logger will be created.</param>
+        /// <param name="httpContextAccessor">Optional custom HTTP context accessor. If null, a default HTTP context accessor will be created.</param>
+        /// <param name="webHostEnvironment">Optional custom web host environment. If null, a default environment will be created.</param>
+        /// <param name="constructorArgs">Optional constructor arguments.</param>
+        /// <returns>A mockable instance of the endpoint.</returns>
+        public static T CreateEndpoint<T>(
+            ILogger<T>? logger = null,
+            IHttpContextAccessor? httpContextAccessor = null,
+            IWebHostEnvironment? webHostEnvironment = null,
+            params object[] constructorArgs) where T : RadEndpoint
+        {
             var endpoint = Substitute.ForPartsOf<T>(constructorArgs);
 
-            var httpContextAccessor = new FakeHttpContextAccessor();
+            httpContextAccessor ??= new FakeHttpContextAccessor();
             var httpContext = httpContextAccessor.HttpContext;
 
-            var serviceCollection = new ServiceCollection();
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            httpContext!.RequestServices = serviceProvider;
+            if (httpContext != null && httpContext.RequestServices == null)
+            {
+                var serviceCollection = new ServiceCollection();
+                var serviceProvider = serviceCollection.BuildServiceProvider();
+                httpContext.RequestServices = serviceProvider;
+            }
 
-            var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-            var logger = loggerFactory.CreateLogger<T>();
+            logger ??= CreateDefaultLogger<T>();
 
             var routeBuilder = new FakeEndpointRouteBuilder();
 
-            var webHostEnvironment = Substitute.For<IWebHostEnvironment>();
-            webHostEnvironment.EnvironmentName.Returns("Development");
-            webHostEnvironment.ApplicationName.Returns("TestApp");
-            webHostEnvironment.ContentRootPath.Returns(AppContext.BaseDirectory);
+            webHostEnvironment ??= CreateDefaultWebHostEnvironment();
 
             ((IRadEndpoint)endpoint).SetLogger(logger);
             ((IRadEndpoint)endpoint).SetBuilder(routeBuilder);
             ((IRadEndpoint)endpoint).SetContext(httpContextAccessor);
             ((IRadEndpoint)endpoint).SetEnvironment(webHostEnvironment);
 
+
             InjectMapperIfRequired(endpoint);
 
             return endpoint;
+        }
+
+        /// <summary>
+        /// Creates a default logger for the specified type.
+        /// </summary>
+        private static ILogger<T> CreateDefaultLogger<T>()
+        {
+            var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+            return loggerFactory.CreateLogger<T>();
+        }
+
+        /// <summary>
+        /// Creates a default web host environment with Development settings.
+        /// </summary>
+        private static IWebHostEnvironment CreateDefaultWebHostEnvironment()
+        {
+            var environment = Substitute.For<IWebHostEnvironment>();
+            environment.EnvironmentName.Returns("Development");
+            environment.ApplicationName.Returns("TestApp");
+            environment.ContentRootPath.Returns(AppContext.BaseDirectory);
+            return environment;
         }
 
         private static void InjectMapperIfRequired<T>(T endpoint) where T : RadEndpoint
