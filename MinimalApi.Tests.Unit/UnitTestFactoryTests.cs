@@ -20,7 +20,7 @@ namespace MinimalApi.Tests.Unit
             
             // Assert
             endpoint.Response.Should().NotBeNull();
-            endpoint.Response!.TestProperty.Should().Be(6); // TestProperty + 1
+            endpoint.Response!.TestProperty.Should().Be(6);
         }
         
         [Fact]
@@ -126,7 +126,7 @@ namespace MinimalApi.Tests.Unit
             
             // Assert
             endpoint.Response.Should().NotBeNull();
-            endpoint.Response!.TestProperty.Should().Be(31); // TestProperty + 1
+            endpoint.Response!.TestProperty.Should().Be(31);
             
             mockLogger.Received(1).Log(
                 LogLevel.Debug,
