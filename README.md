@@ -131,8 +131,8 @@ public async void When_RequestValid_ReturnsSuccess()
 }
 ```
 #### Unit Testing
-_In many cases, I generally recommend Integration testing.  But in some tricky situations, unit testing could be the better choice._
-- EndpointFactory class designed to created a unit testable Endpoint instance.
+_In many cases, I recommend Integration testing as you can get more value from the test.  However, in some tricky situations, unit testing could be the better choice._
+- EndpointFactory class designed to created a unit testable Endpoint instance. (Install the 
 - Ability to mock the built-in ILogger, IHttpContextProvider, and IWebHostBuilders
 - Ability to unit test endpoints with mappers
 - _Note: Use Integration tests if you want to test with your abstract fluent validators._
