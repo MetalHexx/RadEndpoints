@@ -57,6 +57,7 @@ public class GetSampleEndpoint(ISampleService sampleService) : RadEndpoint<GetSa
 #### Request Model Binding and Validation
 - Automatic request model binding from route, query, header, and body using [AsParameters].
 - Automatic request model validation execution using [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
+- Simply add your AbstractValidator class that targets your request model type. 
 ```csharp
 public class GetSampleRequest
 {
@@ -202,6 +203,21 @@ _In many cases, I recommend Integration testing as you can get more value from t
 #### Bulk JSON Import
 <img src="https://github.com/MetalHexx/RadEndpoints/assets/9291740/eafc6050-9afd-4c4b-a844-a6b1033b9f98" width="60%" height="60%" alt="Description of Image"/>
 
+### 📦 Installation
+
+You can install the RadEndpoints packages from NuGet:
+
+- [RadEndpoints](https://www.nuget.org/packages/RadEndpoints/)
+- [RadEndpoints.Cli](https://www.nuget.org/packages/RadEndpoints.Cli/)
+- [RadEndpoints.Testing](https://www.nuget.org/packages/RadEndpoints.Testing/)
+
+#### Install via .NET CLI:
+
+```bash
+dotnet add package RadEndpoints
+dotnet add package RadEndpoints.Cli
+dotnet add package RadEndpoints.Testing
+```
   
 ### Coming Soon:
 - Project templates
