@@ -111,24 +111,24 @@ namespace RadEndpoints.Testing
                 }
                 else if (attribute is FromQueryAttribute)
                 {
-                    if (!string.IsNullOrEmpty(propertyValue))
+                    if (rawValue is not null)
                     {
-                        queryFromAttribs[property.Name] = propertyValue;
+                        queryFromAttribs[property.Name] = propertyValue ?? string.Empty;
                     }
                 }
                 else if (attribute is FromHeaderAttribute)
                 {
-                    if (!string.IsNullOrEmpty(propertyValue))
+                    if (rawValue is not null)
                     {
-                        headersFromAttribs.Add(property.Name, propertyValue);
+                        headersFromAttribs.Add(property.Name, propertyValue ?? string.Empty);
                     }
                 }
                 else if (attribute is FromFormAttribute)
                 {
-                    if (!string.IsNullOrEmpty(propertyValue))
+                    if (rawValue is not null)
                     {
                         formContent ??= new MultipartFormDataContent();
-                        var stringContent = new StringContent(propertyValue);
+                        var stringContent = new StringContent(propertyValue ?? string.Empty);
                         stringContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
                         {
                             Name = $"\"{property.Name}\""

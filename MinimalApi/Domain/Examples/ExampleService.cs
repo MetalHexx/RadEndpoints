@@ -126,12 +126,12 @@
 
             var results = _examples.AsEnumerable();
 
-            if (firstName != null)
+            if (!string.IsNullOrEmpty(firstName))
             {
                 results = results.Where(e => e.FirstName == firstName);
             }
 
-            if (lastName != null)
+            if (!string.IsNullOrEmpty(lastName))
             {
                 results = results.Where(e => e.LastName == lastName);
             }
@@ -146,12 +146,12 @@
 
             var results = _examples.Where(e => e.ParentId == parentId);
 
-            if (firstName != null)
+            if (!string.IsNullOrEmpty(firstName))
             {
                 results = results.Where(e => e.FirstName == firstName);
             }
 
-            if (lastName != null)
+            if (!string.IsNullOrEmpty(lastName))
             {
                 results = results.Where(e => e.LastName == lastName);
             }
