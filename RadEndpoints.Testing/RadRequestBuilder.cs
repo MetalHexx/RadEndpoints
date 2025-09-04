@@ -51,7 +51,7 @@ namespace RadEndpoints.Testing
             {
                 Method = method,
                 RequestUri = client.BaseAddress!.Combine(routeTemplate),
-                Content = requestModel!.ToStringContent()
+                Content = requestModel!.ToStringContent(options?.JsonSerializerOptions)
             };
             if (options?.Headers is not null)
             {
@@ -138,7 +138,7 @@ namespace RadEndpoints.Testing
                 }
                 else if (attribute is FromBodyAttribute)
                 {
-                    body = rawValue?.ToStringContent() ?? string.Empty.ToStringContent();
+                    body = rawValue?.ToStringContent(options?.JsonSerializerOptions) ?? string.Empty.ToStringContent(options?.JsonSerializerOptions);
                 }
             }
 

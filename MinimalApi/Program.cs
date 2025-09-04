@@ -10,9 +10,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IExampleService, ExampleService>();
 builder.Services.AddSingleton<ICustomPutMapper, TypedResultsPutMapper>();
                 
-
-
-
 var app = builder.Build();
 app.MapRadEndpoints();
 app.MapPureEndpoints();

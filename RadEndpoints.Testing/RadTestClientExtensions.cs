@@ -4,11 +4,6 @@ using System.Text.Json;
 
 namespace RadEndpoints.Testing
 {
-
-    public class RadHttpClientOptions 
-    {
-        public HeaderDictionary Headers { get; set; } = [];
-    }
     public static class RadTestClientExtensions
     {
         public async static Task<RadTestResult<TResponse>> GetAsync<TEndpoint, TResponse>(this HttpClient client, RadHttpClientOptions? options = null)
@@ -121,7 +116,7 @@ namespace RadEndpoints.Testing
             var httpResponse = await client.SendAsync(httpRequest);
             client.Dispose();
 
-            return new(httpResponse, await httpResponse.DeserializeJson<TResponse>());
+            return new(httpResponse, await httpResponse.DeserializeJson<TResponse>(options?.JsonSerializerOptions));
         }
 
         public async static Task<RadTestResult<TResponse>> SendAsync<TEndpoint, TRequest, TResponse>(this HttpClient client, TRequest request, HttpMethod method, RadHttpClientOptions? options = null)
@@ -132,13 +127,13 @@ namespace RadEndpoints.Testing
             var httpResponse = await client.SendAsync(httpRequest);
             client.Dispose();
 
-            return new(httpResponse, await httpResponse.DeserializeJson<TResponse>());
+            return new(httpResponse, await httpResponse.DeserializeJson<TResponse>(options?.JsonSerializerOptions));
         }
 
         private async static Task<HttpResponseMessage> SendAsync<TEndpoint, TRequest>(this HttpClient client, TRequest request, HttpMethod method, RadHttpClientOptions? options = null)
             where TEndpoint : RadEndpoint
         {
-            var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, method);
+            var httpRequest = RadRequestBuilder.BuildRequest<TEndpoint, TRequest>(client, request, method, options);
 
             var httpResponse = await client.SendAsync(httpRequest);
             client.Dispose();
@@ -155,11 +150,19 @@ namespace RadEndpoints.Testing
             return httpResponse;
         }
 
-        private static async Task<TResponse> DeserializeJson<TResponse>(this HttpResponseMessage response)
+        private static async Task<TResponse> DeserializeJson<TResponse>(this HttpResponseMessage response, JsonSerializerOptions? jsonOptions = null)
         {
             try
             {
-                return (await response!.Content!.ReadFromJsonAsync<TResponse>())!;
+                if (jsonOptions != null && response.IsSuccessStatusCode)
+                {
+                    var jsonString = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<TResponse>(jsonString, jsonOptions)!;
+                }
+                else
+                {  
+                    return (await response!.Content!.ReadFromJsonAsync<TResponse>())!;
+                }
             }
             catch (JsonException ex)
             {
