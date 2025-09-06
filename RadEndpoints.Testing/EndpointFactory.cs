@@ -8,11 +8,27 @@ using NSubstitute;
 
 namespace RadEndpoints.Testing
 {
+    /// <summary>
+    /// Factory class for creating testable RadEndpoint instances with mocked dependencies.
+    /// </summary>
     public static class EndpointFactory
     {
         /// <summary>
         /// Creates a testable RadEndpoint instance with default mocked dependencies.
         /// Supports endpoints with or without a mapper.
+        /// 
+        /// Use RadEndpointTestExtensions to access TypedResults:
+        /// - endpoint.GetResult&lt;Ok&lt;T&gt;&gt;() - Gets Ok results
+        /// - endpoint.GetResult&lt;Created&lt;T&gt;&gt;() - Gets Created results  
+        /// - endpoint.GetResult&lt;NotFound&lt;T&gt;&gt;() - Gets NotFound results
+        /// - endpoint.GetResult&lt;Conflict&lt;T&gt;&gt;() - Gets Conflict results
+        /// - endpoint.GetResult&lt;ValidationProblem&gt;() - Gets ValidationProblem results
+        /// - endpoint.GetResult&lt;UnauthorizedHttpResult&gt;() - Gets authentication challenge results (parameterless SendUnauthorized())
+        /// - endpoint.GetResult&lt;ForbidHttpResult&gt;() - Gets authentication forbid results (parameterless SendForbidden())
+        /// - endpoint.GetResult&lt;RedirectHttpResult&gt;() - Gets Redirect results
+        /// - endpoint.GetResult&lt;ProblemHttpResult&gt;() - Gets Problem results (for errors with messages: SendUnauthorized(string), SendForbidden(string), SendInternalError, etc.)
+        /// - endpoint.GetProblem&lt;T&gt;() - Gets typed problems (e.g., IRadProblem implementations)
+        /// - endpoint.GetStatusCode() - Gets the HTTP status code
         /// </summary>
         /// <typeparam name="T">The type of the RadEndpoint to create.</typeparam>
         /// <param name="constructorArgs">Optional constructor arguments.</param>
@@ -29,6 +45,19 @@ namespace RadEndpoints.Testing
         /// <summary>
         /// Creates a testable RadEndpoint instance with customizable mocked dependencies.
         /// Supports endpoints with or without a mapper.
+        /// 
+        /// Use RadEndpointTestExtensions to access TypedResults:
+        /// - endpoint.GetResult&lt;Ok&lt;T&gt;&gt;() - Gets Ok results
+        /// - endpoint.GetResult&lt;Created&lt;T&gt;&gt;() - Gets Created results  
+        /// - endpoint.GetResult&lt;NotFound&lt;T&gt;&gt;() - Gets NotFound results
+        /// - endpoint.GetResult&lt;Conflict&lt;T&gt;&gt;() - Gets Conflict results
+        /// - endpoint.GetResult&lt;ValidationProblem&gt;() - Gets ValidationProblem results
+        /// - endpoint.GetResult&lt;UnauthorizedHttpResult&gt;() - Gets authentication challenge results (parameterless SendUnauthorized())
+        /// - endpoint.GetResult&lt;ForbidHttpResult&gt;() - Gets authentication forbid results (parameterless SendForbidden())
+        /// - endpoint.GetResult&lt;RedirectHttpResult&gt;() - Gets Redirect results
+        /// - endpoint.GetResult&lt;ProblemHttpResult&gt;() - Gets Problem results (for errors with messages: SendUnauthorized(string), SendForbidden(string), SendInternalError, etc.)
+        /// - endpoint.GetProblem&lt;T&gt;() - Gets typed problems (e.g., IRadProblem implementations)
+        /// - endpoint.GetStatusCode() - Gets the HTTP status code
         /// </summary>
         /// <typeparam name="T">The type of the RadEndpoint to create.</typeparam>
         /// <param name="logger">Optional custom logger. If null, a default logger will be created.</param>

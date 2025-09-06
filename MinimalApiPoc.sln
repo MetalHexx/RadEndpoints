@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadEndpoints.Cli", "RadEndp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalApi.Tests.Unit", "MinimalApi.Tests.Unit\MinimalApi.Tests.Unit.csproj", "{5611D10E-A88D-4F9C-A2F3-BD1CA16448D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadEndpoints.Testing.Tests", "RadEndpoints.Testing.Tests\RadEndpoints.Testing.Tests.csproj", "{5C5B557C-F956-4091-ABE4-29FD4F09B4CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{5611D10E-A88D-4F9C-A2F3-BD1CA16448D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5611D10E-A88D-4F9C-A2F3-BD1CA16448D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5611D10E-A88D-4F9C-A2F3-BD1CA16448D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C5B557C-F956-4091-ABE4-29FD4F09B4CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C5B557C-F956-4091-ABE4-29FD4F09B4CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C5B557C-F956-4091-ABE4-29FD4F09B4CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C5B557C-F956-4091-ABE4-29FD4F09B4CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
