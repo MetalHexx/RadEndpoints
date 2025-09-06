@@ -10,7 +10,9 @@ namespace RadEndpoints
     {
         protected ILogger Logger { get; private set; } = null!;
         protected IEndpointRouteBuilder RouteBuilder { get; private set; } = null!;
-        protected HttpContext HttpContext => _httpContextAccessor.HttpContext!;
+        
+        public HttpContext HttpContext => _httpContextAccessor.HttpContext!;
+        
         private IHttpContextAccessor _httpContextAccessor = null!;
         protected IWebHostEnvironment Env { get; private set; } = null!;
         protected bool HasValidator;
