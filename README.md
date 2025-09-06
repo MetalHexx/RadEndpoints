@@ -132,7 +132,10 @@ public async void When_RequestValid_ReturnsSuccess()
 }
 ```
 #### Unit Testing
-_In many cases, I recommend Integration testing as you can get more value from the test.  However, in some tricky situations, unit testing could be the better choice.  See [UNIT-TESTING-GUIDE.md](https://github.com/MetalHexx/RadEndpoints/blob/main/RadEndpoints.Testing/UNIT-TESTING-GUIDE.md) for details and more examples_
+In many cases, I recommend Integration testing as you can get more value from testing endpoint behavior from the test.  
+However, in some many situations, unit testing could be the better choice.  RadEndpoints provides some good help tooling with the `RadEndpoints.Testinng` package.  
+
+See [UNIT-TESTING-GUIDE.md](https://github.com/MetalHexx/RadEndpoints/blob/main/RadEndpoints.Testing/UNIT-TESTING-GUIDE.md) for details and more examples.
 ```csharp
 [Fact]
 public async Task When_ValidId_ShouldReturnItem()
