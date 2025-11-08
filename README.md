@@ -132,36 +132,44 @@ public async void When_RequestValid_ReturnsSuccess()
 }
 ```
 #### Unit Testing
-_In many cases, I recommend Integration testing as you can get more value from the test.  However, in some tricky situations, unit testing could be the better choice._
-- EndpointFactory class designed to created a unit testable Endpoint instance. (Install the 
-- Ability to mock the built-in ILogger, IHttpContextProvider, and IWebHostBuilders
-- Ability to unit test endpoints with mappers
-- _Note: Use Integration tests if you want to test with your abstract fluent validators._
-- Example: [FactoryTestEndpoint](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi/Features/FactoryTestEndpoints/FactoryTestingEndpoint.cs) and [UnitTestFactoryTests](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi.Tests.Unit/UnitTestFactoryTests.cs)
-
+- `EndpointFactory` generates mockable, unit testable endpoint instances.
+- `RadTestClientExtensions` test responses using TypedResults pattern, much like vanilla Minimal Apis 
+- See [UNIT-TESTING-GUIDE.md](https://github.com/MetalHexx/RadEndpoints/blob/main/RadEndpoints.Testing/UNIT-TESTING-GUIDE.md) for details and more examples.
 ```csharp
 [Fact]
-        public async Task When_CreateEndpoint_WithCustomLogger_ShouldUseProvidedLogger()
-        {
-            // Arrange
-            var request = new TestRequest { TestProperty = 10 };
-            var mockLogger = Substitute.For<ILogger<TestEndpoint>>();
-            
-            var endpoint = EndpointFactory.CreateEndpoint(
-                logger: mockLogger,
-                constructorArgs: []);
+public async Task When_ValidId_ShouldReturnItem()
+{
+    // Arrange
+    var endpoint = EndpointFactory.CreateEndpoint<GetItemEndpoint>();
+    var request = new GetItemRequest { Id = 1 };
 
-            // Act
-            await endpoint.Handle(request, CancellationToken.None);
-            
-            // Assert
-            mockLogger.Received(1).Log(
-                LogLevel.Information,
-                Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString().Contains("TestProperty:10")),
-                Arg.Any<Exception>(),
-                Arg.Any<Func<object, Exception?, string>>());
-        }
+    // Act
+    await endpoint.Handle(request, CancellationToken.None);
+
+    // Assert
+    var result = endpoint.GetResult<Ok<GetItemResponse>>();
+    result.Value.Id.Should().Be(1);
+    result.Value.Name.Should().Be("Item 1");    
+
+    endpoint.GetStatusCode().Should().Be(HttpStatusCode.OK);
+}
+
+[Fact]
+public async Task When_InvalidId_ShouldReturnNotFound()
+{
+    // Arrange
+    var endpoint = EndpointFactory.CreateEndpoint<GetItemEndpoint>();
+    var request = new GetItemRequest { Id = 0 };
+
+    // Act
+    await endpoint.Handle(request, CancellationToken.None);
+
+    // Assert
+    var result = endpoint.GetResult<NotFound<string>>();
+    result.Value.Should().Be("Item not found");
+
+    endpoint.GetStatusCode().Should().Be(HttpStatusCode.NotFound);
+}
 ```
 
 ### CLI For Scaffolding
