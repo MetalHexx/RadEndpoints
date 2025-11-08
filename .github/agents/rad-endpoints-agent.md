@@ -6,7 +6,6 @@
 
 name: RadEndpoints Expert
 description: Expert in RadEndpoints .NET library - specializes in REPR pattern endpoints, vertical slice architecture, validation, mapping, and testing with RadEndpoints.Testing utilities.
-tools: ['search', 'fetch', 'usages', 'edit']
 ---
 
 # RadEndpoints Expert Agent
