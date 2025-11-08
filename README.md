@@ -54,6 +54,165 @@ public class GetSampleEndpoint(ISampleService sampleService) : RadEndpoint<GetSa
 }
 ```
 
+#### Endpoint Base Classes
+RadEndpoints provides three base classes to support different endpoint scenarios:
+
+**`RadEndpoint<TRequest, TResponse>`** - Standard endpoint with request and response
+```csharp
+public class GetUserEndpoint : RadEndpoint<GetUserRequest, GetUserResponse>
+{
+    public override void Configure() => Get("/users/{id}");
+    
+    public override async Task Handle(GetUserRequest req, CancellationToken ct)
+    {
+        // Access request via req parameter
+        Response = new GetUserResponse { Id = req.Id, Name = "John" };
+        Send();
+    }
+}
+```
+
+**`RadEndpointWithoutRequest<TResponse>`** - Endpoint without request parameters
+```csharp
+public class GetHealthEndpoint : RadEndpointWithoutRequest<HealthResponse>
+{
+    public override void Configure() => Get("/health");
+    
+    public override async Task Handle(CancellationToken ct)
+    {
+        // No request parameter needed
+        Response = new HealthResponse { Status = "Healthy" };
+        Send();
+    }
+}
+```
+
+**`RadEndpoint<TRequest, TResponse, TMapper>`** - Endpoint with integrated mapper
+```csharp
+public class GetUserEndpoint : RadEndpoint<GetUserRequest, GetUserResponse, UserMapper>
+{
+    public override void Configure() => Get("/users/{id}");
+    
+    public override async Task Handle(GetUserRequest req, CancellationToken ct)
+    {
+        var user = await userService.GetById(req.Id);
+        Response = Map.FromEntity(user); // Use integrated mapper
+        Send();
+    }
+}
+```
+
+All base classes provide:
+- Constructor dependency injection (scoped lifetime)
+- Built-in conveniences: `HttpContext`, `Logger`, `Env`, `Response`
+- TypedResult shortcuts: `Send()`, `SendNotFound()`, `SendProblem()`, etc.
+- Automatic validation via FluentValidation
+
+#### Response Methods
+RadEndpoints provides strongly-typed response methods that return ASP.NET Core TypedResults:
+
+**Success Responses**
+```csharp
+// 200 OK with response body
+Response = new UserResponse { Id = 1, Name = "John" };
+Send(); // or Send(customResponse)
+
+// 201 Created with Location header
+SendCreatedAt("/users/123", response);
+```
+
+**Client Error Responses**
+```csharp
+// 400 Bad Request - Validation errors
+SendValidationError("Field is required");
+
+// 404 Not Found
+SendNotFound("User not found");
+
+// 409 Conflict
+SendConflict("Email already exists");
+```
+
+**Server Error Responses**
+```csharp
+// 500 Internal Server Error
+SendInternalError("Database connection failed");
+
+// 502 Bad Gateway
+SendExternalError("External API unreachable");
+
+// 504 Gateway Timeout
+SendExternalTimeout("External API timeout");
+```
+
+**Redirect Responses**
+```csharp
+// 301 Moved Permanently
+SendRedirect("/new-location", permanent: true);
+
+// 302 Found (temporary redirect)
+SendRedirect("/temporary-location");
+
+// 307/308 with method preservation
+SendRedirect("/location", permanent: true, preserveMethod: true);
+```
+
+**Binary Responses**
+```csharp
+// Byte array download
+SendBytes(new RadBytes 
+{ 
+    Bytes = data, 
+    ContentType = "application/pdf",
+    FileDownloadName = "report.pdf"
+});
+
+// Stream response
+SendStream(new RadStream 
+{ 
+    Stream = fileStream, 
+    ContentType = "text/csv"
+});
+
+// Physical file
+SendFile(new RadFile 
+{ 
+    Path = "/path/to/file.txt",
+    ContentType = "text/plain"
+});
+```
+
+**Custom Problem Details**
+```csharp
+// Using ProblemHttpResult
+SendProblem(TypedResults.Problem(
+    title: "Custom error",
+    statusCode: 422,
+    detail: "Detailed error message"));
+
+// Using IRadProblem for domain errors
+SendProblem(new CustomDomainError("Business rule violated"));
+```
+
+**Testing Response Methods**
+
+Integration tests use typed client extensions:
+```csharp
+// Test string responses (NotFound, Conflict)
+var response = await client.GetAsync<NotFoundEndpoint, Request, string>(request);
+response.Http.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+// Test ProblemDetails responses
+var response = await client.GetAsync<ErrorEndpoint, Request, ProblemDetails>(request);
+response.Content.Title.Should().Be("Internal server error");
+
+// Test binary responses (use raw HttpClient)
+var response = await client.GetAsync("/api/download");
+var bytes = await response.Content.ReadAsByteArrayAsync();
+```
+
+See the test endpoints in [`/MinimalApi/Features/ResultEndpoints`](https://github.com/MetalHexx/RadEndpoints/tree/main/MinimalApi/Features/ResultEndpoints) for complete examples of all response methods.
+
 #### Request Model Binding and Validation
 - Automatic request model binding from route, query, header, and body using [AsParameters].
 - Automatic request model validation execution using [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
