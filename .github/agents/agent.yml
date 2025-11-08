@@ -1,0 +1,71 @@
+name: rad-endpoints-expert
+description: Expert agent for working with RadEndpoints library - REPR pattern, vertical slice architecture, endpoint scaffolding, validation, and testing
+version: 1.0.0
+
+# Instructions file containing the agent's expertise and guidelines
+instructions: rad-endpoints-agent.md
+
+# Agent capabilities and permissions
+capabilities:
+  # Allow the agent to read and modify code files
+  code_editing: true
+  
+  # Allow the agent to read project files and documentation
+  file_access: true
+  
+  # Allow the agent to execute commands (build, test, lint)
+  command_execution: true
+  
+  # Allow the agent to access repository information
+  repository_access: true
+  
+  # Allow the agent to create and modify files
+  file_creation: true
+
+# Permissions for the agent
+permissions:
+  # Repository permissions
+  contents: write
+  
+  # Allow reading and writing to pull requests
+  pull_requests: write
+  
+  # Allow reading issues
+  issues: read
+
+# Tools the agent can use
+tools:
+  - bash
+  - view
+  - create
+  - edit
+  - report_progress
+  - code_review
+  - codeql_checker
+  - gh-advisory-database
+
+# Scoped to work within the RadEndpoints repository
+scope:
+  - "**/*.cs"
+  - "**/*.csproj"
+  - "**/*.sln"
+  - "**/README.md"
+  - "**/*.md"
+  - ".github/**"
+
+# Agent behavior configuration
+behavior:
+  # Follow vertical slice architecture patterns
+  prefer_patterns:
+    - vertical_slice_architecture
+    - repr_pattern
+    - minimal_apis
+  
+  # Focus areas
+  expertise:
+    - endpoint_development
+    - fluent_validation
+    - mapper_implementation
+    - integration_testing
+    - unit_testing
+    - code_scaffolding
