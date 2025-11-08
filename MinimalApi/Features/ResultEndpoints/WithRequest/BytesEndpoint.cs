@@ -14,7 +14,7 @@ public class BytesEndpoint : RadEndpoint<BytesRequest, BytesResponse>
 {
     public override void Configure()
     {
-        Get("/api/bytes/{size}");
+        Get("/api/withRequest/bytes/{size}");
     }
 
     public override async Task Handle(BytesRequest req, CancellationToken ct)

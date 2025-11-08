@@ -9,7 +9,7 @@ public class StreamEndpointTests(RadEndpointFixture f)
     public async Task When_TextStream_ReturnsTextContent()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/stream/text");
+        var response = await f.Client.GetAsync("/api/withRequest/stream/text");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -29,7 +29,7 @@ public class StreamEndpointTests(RadEndpointFixture f)
     public async Task When_BinaryStream_ReturnsBinaryContent()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/stream/binary");
+        var response = await f.Client.GetAsync("/api/withRequest/stream/binary");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

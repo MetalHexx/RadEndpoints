@@ -9,7 +9,7 @@ public class ForbiddenWithoutRequestEndpoint : RadEndpointWithoutRequest<Forbidd
 {
     public override void Configure()
     {
-        Get("/api/norequest/forbidden");
+        Get("/api/withoutRequest/forbidden");
     }
 
     public override async Task Handle(CancellationToken ct)

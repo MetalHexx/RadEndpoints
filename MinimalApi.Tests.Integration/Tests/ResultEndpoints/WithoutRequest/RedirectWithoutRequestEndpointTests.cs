@@ -9,7 +9,7 @@ public class RedirectWithoutRequestEndpointTests(RadEndpointFixture f)
     public async Task When_Called_ReturnsRedirect()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/norequest/redirect");
+        var response = await f.Client.GetAsync("/api/withoutRequest/redirect");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Found);

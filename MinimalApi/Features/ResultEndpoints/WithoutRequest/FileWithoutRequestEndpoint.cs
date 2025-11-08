@@ -9,7 +9,7 @@ public class FileWithoutRequestEndpoint : RadEndpointWithoutRequest<FileWithoutR
 {
     public override void Configure()
     {
-        Get("/api/norequest/file");
+        Get("/api/withoutRequest/file");
     }
 
     public override async Task Handle(CancellationToken ct)

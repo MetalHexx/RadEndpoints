@@ -6,7 +6,7 @@ namespace MinimalApi.Tests.Integration.Tests.ResultEndpoints.WithRequest;
 public class CreatedAtEndpointTests(RadEndpointFixture f)
 {
     [Fact]
-    public async Task When_CreatedAtWithResponse_ReturnsCreatedWithLocationHeader()
+    public async Task When_UsingCustomResponseParameter_ReturnsCreatedWithLocationHeader()
     {
         // Act
         var r = await f.Client.PostAsync<CreatedAtEndpoint, CreatedAtRequest, CreatedAtResponse>(new()
@@ -26,7 +26,7 @@ public class CreatedAtEndpointTests(RadEndpointFixture f)
     }
 
     [Fact]
-    public async Task When_CreatedAtWithoutResponse_ReturnsCreatedWithResponseProperty()
+    public async Task When_UsingResponseProperty_ReturnsCreatedWithLocationHeader()
     {
         // Act
         var r = await f.Client.PostAsync<CreatedAtEndpoint, CreatedAtRequest, CreatedAtResponse>(new()

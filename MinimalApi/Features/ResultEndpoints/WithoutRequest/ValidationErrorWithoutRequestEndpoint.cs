@@ -9,7 +9,7 @@ public class ValidationErrorWithoutRequestEndpoint : RadEndpointWithoutRequest<V
 {
     public override void Configure()
     {
-        Get("/api/norequest/validation-error");
+        Get("/api/withoutRequest/validation-error");
     }
 
     public override async Task Handle(CancellationToken ct)

@@ -9,7 +9,7 @@ public class FileWithoutRequestEndpointTests(RadEndpointFixture f)
     public async Task When_Called_ReturnsFile()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/norequest/file");
+        var response = await f.Client.GetAsync("/api/withoutRequest/file");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

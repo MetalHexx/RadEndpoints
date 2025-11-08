@@ -9,7 +9,7 @@ public class BytesEndpointTests(RadEndpointFixture f)
     public async Task When_ValidSize_ReturnsByteArray()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/bytes/10");
+        var response = await f.Client.GetAsync("/api/withRequest/bytes/10");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -30,7 +30,7 @@ public class BytesEndpointTests(RadEndpointFixture f)
     public async Task When_LargerSize_ReturnsCorrectByteCount()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/bytes/100");
+        var response = await f.Client.GetAsync("/api/withRequest/bytes/100");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

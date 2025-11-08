@@ -14,7 +14,7 @@ public class FileEndpoint : RadEndpoint<FileRequest, FileResponse>
 {
     public override void Configure()
     {
-        Get("/api/file/{name}");
+        Get("/api/withRequest/file/{name}");
     }
 
     public override async Task Handle(FileRequest req, CancellationToken ct)

@@ -9,7 +9,7 @@ public class RedirectWithoutRequestEndpoint : RadEndpointWithoutRequest<Redirect
 {
     public override void Configure()
     {
-        Get("/api/norequest/redirect");
+        Get("/api/withoutRequest/redirect");
     }
 
     public override async Task Handle(CancellationToken ct)

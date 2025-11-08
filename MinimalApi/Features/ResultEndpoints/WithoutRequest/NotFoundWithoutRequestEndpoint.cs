@@ -9,7 +9,7 @@ public class NotFoundWithoutRequestEndpoint : RadEndpointWithoutRequest<NotFound
 {
     public override void Configure()
     {
-        Get("/api/norequest/notfound");
+        Get("/api/withoutRequest/notfound");
     }
 
     public override async Task Handle(CancellationToken ct)

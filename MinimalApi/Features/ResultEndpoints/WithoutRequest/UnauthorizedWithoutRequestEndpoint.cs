@@ -9,7 +9,7 @@ public class UnauthorizedWithoutRequestEndpoint : RadEndpointWithoutRequest<Unau
 {
     public override void Configure()
     {
-        Get("/api/norequest/unauthorized");
+        Get("/api/withoutRequest/unauthorized");
     }
 
     public override async Task Handle(CancellationToken ct)

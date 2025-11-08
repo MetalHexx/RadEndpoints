@@ -9,7 +9,7 @@ public class StreamWithoutRequestEndpointTests(RadEndpointFixture f)
     public async Task When_Called_ReturnsStream()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/norequest/stream");
+        var response = await f.Client.GetAsync("/api/withoutRequest/stream");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

@@ -9,7 +9,7 @@ public class BytesWithoutRequestEndpointTests(RadEndpointFixture f)
     public async Task When_Called_ReturnsByteArray()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/norequest/bytes");
+        var response = await f.Client.GetAsync("/api/withoutRequest/bytes");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

@@ -9,7 +9,7 @@ public class StreamWithoutRequestEndpoint : RadEndpointWithoutRequest<StreamWith
 {
     public override void Configure()
     {
-        Get("/api/norequest/stream");
+        Get("/api/withoutRequest/stream");
     }
 
     public override async Task Handle(CancellationToken ct)

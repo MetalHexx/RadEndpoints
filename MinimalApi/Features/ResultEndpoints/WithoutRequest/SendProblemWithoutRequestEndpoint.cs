@@ -9,7 +9,7 @@ public class SendProblemWithoutRequestEndpoint : RadEndpointWithoutRequest<SendP
 {
     public override void Configure()
     {
-        Get("/api/norequest/sendproblem");
+        Get("/api/withoutRequest/sendproblem");
     }
 
     public override async Task Handle(CancellationToken ct)

@@ -14,7 +14,7 @@ public class StreamEndpoint : RadEndpoint<StreamRequest, StreamResponse>
 {
     public override void Configure()
     {
-        Get("/api/stream/{type}");
+        Get("/api/withRequest/stream/{type}");
     }
 
     public override async Task Handle(StreamRequest req, CancellationToken ct)

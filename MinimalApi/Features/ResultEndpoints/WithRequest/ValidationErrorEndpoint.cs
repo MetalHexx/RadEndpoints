@@ -14,7 +14,7 @@ public class ValidationErrorEndpoint : RadEndpoint<ValidationErrorRequest, Valid
 {
     public override void Configure()
     {
-        Get("/api/validation-error/{id}");
+        Get("/api/withRequest/validation-error/{id}");
     }
 
     public override async Task Handle(ValidationErrorRequest req, CancellationToken ct)

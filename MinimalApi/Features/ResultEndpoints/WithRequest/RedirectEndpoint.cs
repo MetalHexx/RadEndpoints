@@ -14,7 +14,7 @@ public class RedirectEndpoint : RadEndpoint<RedirectRequest, RedirectResponse>
 {
     public override void Configure()
     {
-        Get("/api/redirect/{id}");
+        Get("/api/withRequest/redirect/{id}");
     }
 
     public override async Task Handle(RedirectRequest req, CancellationToken ct)

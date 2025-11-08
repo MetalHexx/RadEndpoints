@@ -14,7 +14,7 @@ public class NotFoundEndpoint : RadEndpoint<NotFoundRequest, NotFoundResponse>
 {
     public override void Configure()
     {
-        Get("/api/notfound/{id}");
+        Get("/api/withRequest/notfound/{id}");
     }
 
     public override async Task Handle(NotFoundRequest req, CancellationToken ct)

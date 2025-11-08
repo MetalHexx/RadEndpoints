@@ -9,7 +9,7 @@ public class ConflictWithoutRequestEndpoint : RadEndpointWithoutRequest<Conflict
 {
     public override void Configure()
     {
-        Get("/api/norequest/conflict");
+        Get("/api/withoutRequest/conflict");
     }
 
     public override async Task Handle(CancellationToken ct)

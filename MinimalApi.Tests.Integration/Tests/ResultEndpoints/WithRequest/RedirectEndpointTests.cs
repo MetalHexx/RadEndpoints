@@ -9,7 +9,7 @@ public class RedirectEndpointTests(RadEndpointFixture f)
     public async Task When_PermanentRedirect_Returns301()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/redirect/permanent");
+        var response = await f.Client.GetAsync("/api/withRequest/redirect/permanent");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.MovedPermanently);
@@ -21,7 +21,7 @@ public class RedirectEndpointTests(RadEndpointFixture f)
     public async Task When_PermanentPreserveRedirect_Returns308()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/redirect/permanent-preserve");
+        var response = await f.Client.GetAsync("/api/withRequest/redirect/permanent-preserve");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.PermanentRedirect);
@@ -33,7 +33,7 @@ public class RedirectEndpointTests(RadEndpointFixture f)
     public async Task When_TemporaryRedirect_Returns302()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/redirect/temporary");
+        var response = await f.Client.GetAsync("/api/withRequest/redirect/temporary");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Found);
@@ -45,7 +45,7 @@ public class RedirectEndpointTests(RadEndpointFixture f)
     public async Task When_TemporaryPreserveRedirect_Returns307()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/redirect/temporary-preserve");
+        var response = await f.Client.GetAsync("/api/withRequest/redirect/temporary-preserve");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.TemporaryRedirect);

@@ -9,7 +9,7 @@ public class FileEndpointTests(RadEndpointFixture f)
     public async Task When_TestFile_ReturnsFileContent()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/file/test");
+        var response = await f.Client.GetAsync("/api/withRequest/file/test");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -25,7 +25,7 @@ public class FileEndpointTests(RadEndpointFixture f)
     public async Task When_DownloadFile_ReturnsFileWithDownloadName()
     {
         // Act
-        var response = await f.Client.GetAsync("/api/file/download");
+        var response = await f.Client.GetAsync("/api/withRequest/file/download");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

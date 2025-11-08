@@ -15,7 +15,7 @@ public class SuccessEndpoint : RadEndpoint<SuccessRequest, SuccessResponse>
 {
     public override void Configure()
     {
-        Get("/api/success/{id}");
+        Get("/api/withRequest/success/{id}");
     }
 
     public override async Task Handle(SuccessRequest req, CancellationToken ct)

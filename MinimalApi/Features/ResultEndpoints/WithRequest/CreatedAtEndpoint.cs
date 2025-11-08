@@ -15,7 +15,7 @@ public class CreatedAtEndpoint : RadEndpoint<CreatedAtRequest, CreatedAtResponse
 {
     public override void Configure()
     {
-        Post("/api/created/{id}");
+        Post("/api/withRequest/created/{id}");
     }
 
     public override async Task Handle(CreatedAtRequest req, CancellationToken ct)

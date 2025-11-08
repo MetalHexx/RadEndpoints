@@ -21,7 +21,7 @@ public class SendProblemEndpoint : RadEndpoint<SendProblemRequest, SendProblemRe
 {
     public override void Configure()
     {
-        Get("/api/sendproblem/{type}");
+        Get("/api/withRequest/sendproblem/{type}");
     }
 
     public override async Task Handle(SendProblemRequest req, CancellationToken ct)

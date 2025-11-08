@@ -10,7 +10,7 @@ public class SuccessWithoutRequestEndpoint : RadEndpointWithoutRequest<SuccessWi
 {
     public override void Configure()
     {
-        Get("/api/norequest/success");
+        Get("/api/withoutRequest/success");
     }
 
     public override async Task Handle(CancellationToken ct)

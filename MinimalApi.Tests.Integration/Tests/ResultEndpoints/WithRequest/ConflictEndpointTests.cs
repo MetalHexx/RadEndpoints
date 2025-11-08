@@ -6,26 +6,28 @@ namespace MinimalApi.Tests.Integration.Tests.ResultEndpoints.WithRequest;
 public class ConflictEndpointTests(RadEndpointFixture f)
 {
     [Fact]
-    public async Task When_ItemExists_ReturnsConflictString()
+    public async Task When_UserEmailAlreadyExists_ReturnsConflict()
     {
         // Act
-        var r = await f.Client.GetAsync<ConflictEndpoint, ConflictRequest, string>(new()
+        var r = await f.Client.PostAsync<ConflictEndpoint, ConflictRequest, string>(new()
         {
-            Id = "exists"
+            Name = "John Doe",
+            Email = "existing@example.com"
         });
 
         // Assert
         r.Http.StatusCode.Should().Be(HttpStatusCode.Conflict);
-        r.Content.Should().Be("The item exists already exists.");
+        r.Content.Should().Be("A user with email existing@example.com already exists.");
     }
 
     [Fact]
-    public async Task When_ItemDoesNotExist_ReturnsSuccess()
+    public async Task When_UserEmailIsUnique_CreatesUser()
     {
         // Act
-        var r = await f.Client.GetAsync<ConflictEndpoint, ConflictRequest, ConflictResponse>(new()
+        var r = await f.Client.PostAsync<ConflictEndpoint, ConflictRequest, ConflictResponse>(new()
         {
-            Id = "test"
+            Name = "Jane Doe",
+            Email = "jane@example.com"
         });
 
         // Assert
@@ -33,6 +35,7 @@ public class ConflictEndpointTests(RadEndpointFixture f)
             .WithStatusCode(HttpStatusCode.OK)
             .WithContentNotNull();
         
-        r.Content.Message.Should().Be("Item test is available");
+        r.Content.Message.Should().Be("User created successfully");
+        r.Content.Id.Should().NotBeNullOrEmpty();
     }
 }

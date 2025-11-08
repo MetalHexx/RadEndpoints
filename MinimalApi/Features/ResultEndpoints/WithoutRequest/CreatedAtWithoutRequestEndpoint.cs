@@ -10,7 +10,7 @@ public class CreatedAtWithoutRequestEndpoint : RadEndpointWithoutRequest<Created
 {
     public override void Configure()
     {
-        Post("/api/norequest/created");
+        Post("/api/withoutRequest/created");
     }
 
     public override async Task Handle(CancellationToken ct)

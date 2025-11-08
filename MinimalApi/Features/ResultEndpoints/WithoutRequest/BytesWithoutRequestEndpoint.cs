@@ -9,7 +9,7 @@ public class BytesWithoutRequestEndpoint : RadEndpointWithoutRequest<BytesWithou
 {
     public override void Configure()
     {
-        Get("/api/norequest/bytes");
+        Get("/api/withoutRequest/bytes");
     }
 
     public override async Task Handle(CancellationToken ct)

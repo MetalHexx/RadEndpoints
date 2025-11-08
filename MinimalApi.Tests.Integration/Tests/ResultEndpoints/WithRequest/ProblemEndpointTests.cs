@@ -7,7 +7,7 @@ namespace MinimalApi.Tests.Integration.Tests.ResultEndpoints.WithRequest;
 public class ProblemEndpointTests(RadEndpointFixture f)
 {
     [Fact]
-    public async Task When_InternalErrorRequested_ReturnsProblemDetails()
+    public async Task When_InternalError_ReturnsProblemDetails()
     {
         // Act
         var r = await f.Client.GetAsync<ProblemEndpoint, ProblemRequest, ProblemDetails>(new()
@@ -23,7 +23,7 @@ public class ProblemEndpointTests(RadEndpointFixture f)
     }
 
     [Fact]
-    public async Task When_ExternalErrorRequested_ReturnsProblemDetails()
+    public async Task When_ExternalError_ReturnsProblemDetails()
     {
         // Act
         var r = await f.Client.GetAsync<ProblemEndpoint, ProblemRequest, ProblemDetails>(new()
@@ -39,7 +39,7 @@ public class ProblemEndpointTests(RadEndpointFixture f)
     }
 
     [Fact]
-    public async Task When_TimeoutRequested_ReturnsProblemDetails()
+    public async Task When_ExternalTimeout_ReturnsProblemDetails()
     {
         // Act
         var r = await f.Client.GetAsync<ProblemEndpoint, ProblemRequest, ProblemDetails>(new()
