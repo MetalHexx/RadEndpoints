@@ -102,11 +102,103 @@ public class GetUserEndpoint : RadEndpoint<GetUserRequest, GetUserResponse, User
 }
 ```
 
+**`RadEndpoint`** - Untyped base class for maximum flexibility
+```csharp
+public class TypedResultsEndpoint : RadEndpoint
+{
+    public override void Configure()
+    {
+        var route = SetRoute("/items/{id}");
+        RouteBuilder
+            .MapPut(route, ([AsParameters]ItemRequest r) => Handle(r))
+            .WithRadValidation<ItemRequest>();
+    }
+    
+    public async Task<Results<Ok<ItemResponse>, NotFound<ProblemDetails>>> 
+    Handle(ItemRequest r)
+    {
+        var item = await itemService.GetById(r.Id);
+        if (item is null)
+            return TypedResults.NotFound(new ProblemDetails { Title = "Not found" });
+        
+        return TypedResults.Ok(new ItemResponse { Id = item.Id });
+    }
+}
+```
+
+The untyped `RadEndpoint` provides core features while allowing full control:
+
+**Features you still get:**
+- Assembly-scanned endpoint configuration
+- Constructor dependency injection (scoped lifetime)
+- Built-in conveniences: `Logger`, `Env`, `HttpContext`, `RouteBuilder`
+- RadEndpoint configuration shortcuts
+- Optional routeless integration testing (with manual `SetRoute()`)
+- Validation filters (requires manual `WithRadValidation<T>()` configuration)
+
+**Trade-offs:**
+- No automatic request/response typing enforcement
+- No `Send()` shortcuts (use `TypedResults` directly or create custom helpers)
+- No automatic FluentValidation execution (requires manual configuration)
+- No built-in mapper integration
+- More verbose configuration (but closer to standard Minimal APIs)
+
+This approach is ideal when you need .NET 8+ TypedResults or have specific requirements that don't fit the standard patterns. You can mix untyped and typed endpoints in the same application.
+
+**Custom Base Endpoints**
+
+Create your own base endpoint classes to establish custom patterns and helpers for your application:
+
+```csharp
+// Custom base class with your own conventions
+public abstract class CustomBaseEndpoint<TRequest, TResponse> : RadEndpoint
+    where TRequest : CustomBaseRequest
+    where TResponse : CustomBaseResponse, new()
+{
+    public abstract Task<TResponse> Handle(TRequest r, CancellationToken ct);
+
+    public RouteHandlerBuilder Get(string route)
+    {
+        SetRoute(route);
+        return RouteBuilder!.MapGet(route, 
+            async ([AsParameters] TRequest r, CancellationToken ct) => await Handle(r, ct));
+    }
+    
+    // Add your own helper methods
+    public TResponse BadRequest(string message) => new TResponse 
+    { 
+        Message = message,
+        StatusCode = HttpStatusCode.BadRequest
+    };
+}
+
+// Use your custom base
+public class GetItemEndpoint : CustomBaseEndpoint<GetItemRequest, GetItemResponse>
+{
+    public override void Configure() => Get("items/{id}");
+    
+    public override async Task<GetItemResponse> Handle(GetItemRequest r, CancellationToken ct)
+    {
+        if (r.Id <= 0)
+            return BadRequest("Invalid ID");
+        
+        return new GetItemResponse { Id = r.Id, Name = "Item" };
+    }
+}
+```
+
+Custom base classes let you:
+- Define application-specific patterns and conventions
+- Create custom helper methods tailored to your needs
+- Establish architectural guardrails for your team
+- Mix and match with standard RadEndpoint base classes
+
+See [`TypedResultsPutEndpoint`](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi/Features/WithTypedResults/TypedResultsPut/TypedResultsPutEndpoint.cs) and [`CustomBaseEndpoint`](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi/Features/CustomBase/_common/CustomBaseEndpoint.cs) for complete examples.
+
 All base classes provide:
 - Constructor dependency injection (scoped lifetime)
-- Built-in conveniences: `HttpContext`, `Logger`, `Env`, `Response`
-- TypedResult shortcuts: `Send()`, `SendNotFound()`, `SendProblem()`, etc.
-- Automatic validation via FluentValidation
+- Built-in conveniences: `HttpContext`, `Logger`, `Env`
+- Assembly-scanned endpoint configuration
 
 #### Response Methods
 RadEndpoints provides strongly-typed response methods that return ASP.NET Core TypedResults:
