@@ -10,13 +10,13 @@ _Should be:_
 - Well Structured -- for common tasks such as validation, mapping and error handling.
 - Extensible -- to allow for custom alternate endpoint implmentations.
 - Fast and Easy -- to rapidly scaffold projects, endpoints and tests.
+- AI Friendly -- as simpler patterns help produce more consistent agent generated code.
 
 ### Features:
 #### REPR Endpoint Classes
-- Reduced configuration noise over minimal api endpoints
 - Constructor dependency injection
-- Scoped lifetime
-- Assembly scanned and configured request validator and model mapper
+- Scoped lifetime endpoint classes
+- Automatic endpoint, mapper, and validator discovery with assembly scanning 
 - Built-in Endpoint Class Conveniences
   - HttpContext
   - Logger
@@ -30,13 +30,15 @@ public class GetSampleEndpoint(ISampleService sampleService) : RadEndpoint<GetSa
 {
     public override void Configure()
     {
+        // The Get() method here returns RouteHandlerBuilder
+
         Get("/samples/{id}")
             .Produces<GetSampleResponse>(StatusCodes.Status200OK)            
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesValidationProblem()
             .WithDocument(tag: "Sample", desc: "Get Sample by ID");
 
-            //Any NET minimal api (RouteHandlerBuilder) configuration works here.
+            // Works with .any net core Minimal API compatible extension methods.
     }
 
     public override async Task Handle(GetSampleRequest r, CancellationToken ct)
@@ -45,14 +47,277 @@ public class GetSampleEndpoint(ISampleService sampleService) : RadEndpoint<GetSa
 
         if(sample is null)
         {
+            // Helper methods for setting TypedResults-based responses
             SendNotFound("Sample not found.");
             return;
         }
-        Response = Map.FromEntity(sample);
+        Response = Map.FromEntity(sample); // Using typed mapper
+
+        Send(); // Sends 200 OK with Response object
+    }
+}
+```
+
+#### Endpoint Base Classes
+RadEndpoints provides four base classes you can use to support different endpoint scenarios:
+
+**`RadEndpoint<TRequest, TResponse>`** - Standard endpoint with request and response
+```csharp
+public class GetUserEndpoint : RadEndpoint<GetUserRequest, GetUserResponse>
+{
+    public override void Configure() => Get("/users/{id}");
+    
+    public override async Task Handle(GetUserRequest req, CancellationToken ct)
+    {
+        // Access request via req parameter
+        Response = new GetUserResponse { Id = req.Id, Name = "John" };
         Send();
     }
 }
 ```
+
+**`RadEndpointWithoutRequest<TResponse>`** - Endpoint without request model
+```csharp
+public class GetHealthEndpoint : RadEndpointWithoutRequest<HealthResponse>
+{
+    public override void Configure() => Get("/health");
+    
+    public override async Task Handle(CancellationToken ct)
+    {
+        // No request parameter needed
+        Response = new HealthResponse { Status = "Healthy" };
+        Send();
+    }
+}
+```
+
+**`RadEndpoint<TRequest, TResponse, TMapper>`** - Endpoint with integrated mapper
+```csharp
+public class GetUserEndpoint : RadEndpoint<GetUserRequest, GetUserResponse, UserMapper>
+{
+    public override void Configure() => Get("/users/{id}");
+    
+    public override async Task Handle(GetUserRequest req, CancellationToken ct)
+    {
+        var user = await userService.GetById(req.Id);
+        Response = Map.FromEntity(user); // Use integrated mapper
+        Send();
+    }
+}
+```
+
+**`RadEndpoint`** - Untyped base class for maximum flexibility
+
+The untyped RadEndpoint provides full control of .net Minimal API endpoint creation while still offering additional conveniences.  If you like using .NET 8+ TypedResults, or have specific requirements that don't fit the opinionated typed RadEndpoint pattern, this base class is for you.
+```csharp
+public class TypedResultsEndpoint : RadEndpoint
+{
+    public override void Configure()
+    {
+        var route = SetRoute("/items/{id}"); // Optional: SetRoute() enables routless integration testing on untyped endpoints.
+                                             // Typed endpoints don't require you to call SetRoute().
+        
+        //The RouteBuilder property on the endpoint class gives you granular control over the Minimal endpoint configuration with nothing in the way.
+        RouteBuilder
+            .MapPut(route, ([AsParameters]ItemRequest r) => Handle(r))
+            .WithRadValidation<ItemRequest>();
+    }
+    
+    // Minimal API style handler method returning TypedResults with Union Types.
+    public async Task<Results<Ok<ItemResponse>, NotFound<ProblemDetails>>> Handle(ItemRequest r)
+    {
+        var item = await itemService.GetById(r.Id);
+        if (item is null)
+            return TypedResults.NotFound(new ProblemDetails { Title = "Not found" });
+        
+        return TypedResults.Ok(new ItemResponse { Id = item.Id });
+    }
+}
+```
+**Advantages of using untyped RadEndpoint:**
+- Full control over Minimal API endpoint configuration via `RouteBuilder`
+- Use of .NET TypedResults with Open Union Types
+- Flexibility to define custom handler method signatures.
+
+**RadEndpoint Features you still get:**
+- Assembly-scanned endpoint discovery
+- Constructor dependency injection (scoped lifetime)
+- Built-in conveniences: `Logger`, `Env`, `HttpContext`
+- Optional routeless integration testing (using `SetRoute()`)
+- Rad Validation filters (requires manual `.WithRadValidation<T>()` configuration)
+
+**Trade-offs of not using typed endpoints:**
+- No automatic request/response typing enforcement
+- No `Send()` shortcuts (use `TypedResults` directly or create custom helpers)
+- No automatic FluentValidation execution (requires manual configuration)
+- No built-in mapper integration
+- More boilerplate code in endpoint configuration
+
+**Custom Base Endpoints**
+
+Use the untyped `RadEndpoint` base class to create your own base endpoint classes and establish custom patterns and helpers tailored uniquely for your application:
+
+```csharp
+// Custom base class with your own conventions
+public abstract class CustomBaseEndpoint<TRequest, TResponse> : RadEndpoint
+    where TRequest : CustomBaseRequest
+    where TResponse : CustomBaseResponse, new()
+{
+    public abstract Task<TResponse> Handle(TRequest r, CancellationToken ct);
+
+    // Example Get helper method
+    public RouteHandlerBuilder Get(string route)
+    {
+        SetRoute(route);
+
+        return RouteBuilder!.MapGet(route, 
+            async ([AsParameters] TRequest r, CancellationToken ct) => await Handle(r, ct));
+    }
+
+    // ...Similarly, define Post, Put, Delete helpers
+
+    public abstract Task<TResponse> Handle(TRequest r, CancellationToken ct);
+    
+    // Add your own response helper methods
+    public TResponse BadRequest(string message) => new TResponse 
+    { 
+        Message = message,
+        StatusCode = HttpStatusCode.BadRequest
+    };
+}
+
+// Use your custom base
+public class GetItemEndpoint : CustomBaseEndpoint<GetItemRequest, GetItemResponse>
+{
+    public override void Configure() => Get("items/{id}");
+    
+    public override async Task<GetItemResponse> Handle(GetItemRequest r, CancellationToken ct)
+    {
+        if (r.Id <= 0)
+            return BadRequest("Invalid ID");
+        
+        return new GetItemResponse { Id = r.Id, Name = "Item" };
+    }
+}
+```
+
+**Custom base classes let you:**
+- Define application-specific patterns and conventions
+- Create custom helper methods tailored to your needs
+- Establish architectural guardrails for your team
+- Mix and match with standard RadEndpoint base classes
+
+See [`TypedResultsPutEndpoint`](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi/Features/WithTypedResults/TypedResultsPut/TypedResultsPutEndpoint.cs) and [`CustomBaseEndpoint`](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi/Features/CustomBase/_common/CustomBaseEndpoint.cs) for complete examples.
+
+**All base classes provide:**
+- Constructor dependency injection (scoped lifetime)
+- Built-in conveniences: `HttpContext`, `Logger`, `Env`
+- Assembly-scanned endpoint configuration
+
+#### Response Methods
+RadEndpoints provides strongly-typed response methods that return ASP.NET Core TypedResults:
+
+**Success Responses**
+```csharp
+// 200 OK with response body
+Response = new UserResponse { Id = 1, Name = "John" };
+Send(); // or Send(customResponse)
+
+// 201 Created with Location header
+SendCreatedAt("/users/123", response);
+```
+
+**Client Error Responses**
+```csharp
+// 400 Bad Request - Validation errors
+SendValidationError("Field is required");
+
+// 404 Not Found
+SendNotFound("User not found");
+
+// 409 Conflict
+SendConflict("Email already exists");
+```
+
+**Server Error Responses**
+```csharp
+// 500 Internal Server Error
+SendInternalError("Database connection failed");
+
+// 502 Bad Gateway
+SendExternalError("External API unreachable");
+
+// 504 Gateway Timeout
+SendExternalTimeout("External API timeout");
+```
+
+**Redirect Responses**
+```csharp
+// 301 Moved Permanently
+SendRedirect("/new-location", permanent: true);
+
+// 302 Found (temporary redirect)
+SendRedirect("/temporary-location");
+
+// 307/308 with method preservation
+SendRedirect("/location", permanent: true, preserveMethod: true);
+```
+
+**Binary Responses**
+```csharp
+// Byte array download
+SendBytes(new RadBytes 
+{ 
+    Bytes = data, 
+    ContentType = "application/pdf",
+    FileDownloadName = "report.pdf"
+});
+
+// Stream response
+SendStream(new RadStream 
+{ 
+    Stream = fileStream, 
+    ContentType = "text/csv"
+});
+
+// Physical file
+SendFile(new RadFile 
+{ 
+    Path = "/path/to/file.txt",
+    ContentType = "text/plain"
+});
+```
+
+**Custom Problem Details**
+```csharp
+// Using ProblemHttpResult
+SendProblem(TypedResults.Problem(
+    title: "Custom error",
+    statusCode: 422,
+    detail: "Detailed error message"));
+
+// Using IRadProblem for domain errors
+SendProblem(new CustomDomainError("Business rule violated"));
+```
+
+**Testing Response Methods**
+
+Integration tests use typed client extensions:
+```csharp
+// Test string responses (NotFound, Conflict)
+var response = await client.GetAsync<NotFoundEndpoint, Request, string>(request);
+response.Http.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+// Test ProblemDetails responses
+var response = await client.GetAsync<ErrorEndpoint, Request, ProblemDetails>(request);
+response.Content.Title.Should().Be("Internal server error");
+
+// Test binary responses (use raw HttpClient)
+var response = await client.GetAsync("/api/download");
+var bytes = await response.Content.ReadAsByteArrayAsync();
+```
+
+See the test endpoints in [`/MinimalApi/Features/ResultEndpoints`](https://github.com/MetalHexx/RadEndpoints/tree/main/MinimalApi/Features/ResultEndpoints) for complete examples of all response methods.
 
 #### Request Model Binding and Validation
 - Automatic request model binding from route, query, header, and body using [AsParameters].
