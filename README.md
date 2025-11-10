@@ -214,123 +214,6 @@ See [`TypedResultsPutEndpoint`](https://github.com/MetalHexx/RadEndpoints/blob/m
 - Built-in conveniences: `HttpContext`, `Logger`, `Env`
 - Assembly-scanned endpoint configuration
 
-#### Request/Response Mapping
-
-RadEndpoints provides an optional mapper abstraction (`IRadMapper`) to transform data between your domain entities and API DTOs. Mappers provide a declarative, opinionated, and consistent place to perform mapping operations between layers, helping maintain clean separation between your domain layer and API contracts.
-
-**Mapper Interfaces**
-
-RadEndpoints provides two mapper interfaces:
-
-**`IRadMapper<TResponse, TEntity>`** - One-way mapping for read operations (GET endpoints)
-```csharp
-public interface IRadMapper<TResponse, TEntity> : IRadMapper
-{
-    TResponse FromEntity(TEntity e);
-}
-```
-
-**`IRadMapper<TRequest, TResponse, TEntity>`** - Two-way mapping for read/write operations (POST, PUT, PATCH endpoints)
-```csharp
-public interface IRadMapper<TRequest, TResponse, TEntity> : IRadMapper
-{
-    TEntity ToEntity(TRequest r);      // Convert request DTO to domain entity
-    TResponse FromEntity(TEntity e);   // Convert domain entity to response DTO
-}
-```
-
-**Creating a Mapper**
-
-Define a mapper class that implements one of the `IRadMapper` interfaces:
-
-```csharp
-// Domain entity
-public record User(string FirstName, string LastName, int Id = 0);
-
-// Request/Response DTOs
-public class CreateUserRequest
-{
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-}
-
-public class UserResponse
-{
-    public int Id { get; set; }
-    public string FullName { get; set; } = string.Empty;
-}
-
-// Two-way mapper for create operations
-public class CreateUserMapper : IRadMapper<CreateUserRequest, UserResponse, User>
-{
-    // Convert request DTO to domain entity (for saving)
-    public User ToEntity(CreateUserRequest r) => new User(r.FirstName, r.LastName);
-    
-    // Convert domain entity to response DTO (for returning)
-    public UserResponse FromEntity(User e) => new()
-    {
-        Id = e.Id,
-        FullName = $"{e.FirstName} {e.LastName}"
-    };
-}
-
-// One-way mapper for read operations
-public class GetUserMapper : IRadMapper<GetUserRequest, UserResponse, User>
-{
-    public UserResponse FromEntity(User e) => new()
-    {
-        Id = e.Id,
-        FullName = $"{e.FirstName} {e.LastName}"
-    };
-    
-    // Not needed for GET operations
-    public User ToEntity(GetUserRequest r) => throw new NotImplementedException();
-}
-```
-
-**Using Mappers in Endpoints**
-
-Reference your mapper as a type parameter in your endpoint class. The mapper is automatically injected and accessible via the `Map` property:
-
-```csharp
-// Endpoint with integrated mapper (third type parameter)
-public class CreateUserEndpoint(IUserService userService) 
-    : RadEndpoint<CreateUserRequest, UserResponse, CreateUserMapper>
-{
-    public override void Configure()
-    {
-        Post("/users")
-            .Produces<UserResponse>(StatusCodes.Status201Created)
-            .ProducesValidationProblem()
-            .WithDocument(tag: "Users", desc: "Create a new user");
-    }
-
-    public override async Task Handle(CreateUserRequest r, CancellationToken ct)
-    {
-        // Convert request to domain entity using mapper
-        var user = Map.ToEntity(r);
-        
-        // Pass domain entity to service layer
-        var createdUser = await userService.CreateUser(user, ct);
-        
-        // Convert domain entity back to response DTO
-        Response = Map.FromEntity(createdUser);
-        
-        SendCreatedAt($"/users/{createdUser.Id}");
-    }
-}
-```
-
-**Mapper Features**
-
-- **Automatic Discovery**: Mappers are automatically discovered and registered via assembly scanning
-- **Scoped Lifetime**: Mappers have scoped lifetime, allowing dependency injection of scoped services
-- **Type-Safe**: Compile-time type checking ensures correct usage
-- **Integration Tools**: Compatible with AutoMapper, Mapster, or manual mapping
-- **Testing**: Mappers can be tested independently of endpoints
-
-See the [`CreateExampleEndpoint`](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi/Features/Examples/CreateExample/CreateExampleEndpoint.cs) and other examples in [`/MinimalApi/Features/Examples`](https://github.com/MetalHexx/RadEndpoints/tree/main/MinimalApi/Features/Examples) for complete working implementations.
-
 #### Response Methods
 RadEndpoints provides strongly-typed response methods that return ASP.NET Core TypedResults:
 
@@ -462,14 +345,123 @@ public class GetSampleResponse
 }
 ```
 
-#### Flexibility and Alternate Base Endpoint Class
-- Don't like the endpoint base classes?  Make your own using the included abstractions.
-- Want to use a bare minimum REPR endpoint with Open Union Types?  Go for it.
-- Need to create a super specialized edge case endpoint with pure minimal api endpoint?  No problem.
+#### Request/Response Mapping
+
+RadEndpoints provides an optional mapper abstraction (`IRadMapper`) to transform data between your domain entities and API DTOs. Mappers provide a declarative and consistent place to perform endpoint mapping operations, helping maintain clean separation between your app / domain layers and API contracts.
+
+**Mapper Interfaces**
+
+RadEndpoints provides two mapper interfaces:
+
+**`IRadMapper<TResponse, TEntity>`** - One-way mapping for read operations (GET endpoints)
+```csharp
+public interface IRadMapper<TResponse, TEntity> : IRadMapper
+{
+    TResponse FromEntity(TEntity e);
+}
+```
+
+**`IRadMapper<TRequest, TResponse, TEntity>`** - Two-way mapping for read/write operations (POST, PUT, PATCH endpoints)
+```csharp
+public interface IRadMapper<TRequest, TResponse, TEntity> : IRadMapper
+{
+    TEntity ToEntity(TRequest r);      // Convert request DTO to domain entity
+    TResponse FromEntity(TEntity e);   // Convert domain entity to response DTO
+}
+```
+
+**Creating a Mapper**
+
+Define a mapper class that implements one of the `IRadMapper` interfaces:
 
 ```csharp
-  //Code samples coming soon
+// Domain entity
+public record User(string FirstName, string LastName, int Id = 0);
+
+// Request/Response DTOs
+public class CreateUserRequest
+{
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+}
+
+public class UserResponse
+{
+    public int Id { get; set; }
+    public string FullName { get; set; } = string.Empty;
+}
+
+// Two-way mapper for create operations
+public class CreateUserMapper : IRadMapper<CreateUserRequest, UserResponse, User>
+{
+    // Convert request DTO to domain entity (for saving)
+    public User ToEntity(CreateUserRequest r) => new User(r.FirstName, r.LastName);
+    
+    // Convert domain entity to response DTO (for returning)
+    public UserResponse FromEntity(User e) => new()
+    {
+        Id = e.Id,
+        FullName = $"{e.FirstName} {e.LastName}"
+    };
+}
+
+// One-way mapper for read operations
+public class GetUserMapper : IRadMapper<GetUserRequest, UserResponse, User>
+{
+    public UserResponse FromEntity(User e) => new()
+    {
+        Id = e.Id,
+        FullName = $"{e.FirstName} {e.LastName}"
+    };
+    
+    // Not needed for GET operations
+    public User ToEntity(GetUserRequest r) => throw new NotImplementedException();
+}
 ```
+
+**Using Mappers in Endpoints**
+
+Reference your mapper as a type parameter in your endpoint class. The mapper is automatically injected and accessible via the `Map` property:
+
+```csharp
+// Endpoint with integrated mapper (third type parameter)
+public class CreateUserEndpoint(IUserService userService) 
+    : RadEndpoint<CreateUserRequest, UserResponse, CreateUserMapper>
+{
+    public override void Configure()
+    {
+        Post("/users")
+            .Produces<UserResponse>(StatusCodes.Status201Created)
+            .ProducesValidationProblem()
+            .WithDocument(tag: "Users", desc: "Create a new user");
+    }
+
+    public override async Task Handle(CreateUserRequest r, CancellationToken ct)
+    {
+        // Convert request to domain entity using mapper
+        var user = Map.ToEntity(r);
+        
+        // Pass domain entity to service layer
+        var createdUser = await userService.CreateUser(user, ct);
+        
+        // Convert domain entity back to response DTO
+        Response = Map.FromEntity(createdUser);
+        
+        SendCreatedAt($"/users/{createdUser.Id}");
+    }
+}
+```
+
+**Mapper Features**
+
+- **Automatic Discovery**: Mappers are automatically discovered and registered via assembly scanning
+- **Scoped Lifetime**: Mappers have scoped lifetime, allowing dependency injection of scoped services
+- **Type-Safe**: Compile-time type checking ensures correct usage
+- **Integration Tools**: Compatible with AutoMapper, Mapster, or manual mapping
+- **Testing**: Mappers can be tested independently of endpoints
+
+See the [`CreateExampleEndpoint`](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi/Features/Examples/CreateExample/CreateExampleEndpoint.cs) and other examples in [`/MinimalApi/Features/Examples`](https://github.com/MetalHexx/RadEndpoints/tree/main/MinimalApi/Features/Examples) for complete working implementations.
+
   
 #### Integration Testing
 - Strongly typed "Routeless" HttpClient extensions
