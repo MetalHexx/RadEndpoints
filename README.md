@@ -563,25 +563,6 @@ public class GetSampleResponse
 }
 ```
 
-#### Endpoint Model Mapper
-- Assign mappers for conventient access from endpoint
-- Makes mapping a first class citizen with the endpoint configuration
-- Map manually or with a mapping tool like AutoMapper or Mapster
-```csharp
-public class GetExampleMapper : IRadMapper<GetExampleRequest, GetExampleResponse, Example>
-{
-    public GetExampleResponse FromEntity(Example e) => new()
-    {
-        Data = new()
-        {
-            Id = e.Id,
-            FirstName = e.FirstName,
-            LastName = e.LastName
-        }
-    };
-    public Example ToEntity(GetExampleRequest r) => throw new NotImplementedException();
-}
-```
 #### Flexibility and Alternate Base Endpoint Class
 - Don't like the endpoint base classes?  Make your own using the included abstractions.
 - Want to use a bare minimum REPR endpoint with Open Union Types?  Go for it.
