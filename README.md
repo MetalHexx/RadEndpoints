@@ -216,14 +216,7 @@ See [`TypedResultsPutEndpoint`](https://github.com/MetalHexx/RadEndpoints/blob/m
 
 #### Request/Response Mapping
 
-RadEndpoints provides an optional mapper abstraction (`IRadMapper`) to transform data between your domain entities and API DTOs. Mappers help maintain clean separation between your domain layer and API contracts, and are integrated directly into endpoint classes for convenient access.
-
-**Why Use Mappers?**
-- Separate domain models from API contracts
-- Transform complex domain entities into simple DTOs
-- Convert incoming request data into domain objects
-- Keep mapping logic centralized and testable
-- Avoid exposing internal domain structure through APIs
+RadEndpoints provides an optional mapper abstraction (`IRadMapper`) to transform data between your domain entities and API DTOs. Mappers provide a declarative, opinionated, and consistent place to perform mapping operations between layers, helping maintain clean separation between your domain layer and API contracts.
 
 **Mapper Interfaces**
 
@@ -328,87 +321,6 @@ public class CreateUserEndpoint(IUserService userService)
 }
 ```
 
-**Complete End-to-End Example**
-
-Here's a complete example showing how mappers fit into the REPR pattern:
-
-```csharp
-// 1. Domain Entity (lives in Domain layer)
-public record Example(string FirstName, string LastName, int Id = 0);
-
-// 2. Request/Response Models
-public class CreateExampleRequest
-{
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-}
-
-public class CreateExampleRequestValidator : AbstractValidator<CreateExampleRequest>
-{
-    public CreateExampleRequestValidator()
-    {
-        RuleFor(e => e.FirstName).NotEmpty().WithMessage("First name is required");
-        RuleFor(e => e.LastName).NotEmpty().WithMessage("Last name is required");
-    }
-}
-
-public class CreateExampleResponse
-{
-    public ExampleDto Data { get; set; } = null!;
-    public string Message { get; set; } = "Example created successfully";
-}
-
-public class ExampleDto
-{
-    public int Id { get; set; }
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-}
-
-// 3. Mapper
-public class CreateExampleMapper : IRadMapper<CreateExampleRequest, CreateExampleResponse, Example>
-{
-    public Example ToEntity(CreateExampleRequest r) => new(r.FirstName, r.LastName);
-    
-    public CreateExampleResponse FromEntity(Example e) => new()
-    {
-        Data = new ExampleDto
-        {
-            Id = e.Id,
-            FirstName = e.FirstName,
-            LastName = e.LastName
-        }
-    };
-}
-
-// 4. Endpoint (wires everything together)
-public class CreateExampleEndpoint(IExampleService service) 
-    : RadEndpoint<CreateExampleRequest, CreateExampleResponse, CreateExampleMapper>
-{
-    public override void Configure()
-    {
-        Post("/examples")
-            .Produces<CreateExampleResponse>(StatusCodes.Status201Created)
-            .ProducesValidationProblem()
-            .WithDocument(tag: "Examples", desc: "Create a new example");
-    }
-
-    public override async Task Handle(CreateExampleRequest r, CancellationToken ct)
-    {
-        // Map.ToEntity: Request DTO → Domain Entity
-        var entity = Map.ToEntity(r);
-        
-        // Business logic operates on domain entities
-        var result = await service.InsertExample(entity);
-        
-        // Map.FromEntity: Domain Entity → Response DTO
-        Response = Map.FromEntity(result);
-        
-        SendCreatedAt($"/examples/{result.Id}");
-    }
-}
-```
-
 **Mapper Features**
 
 - **Automatic Discovery**: Mappers are automatically discovered and registered via assembly scanning
@@ -416,19 +328,6 @@ public class CreateExampleEndpoint(IExampleService service)
 - **Type-Safe**: Compile-time type checking ensures correct usage
 - **Integration Tools**: Compatible with AutoMapper, Mapster, or manual mapping
 - **Testing**: Mappers can be tested independently of endpoints
-
-**When to Use Mappers**
-
-✅ **Use mappers when:**
-- Your domain entities differ from API DTOs
-- You want separation between internal models and public contracts
-- You need to transform data structure between layers
-- You're implementing CQRS or vertical slice architecture
-
-❌ **Skip mappers when:**
-- Your domain models can be directly exposed as API contracts
-- You prefer inline mapping in the endpoint Handle method
-- You're building simple CRUD operations with identical models
 
 See the [`CreateExampleEndpoint`](https://github.com/MetalHexx/RadEndpoints/blob/main/MinimalApi/Features/Examples/CreateExample/CreateExampleEndpoint.cs) and other examples in [`/MinimalApi/Features/Examples`](https://github.com/MetalHexx/RadEndpoints/tree/main/MinimalApi/Features/Examples) for complete working implementations.
 
